@@ -19,7 +19,10 @@
       schema='{"type":"string","description":"The unique identifier of the video","title":"Video Id","localized":true,"extended-type":"forge-youtube-video-input","tagextradata":true}'></forge-youtube-video-input>
     <script>
       document.querySelector('forge-youtube-video-input').addEventListener('sendCommand', function (e) {
-        console.log('sample event listener:', e.detail);
+        console.log('on sendCommand:', e.detail);
+      });
+      document.querySelector('forge-youtube-video-input').addEventListener('valueChanged', function (e) {
+        console.log('on change:', e.detail);
       });
     </script>
   </body>

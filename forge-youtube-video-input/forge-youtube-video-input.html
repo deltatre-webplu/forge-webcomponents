@@ -28,10 +28,10 @@
     is: 'forge-youtube-video-input',
     behaviors: [ForgeBehaviors.ExtendedFieldBehavior],
     onInput: function() {
-      this.debounce('sendCommand', this.sendCommand, 2000);
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
     },
     onChange: function() {
-      this.debounce('sendCommand', this.sendCommand, 0);
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
     }
   });
   </script>

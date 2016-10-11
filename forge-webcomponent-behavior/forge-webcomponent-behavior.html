@@ -19,7 +19,7 @@ ForgeBehaviors.ExtendedFieldBehavior = {
       type: Object
     }
   },
-  sendCommand: function() {
+  triggerSendCommand: function() {
 
     const entity = {
       aggregateId: this.entity.entityId,
@@ -38,5 +38,10 @@ ForgeBehaviors.ExtendedFieldBehavior = {
     this.fire('sendCommand', { commandName: 'SetExtendedFieldsCommand', commandBody: commandBody });
 
   },
+  triggerOnValueChanged: function() {
+    if (this._lastKnownValue === this.value) return;
+    this._lastKnownValue = this.value;
+    this.fire('valueChanged', this.value);
+  }
 };
 </script>
