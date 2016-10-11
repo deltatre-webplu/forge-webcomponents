@@ -1,0 +1,42 @@
+<script>
+window.ForgeBehaviors = window.ForgeBehaviors || {};
+ForgeBehaviors.ExtendedFieldBehavior = {
+
+  properties: {
+    value: {
+      type: String
+    },
+    label: {
+      type: String
+    },
+    fieldName: {
+      type: String
+    },
+    entity: {
+      type: Object
+    },
+    schema: {
+      type: Object
+    }
+  },
+  sendCommand: function() {
+
+    const entity = {
+      aggregateId: this.entity.entityId,
+      translationId: this.entity.id,
+      aggregateType: this.entity.fullTypeName || this.entity.type
+    }
+
+    const commandBody = {
+      aggregateId: entity.aggregateId,
+      aggregateType: entity.aggregateType,
+      translationId: entity.translationId,
+      values: {}
+    };
+    commandBody.values[this.fieldName] = this.value;
+
+    this.fire('sendCommand', { commandName: 'SetExtendedFieldsCommand', commandBody: commandBody });
+
+  },
+};
+</script>
