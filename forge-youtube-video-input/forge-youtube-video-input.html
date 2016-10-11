@@ -7,12 +7,19 @@
 
   <template>
 
-    <style>
+    <style is="custom-style">
+      :root{
+        --paper-input-container-color: #727272;
+        --paper-input-container-focus-color: rgb(33,150,243);
+        --paper-input-container-label-focus: {
+          font-weight: 600;
+        };
+      }
     </style>
 
     <!-- local DOM goes here -->
     <paper-input value="{{value}}" label="[[label]]" on-input="onInput" on-change="onChange"></paper-input>
-    <google-youtube id="googleYouTube" video-id="{{value}}"/>
+    <google-youtube id="googleYouTube" video-id="{{value}}" fluid="true"/>
 
   </template>
 
