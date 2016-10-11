@@ -10,8 +10,8 @@
     </style>
 
     <!-- local DOM goes here -->
-    <paper-input value="[[value]]"></paper-input>
-    <google-youtube id="googleYouTube" video-id="[[value]]"/>
+    <paper-input value="{{value}}" label="[[label]]" on-input="onInput" on-change="onChange"></paper-input>
+    <google-youtube id="googleYouTube" video-id="{{value}}"/>
 
   </template>
 
@@ -21,7 +21,42 @@
     properties: {
       value: {
         type: String
+      },
+      label: {
+        type: String
+      },
+      entity: {
+        type: Object
+      },
+      schema: {
+        type: Object
       }
+    },
+    _sendCommand: function() {
+
+      const entity = {
+        aggregateId: this.entity.entityId,
+        translationId: this.entity.id,
+        aggregateType: this.entity.fullTypeName || this.entity.type
+      }
+
+      const commandBody = {
+        aggregateId: entity.aggregateId,
+      	aggregateType: entity.aggregateType,
+      	translationId: entity.translationId,
+        values: {
+          videoId: this.value
+        }
+      };
+
+      this.fire('sendCommand', { commandName: 'SetExtendedFieldsCommand', commandBody: commandBody });
+
+    },
+    onInput: function() {
+      this.debounce('_sendCommand', this._sendCommand, 2000);
+    },
+    onChange: function() {
+      this.debounce('_sendCommand', this._sendCommand, 0);
     }
   });
   </script>
