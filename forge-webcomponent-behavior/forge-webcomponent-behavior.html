@@ -1,57 +1,73 @@
 <script>
-window.ForgeBehaviors = window.ForgeBehaviors || {};
-ForgeBehaviors.ExtendedFieldBehavior = {
+(function() {
 
-  properties: {
-    value: {
-      type: String
-    },
-    label: {
-      type: String
-    },
-    fieldName: {
-      type: String
-    },
-    entity: {
-      type: Object
-    },
-    schema: {
-      type: Object
-    }
-  },
-  triggerSendCommand: function() {
-
-    const entity = {
-      aggregateId: this.entity.entityId,
-      translationId: this.entity.id,
-      aggregateType: this.entity.fullTypeName || this.entity.type
-    };
-
-    if (!entity.aggregateId
-    || !entity.translationId
-    || !entity.aggregateType) {
-      throw new Error("Invalid entity status (entity is not existing or not initialized correctly)", entity);
-    }
-
-    if (this._lastKnownValue === this.value) return;
-    this._lastKnownValue = this.value;
-
-    const commandBody = {
-      aggregateId: entity.aggregateId,
-      aggregateType: entity.aggregateType,
-      translationId: entity.translationId,
-      values: {}
-    };
-
-    commandBody.values[this.fieldName] = this.value;
-
-    this.fire('sendCommand', { commandName: 'SetExtendedFieldsCommand', commandBody: commandBody });
-
-  },
-  triggerOnValueChanged: function() {
-    if (this._lastKnownValue === this.value) return;
-    this._lastKnownValue = this.value;
-    this.fire('valueChanged', this.value);
+  function InvalidEntityError(message) {
+     this.message = message;
+     var last_part = new Error().stack.match(/[^\s]+$/);
+     this.stack = `${this.name} at ${last_part}`;
   }
-};
+
+  Object.setPrototypeOf(InvalidEntityError, Error);
+  InvalidEntityError.prototype = Object.create(Error.prototype);
+  InvalidEntityError.prototype.name = "InvalidEntityError";
+  InvalidEntityError.prototype.message = "";
+  InvalidEntityError.prototype.constructor = InvalidEntityError;
+
+  window.ForgeBehaviors = window.ForgeBehaviors || {};
+  ForgeBehaviors.ExtendedFieldBehavior = {
+
+    properties: {
+      value: {
+        type: String
+      },
+      label: {
+        type: String
+      },
+      fieldName: {
+        type: String
+      },
+      entity: {
+        type: Object
+      },
+      schema: {
+        type: Object
+      }
+    },
+    triggerSendCommand: function() {
+
+      const entity = {
+        aggregateId: this.entity.entityId,
+        translationId: this.entity.id,
+        aggregateType: this.entity.fullTypeName || this.entity.type
+      };
+
+      if (!entity.aggregateId
+      || !entity.translationId
+      || !entity.aggregateType) {
+        throw new InvalidEntityError("Invalid entity status (entity is not existing or not initialized correctly)", entity);
+      }
+
+      if (this._lastKnownValue === this.value) return;
+      this._lastKnownValue = this.value;
+
+      const commandBody = {
+        aggregateId: entity.aggregateId,
+        aggregateType: entity.aggregateType,
+        translationId: entity.translationId,
+        values: {}
+      };
+
+      commandBody.values[this.fieldName] = this.value;
+
+      this.fire('sendCommand', { commandName: 'SetExtendedFieldsCommand', commandBody: commandBody });
+
+    },
+    triggerOnValueChanged: function() {
+      if (this._lastKnownValue === this.value) return;
+      this._lastKnownValue = this.value;
+      this.fire('valueChanged', this.value);
+    }
+  };
+
+})();
 </script>
