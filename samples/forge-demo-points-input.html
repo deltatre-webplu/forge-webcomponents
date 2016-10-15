@@ -1,0 +1,121 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-input/paper-input.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-list/iron-list.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-dialog/paper-dialog.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/editor-icons.html">
+<link rel="import" href="/forge-array-behavior.html">
+
+<dom-module id="forge-demo-points-input">
+  <template>
+    <style is="custom-style">
+      .list {
+        padding-left: 10px;
+      }
+      .title {
+        margin-bottom: 0;
+        margin-top: 0;
+      }
+      .details {
+        padding-left: 10px;
+      }
+    </style>
+
+    <!-- local DOM goes here -->
+    <label>
+     [[label]]
+      <paper-icon-button on-click="onAdd" icon="add-circle"></paper-icon-button>
+    </label>
+    <div class="list">
+      
+      <iron-list items="[[value]]">
+        <template>
+          <div>
+            <h5 class="title">{{item.team}}</h5>
+            <div class="details">
+              <span>From {{item.startYear}} to {{item.endYear}}</span>
+              <span>, points {{item.points}}</span>
+
+              <paper-icon-button on-click="onEdit" icon="editor:mode-edit"></paper-icon-button>
+              <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
+            </div>
+          </div>
+        </template>
+      </iron-list>
+
+    </div>
+    
+    <paper-dialog id="editModal" modal on-iron-overlay-closed="onEditModalClose">
+      <h2>Edit career</h2>
+
+      <paper-input value="{{_editingItem.startYear}}" label="Start Year" type="number"></paper-input>
+      <paper-input value="{{_editingItem.endYear}}" label="End Year" type="number"></paper-input>
+      <paper-input value="{{_editingItem.team}}" label="Team"></paper-input>
+      <paper-input value="{{_editingItem.points}}" label="Points" type="number"></paper-input>
+
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>Close</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+
+  <script>
+  Polymer({
+    is: 'forge-demo-points-input',
+    behaviors: [ForgeBehaviors.ExtendedFieldArrayBehavior],
+    
+    listeners: {
+    },
+
+    onInput: function() {
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+    },
+    onChange: function() {
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+    },
+    
+    onAdd : function(){
+      if (!this.value){
+        this.value = [];
+      }
+      
+      var entry = {};
+      this._isNewEntry = true;
+      this.set('_editingItem', entry);
+      
+      this.$.editModal.open();
+    },
+    
+    onEdit: function(e){
+      this._isNewEntry = false;
+      this.set('_editingItem', e.model.item);
+      
+      this.$.editModal.open();
+    },
+    
+    onRemove: function(e) {
+      var entry = e.model.item;
+      var index = this.value.indexOf(entry);
+      this.splice('value', index, 1);
+      
+      this.onChange();
+    },
+    
+    onEditModalClose: function(e){
+      var entry = this._editingItem;
+      if (entry.startYear) entry.startYear = Number(entry.startYear);
+      if (entry.endYear) entry.endYear = Number(entry.endYear);
+      if (entry.points) entry.points = Number(entry.points);
+      
+      if (this._isNewEntry){
+        this.push('value', entry);
+      }
+      
+      this.onChange();
+    }
+  });
+  </script>
+
+</dom-module>
