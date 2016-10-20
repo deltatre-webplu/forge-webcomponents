@@ -1,70 +1,47 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-input/paper-input.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-list/iron-list.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-dialog/paper-dialog.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-input/paper-input.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/editor-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../forge-extended-field-array-behavior/forge-extended-field-array-behavior.html">
 
-<dom-module id="forge-demo-career-input">
+<dom-module id="forge-array-input">
   <template>
-    <style is="custom-style">
-      .list {
-        padding-left: 10px;
-      }
-      .title {
-        margin-bottom: 0;
-        margin-top: 0;
-      }
-      .details {
-        padding-left: 10px;
-      }
+    <style>
     </style>
 
     <!-- local DOM goes here -->
     <label>
      [[label]]
-      <paper-icon-button on-click="onAdd" icon="add-circle"></paper-icon-button>
     </label>
+
     <div class="list">
 
       <iron-list items="[[value]]">
         <template>
           <div>
-            <h5 class="title">{{item.team}}</h5>
-            <div class="details">
-              <span>From {{item.startYear}} to {{item.endYear}}</span>
-              <span>, goals {{item.goals}}</span>
-
-              <paper-icon-button on-click="onEdit" icon="editor:mode-edit"></paper-icon-button>
-              <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
-            </div>
+            <span>[[item]]</span>
+            <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
           </div>
         </template>
       </iron-list>
 
     </div>
 
-    <paper-dialog id="editModal" modal on-iron-overlay-closed="onEditModalClose">
-      <h2>Edit career</h2>
+    <paper-input value="{{inputValue}}"></paper-input>
 
-      <paper-input value="{{_editingItem.startYear}}" label="Start Year" type="number"></paper-input>
-      <paper-input value="{{_editingItem.endYear}}" label="End Year" type="number"></paper-input>
-      <paper-input value="{{_editingItem.team}}" label="Team"></paper-input>
-      <paper-input value="{{_editingItem.goals}}" label="Goals" type="number"></paper-input>
-
-      <div class="buttons">
-        <paper-button dialog-confirm autofocus>Close</paper-button>
-      </div>
-    </paper-dialog>
   </template>
 
   <script>
   Polymer({
-    is: 'forge-demo-career-input',
+    is: 'forge-array-input',
     behaviors: [ForgeBehaviors.ExtendedFieldArrayBehavior],
+
+    properties: {
+      inputValue: {
+        type: String
+      }
+    },
 
     listeners: {
     },
@@ -77,6 +54,7 @@
     },
 
     onAdd : function(){
+
       if (!this.value){
         this.value = [];
       }
@@ -86,6 +64,7 @@
       this.set('_editingItem', entry);
 
       this.$.editModal.open();
+
     },
 
     onEdit: function(e){
@@ -96,11 +75,13 @@
     },
 
     onRemove: function(e) {
+
       var entry = e.model.item;
       var index = this.value.indexOf(entry);
       this.splice('value', index, 1);
 
       this.onChange();
+
     },
 
     onEditModalClose: function(e){

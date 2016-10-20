@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script>
+      /*
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+      */
+    </script>
+    <link rel="import" href="forge-array-input.html">
+  </head>
+  <body>
+    <forge-array-input
+      value='["Gino", "Pilotino"]'
+      label="Array Input"
+      field-name="MyFieldName"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Array Input","localized":true}'>
+    </forge-array-input>
+    <script>
+      document.querySelector('forge-array-input').addEventListener('sendCommand', function (e) {
+        console.log('on sendCommand:', e.detail);
+      });
+      document.querySelector('forge-array-input').addEventListener('valueChanged', function (e) {
+        console.log('on change:', e.detail);
+      });
+    </script>
+  </body>
+</html>

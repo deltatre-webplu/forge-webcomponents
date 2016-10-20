@@ -1,0 +1,38 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+<link rel="import" href="./forge-chip.html">
+
+<dom-module id="forge-chips">
+
+  <template>
+    <style is="custom-style">
+    :host {
+      display: block;
+      padding: 8px;
+    }
+    </style>
+
+    <!-- local DOM goes here -->
+    <div class="list">
+
+      <template is="dom-repeat" items="{{list}}">
+        <forge-chip text="[[item]]"></forge-chip>
+      </template>
+
+    </div>
+
+  </template>
+
+  <script>
+  Polymer({
+    is: 'forge-chips',
+
+    properties: {
+      list: {
+        type: Array
+      }
+    }
+
+  });
+  </script>
+
+</dom-module>
