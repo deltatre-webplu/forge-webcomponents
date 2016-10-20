@@ -1,0 +1,93 @@
+<dom-module id="forge-image-area-selection-style">
+  <template>
+  <style>
+
+  .forge-image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .forge-image-area-container {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .selection-box {
+    position: absolute;
+    border: 1px dotted gray;
+    z-index: 1;
+  }
+  .anchor {
+    width: 5px;
+    height: 5px;
+    border: 1px solid #ccc;
+    position: absolute;
+    z-index: 2;
+  }
+  .anchor-lt {
+      cursor: nw-resize;
+      left: -8px;
+      top: -8px;
+  }
+  .anchor-t {
+      cursor: n-resize;
+      top: -8px;
+  }
+  .anchor-rt {
+      cursor: ne-resize;
+      right: -8px;
+      top: -8px;
+  }
+  .anchor-r {
+      cursor: e-resize;
+      right: -8px;
+  }
+  .anchor-rb {
+      cursor: se-resize;
+      right: -8px;
+      bottom: -8px;
+  }
+  .anchor-b {
+      cursor: s-resize;
+      bottom: -8px;
+  }
+  .anchor-lb {
+      cursor: sw-resize;
+      left: -8px;
+      bottom: -8px;
+  }
+  .anchor-l {
+      cursor: w-resize;
+      left: -8px;
+  }
+
+  .overlay {
+    position: absolute;
+    background-color: black;
+    opacity: 0.5;
+  }
+  .overlay-t {
+    top: 0; left: 0; right: 0;
+  }
+  .overlay-l {
+    left: 0;
+  }
+  .overlay-r {
+    right: 0;
+  }
+  .overlay-b {
+    bottom: 0; left: 0; right: 0;
+  }
+
+  .forge-image {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+
+
+  </style>
+</template>
+</dom-module>

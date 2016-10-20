@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="forge-image-area-selection.html">
+
+    <style>
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        display: flex;
+        flex-direction: row;
+        height: 100%;
+      }
+
+      .component-container {
+        flex: 1;
+      }
+
+    </style>
+
+  </head>
+  <body>
+
+    <div class="component-container">
+      <forge-image-area-selection src="http://i.imgur.com/LFtaLFv.jpg" selected-area='{"x":"100","y":"100","width":"880","height":"880"}'></forge-youtube-video-input>
+    </div>
+
+    <div class="component-container">some other content</div>
+
+    <div class="component-container">some other content 2</div>
+
+    <script>
+
+      document.querySelector('forge-image-area-selection').addEventListener('areaChanged', function (e) {
+        console.log('on areaChanged:', e.detail);
+      });
+
+    </script>
+  </body>
+</html>

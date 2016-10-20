@@ -1,0 +1,178 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="./forge-image-area-selection-style.html">
+
+<dom-module id="forge-image-area-selection">
+
+  <template>
+
+  <style is="custom-style" include="forge-image-area-selection-style"></style>
+
+  <div class="forge-image-container">
+    <div class="forge-image-area-container">
+
+      <img id="image" class="forge-image" src$="[[_imageSource]]"></img>
+
+      <div class="selection-box" style$="top:[[_resizedArea.box.top]]px; height:[[_resizedArea.box.height]]px; width:[[_resizedArea.box.width]]px; left:[[_resizedArea.box.left]]px;">
+        <div class="anchor anchor-lt"></div>
+        <div class="anchor anchor-t" style$="left:[[_resizedArea.anchor.left]]px;"></div>
+        <div class="anchor anchor-rt"></div>
+        <div class="anchor anchor-r" style$="top:[[_resizedArea.anchor.top]]px;"></div>
+        <div class="anchor anchor-rb"></div>
+        <div class="anchor anchor-b" style$="left:[[_resizedArea.anchor.left]]px;"></div>
+        <div class="anchor anchor-lb"></div>
+        <div class="anchor anchor-l" style$="top:[[_resizedArea.anchor.top]]px;"></div>
+      </div>
+
+      <div class="overlay overlay-t" style$="height:[[_resizedArea.top.height]]px;"></div>
+      <div class="overlay overlay-l" style$="top:[[_resizedArea.left.top]]px;  height:[[_resizedArea.left.height]]px;  width:[[_resizedArea.left.width]]px;"></div>
+      <div class="overlay overlay-r" style$="top:[[_resizedArea.right.top]]px; height:[[_resizedArea.right.height]]px; left:[[_resizedArea.right.left]]px;"></div>
+      <div class="overlay overlay-b" style$="top:[[_resizedArea.bottom.top]]px;"></div>
+
+    </div>
+  </div>
+
+</template>
+
+<script>
+
+function ResizedArea(area, imageSize, browserSize) {
+
+  var vertical_ratio = browserSize.height / imageSize.height;
+  var horizontal_ratio = browserSize.width / imageSize.width;
+  var reverse_vertical_ratio = 1 / vertical_ratio;
+  var reverse_horizontal_ratio = 1 / horizontal_ratio;
+
+  var x = Math.round(area.x * horizontal_ratio);
+  var y = Math.round(area.y * vertical_ratio);
+  var width = Math.round(area.width * horizontal_ratio);
+  var height = Math.round(area.height * vertical_ratio);
+
+  var anchorX = Math.round(width / 2);
+  var anchorY = Math.round(height / 2);
+
+  this.x = x;
+  this.y = y;
+  this.width = width;
+  this.height = height;
+
+  this.recalculate = function() {
+    this.box = { top: x, left: y, width: width - 1, height: height - 1 };
+    this.top = { height: y };
+    this.left = { top: y, height: height, width: x };
+    this.right = { top: y, height: height, left: x + width };
+    this.bottom = { top: y + height };
+    this.anchor = { left: anchorX, top: anchorY };
+  };
+
+  // returns the area scaled to the real image size
+  this.toNormalizedArea = function() {
+
+    return {
+      x: x * reverse_horizontal_ratio,
+      y: y * reverse_vertical_ratio,
+      width: width * reverse_horizontal_ratio,
+      height: height * reverse_vertical_ratio
+    };
+
+  };
+
+  this.recalculate();
+
+}
+
+var Util = {};
+Util.AreasEqual = function(area1, area2) {
+
+  if (area1 && area2) {
+    return (
+      area1.x === area2.x &&
+      area1.y === area2.y &&
+      area1.width === area2.width &&
+      area1.height === area2.height
+    );
+  }
+
+  return false;
+
+};
+
+Polymer({
+  is: 'forge-image-area-selection',
+
+  behaviors: [
+    Polymer.IronResizableBehavior
+  ],
+
+  properties: {
+    src: {
+      type: String,
+      observer: '_srcChanged'
+    },
+    selectedArea: {
+      type: Object,
+      observer: '_selectedAreaChanged'
+    }
+  },
+
+  listeners: {
+    'iron-resize': '_onIronResize'
+  },
+
+  _onIronResize: function() {
+
+  },
+
+  _srcChanged: function(newValue, oldValue) {
+
+    if (newValue === oldValue) return;
+
+    var newImg = new Image();
+    var _this = this;
+
+    newImg.onload = function() {
+      var height = newImg.height;
+      var width = newImg.width;
+      _this.set('_imageSize', {
+        width: newImg.width,
+        height: newImg.height
+      });
+      _this.set('_imageSource', newValue);
+      _this._recalcAndResizeArea();
+    };
+
+    newImg.src = newValue;
+
+  },
+
+  _selectedAreaChanged: function(newValue, oldValue) {
+
+    if (Util.AreasEqual(newValue, oldValue)) return;
+    this.set('_imageArea', newValue);
+    this._recalcAndResizeArea();
+  },
+
+  _recalcAndResizeArea: function() {
+
+    var area = this.get('_imageArea');
+    var imageSize = this.get('_imageSize');
+
+    if (imageSize && area) {
+
+      var browserSize = {
+        width: this.$.image.offsetWidth,
+        height: this.$.image.offsetHeight
+      };
+
+      var resizedArea = new ResizedArea(area, imageSize, browserSize);
+      this.set('_resizedArea', resizedArea);
+      console.log(resizedArea);
+
+    }
+
+  }
+
+});
+</script>
+
+</dom-module>
