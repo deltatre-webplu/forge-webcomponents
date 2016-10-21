@@ -1,5 +1,6 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
 
 <dom-module id="forge-chip">
 
@@ -7,40 +8,24 @@
     <style>
     :host {
       display: inline-block;
-      background-color: lightgray;
-      border-radius: 16px;
-      height: 32px;
-      line-height: 32px;
-      white-space: nowrap;
-      font-size: 13px;
+			background-color: var(--forge-chip-background, --paper-grey-300);
+			height: 32px;
+			line-height: 32px!important;
+			padding: 0 4px 0 12px;
+			border-radius: 16px;
+			color: var(--forge-chip-color, --primary-text-color);
+			font-size: 13px!important;
+			@apply(--paper-font-body1);
     }
-
-    span {
-      margin-left: 12px;
-    }
-
-    iron-icon {
-      margin: 0 4px;
-    }
-
     </style>
 
-    <!-- local DOM goes here -->
-    <span>[[text]]</span>
-    <iron-icon icon="icons:cancel"></iron-icon>
+    <content></content>
 
   </template>
 
   <script>
   Polymer({
-    is: 'forge-chip',
-
-    properties: {
-      text: {
-        type: String
-      }
-    }
-
+    is: 'forge-chip'
   });
   </script>
 

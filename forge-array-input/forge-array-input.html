@@ -2,33 +2,17 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-list/iron-list.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-input/paper-input.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-label/iron-label.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../forge-extended-field-array-behavior/forge-extended-field-array-behavior.html">
+<link rel="import" href="../forge-chips/forge-chips.html">
+<link rel="import" href="../shared/style.html">
 
 <dom-module id="forge-array-input">
   <template>
-    <style>
-    </style>
 
-    <!-- local DOM goes here -->
-    <label>
-     [[label]]
-    </label>
-
-    <div class="list">
-
-      <iron-list items="[[value]]">
-        <template>
-          <div>
-            <span>[[item]]</span>
-            <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
-          </div>
-        </template>
-      </iron-list>
-
-    </div>
-
-    <paper-input value="{{inputValue}}"></paper-input>
+    <paper-input placeholder="[[placeholder]]" label="[[label]]" on-keypress="_keyPressed" value="{{inputValue}}"></paper-input>
+    <forge-chips list="[[value]]"></forge-chips>
 
   </template>
 
@@ -38,63 +22,37 @@
     behaviors: [ForgeBehaviors.ExtendedFieldArrayBehavior],
 
     properties: {
+      placeholder: {
+        type: String,
+        value: ' '
+      },
       inputValue: {
         type: String
       }
     },
 
     listeners: {
+      'chip-removed': 'onChipRemoved'
     },
 
-    onInput: function() {
-      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+    onChipRemoved: function(e) {
+      this.splice('value', e.detail, 1);
+      this.onChange();
     },
+
     onChange: function() {
       this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
     },
 
-    onAdd : function(){
-
-      if (!this.value){
-        this.value = [];
+    _keyPressed: function(e) {
+      if (13 === e.charCode && this.inputValue && this.inputValue.length > 0) {
+        if (!this.value){
+          this.value = [];
+        }
+        this.push('value', this.inputValue + '');
+        this.inputValue = '';
+        this.onChange();
       }
-
-      var entry = {};
-      this._isNewEntry = true;
-      this.set('_editingItem', entry);
-
-      this.$.editModal.open();
-
-    },
-
-    onEdit: function(e){
-      this._isNewEntry = false;
-      this.set('_editingItem', e.model.item);
-
-      this.$.editModal.open();
-    },
-
-    onRemove: function(e) {
-
-      var entry = e.model.item;
-      var index = this.value.indexOf(entry);
-      this.splice('value', index, 1);
-
-      this.onChange();
-
-    },
-
-    onEditModalClose: function(e){
-      var entry = this._editingItem;
-      if (entry.startYear) entry.startYear = Number(entry.startYear);
-      if (entry.endYear) entry.endYear = Number(entry.endYear);
-      if (entry.goals) entry.goals = Number(entry.goals);
-
-      if (this._isNewEntry){
-        this.push('value', entry);
-      }
-
-      this.onChange();
     }
   });
   </script>
