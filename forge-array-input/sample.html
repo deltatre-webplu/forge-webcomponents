@@ -11,20 +11,37 @@
     <link rel="import" href="forge-array-input.html">
   </head>
   <body>
+
+    <h2>Simple String Array Input</h2>
     <forge-array-input
-      value='["Gino", "Pilotino"]'
+      value='["Homer", "Bart"]'
       label="Array Input"
       field-name="MyFieldName"
       entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
-      schema='{"type":"array","title":"Array Input","localized":true}'>
+      schema='{"type":"array","title":"Array Input", "items" : { "type": "string" }}'>
+    </forge-array-input>
+
+    <h2>Enum Array Input</h2>
+    <forge-array-input
+      value='["Gino", "Pilotino"]'
+      label="Enum Array Input"
+      field-name="MyFieldName"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Enum Array Input", "items" : { "type": "string", "enum": ["Gino", "Pinotino", "Fagottino", "Giacomino"] }}'>
     </forge-array-input>
     <script>
-      document.querySelector('forge-array-input').addEventListener('sendCommand', function (e) {
-        console.log('on sendCommand:', e.detail);
+      var elements = document.querySelectorAll('forge-array-input');
+
+      elements.forEach(function(element) {
+
+        element.addEventListener('sendCommand', function (e) {
+          console.log('on sendCommand:', e.detail);
+        });
+        element.addEventListener('valueChanged', function (e) {
+          console.log('on change:', e.detail);
+        });
       });
-      document.querySelector('forge-array-input').addEventListener('valueChanged', function (e) {
-        console.log('on change:', e.detail);
-      });
+
     </script>
   </body>
 </html>

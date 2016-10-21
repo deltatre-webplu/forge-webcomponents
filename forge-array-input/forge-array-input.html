@@ -6,12 +6,18 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../forge-extended-field-array-behavior/forge-extended-field-array-behavior.html">
 <link rel="import" href="../forge-chips/forge-chips.html">
+<link rel="import" href="../paper-typeahead-input/paper-typeahead-input.html">
 <link rel="import" href="../shared/style.html">
 
 <dom-module id="forge-array-input">
   <template>
 
-    <paper-input placeholder="[[placeholder]]" label="[[label]]" on-keypress="_keyPressed" value="{{inputValue}}"></paper-input>
+    <template is="dom-if" if="[[ !schema.items.enum ]]">
+      <paper-input placeholder="[[placeholder]]" label="[[label]]" on-keypress="_keyPressed" value="{{inputValue}}"></paper-input>
+    </template>
+    <template is="dom-if" if="[[ schema.items.enum ]]">
+      <paper-typeahead-input local-candidates="{{schema.items.enum}}" placeholder="[[placeholder]]" max-suggestions="4" input-value={{inputValue}}></paper-typeahead-input>
+    </template>
     <forge-chips list="[[value]]"></forge-chips>
 
   </template>
@@ -32,12 +38,17 @@
     },
 
     listeners: {
-      'chip-removed': 'onChipRemoved'
+      'chip-removed': 'onChipRemoved',
+      'pt-item-confirmed': 'onAutocompleteItemConfirmed'
     },
 
     onChipRemoved: function(e) {
       this.splice('value', e.detail, 1);
       this.onChange();
+    },
+
+    onAutocompleteItemConfirmed: function(e) {
+      this._inputValueChanged();
     },
 
     onChange: function() {
@@ -46,13 +57,17 @@
 
     _keyPressed: function(e) {
       if (13 === e.charCode && this.inputValue && this.inputValue.length > 0) {
-        if (!this.value){
-          this.value = [];
-        }
-        this.push('value', this.inputValue + '');
-        this.inputValue = '';
-        this.onChange();
+        this._inputValueChanged();
       }
+    },
+
+    _inputValueChanged() {
+      if (!this.value){
+        this.value = [];
+      }
+      this.push('value', this.inputValue + '');
+      this.inputValue = '';
+      this.onChange();
     }
   });
   </script>
