@@ -78,9 +78,6 @@ paper-item{
 </style>
 
 <template>
-  <template is="dom-if" if="{{label}}">
-    <h3>{{label}}</h3>
-  </template>
   <template is="dom-if" if="{{prefetchUrl}}">
     <iron-ajax
     auto
@@ -92,7 +89,12 @@ paper-item{
 
   <div style="position:relative;">
     <p class$="typeahead {{_getTypeaheadClasses(noLabelFloat)}}">{{_getTypeaheadDisplay(_typeahead)}}</p>
-    <paper-input value="{{inputValue}}" on-keyup="_keyup" on-keydown="_keydown"  label="{{placeholder}}"
+    <paper-input
+    value="{{inputValue}}"
+    on-keyup="_keyup"
+    on-keydown="_keydown"
+    placeholder="{{placeholder}}"
+    label="{{label}}"
     always-float-label="{{alwaysFloatLabel}}"
     autofocus="{{autofocus}}"
     char-counter="{{charCounter}}"

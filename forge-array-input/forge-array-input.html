@@ -13,10 +13,19 @@
   <template>
 
     <template is="dom-if" if="[[ !schema.items.enum ]]">
-      <paper-input placeholder="[[placeholder]]" label="[[label]]" on-keypress="_keyPressed" value="{{inputValue}}"></paper-input>
+      <paper-input
+        placeholder="[[placeholder]]"
+        label="[[label]]"
+        on-keypress="_keyPressed"
+        value="{{inputValue}}"></paper-input>
     </template>
     <template is="dom-if" if="[[ schema.items.enum ]]">
-      <paper-typeahead-input local-candidates="{{schema.items.enum}}" placeholder="[[placeholder]]" max-suggestions="4" input-value={{inputValue}}></paper-typeahead-input>
+      <paper-typeahead-input
+        label="[[label]]"
+        placeholder="[[placeholder]]"
+        local-candidates="{{_computeAllowedValues(schema, value.*)}}"
+        max-suggestions="4"
+        input-value={{inputValue}}></paper-typeahead-input>
     </template>
     <forge-chips list="[[value]]"></forge-chips>
 
@@ -40,6 +49,19 @@
     listeners: {
       'chip-removed': 'onChipRemoved',
       'pt-item-confirmed': 'onAutocompleteItemConfirmed'
+    },
+
+    _computeAllowedValues: function(schema, value) {
+
+      var insertedValues = value.base || [];
+      var allValues = schema.items.enum || [];
+
+      var result = allValues.filter(function(v) {
+        return insertedValues.indexOf(v) < 0;
+      });
+
+      return result;
+
     },
 
     onChipRemoved: function(e) {
@@ -69,6 +91,7 @@
       this.inputValue = '';
       this.onChange();
     }
+
   });
   </script>
 

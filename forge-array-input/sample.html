@@ -27,9 +27,11 @@
       label="Enum Array Input"
       field-name="MyFieldName"
       entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
-      schema='{"type":"array","title":"Enum Array Input", "items" : { "type": "string", "enum": ["Gino", "Pinotino", "Fagottino", "Giacomino"] }}'>
+      schema='{"type":"array","title":"Enum Array Input", "items" : { "type": "string", "enum": ["Gino", "Pilotino", "Paolino", "Paperino", "Giacomino"] }}'>
     </forge-array-input>
+
     <script>
+
       var elements = document.querySelectorAll('forge-array-input');
 
       elements.forEach(function(element) {
@@ -40,6 +42,7 @@
         element.addEventListener('valueChanged', function (e) {
           console.log('on change:', e.detail);
         });
+
       });
 
     </script>
