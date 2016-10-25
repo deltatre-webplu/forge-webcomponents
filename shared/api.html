@@ -1,0 +1,69 @@
+<script src="../node_modules/q/q.js"></script>
+<script src="../node_modules/timed-cache/dist/cache.min.js"></script>
+
+<script>
+(function() {
+
+  var cache = new Cache({ defaultTtl: 10 * 1000 });
+
+  window.Forge = window.Forge || {};
+  window.Forge.Api = {
+
+    HeartBeats: function() {
+      return dnoaXhr('/api/heartbeats');
+    }
+
+  };
+
+  function dnoaXhr(path) {
+
+    var response = cache.get(path);
+
+    if (response == null) {
+
+      response = Q.defer();
+      cache.put(path, response, { ttl: 5 * 1000 });
+      performRequestMock(path, response);
+
+    }
+
+    return response.promise;
+
+  }
+
+  function performRequest(path, response) {
+
+    var request = new XMLHttpRequest(); // ActiveX blah blah
+    request.open("GET", path, true);
+    //request.timeout = something;
+    request.onreadystatechange = function () {
+      if (request.readyState === 4) {
+        if (request.status === 200) {
+          response.resolve(request.responseText);
+        } else {
+          response.reject("HTTP " + request.status + " for " + path);
+        }
+      }
+    };
+    request.send(null);
+
+  }
+
+  function performRequestMock(path, response) {
+
+    console.log('performRequestMock');
+
+    setTimeout(function() {
+      var result = [
+        {"Key":"DistributionApi","Status":0,"Nodes":[{"NodeId":"DistributionApi-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"DistributionApi","Status":0}]},
+        {"Key":"BackEnd","Status":0,"Nodes":[{"NodeId":"BackOffice-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"BackEnd","Status":0}]},
+        {"Key":"ApplicationService","Status":0,"Nodes":[{"NodeId":"WinService-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"ApplicationService","Status":0}]},
+        {"Key":"FrontEnd","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]}
+      ];
+      response.resolve(result);
+    }, 2000);
+
+  }
+
+})();
+</script>

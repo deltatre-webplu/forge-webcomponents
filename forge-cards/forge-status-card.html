@@ -1,0 +1,92 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/social-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/device-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-material/paper-material.html">
+<link rel="import" href="../forge-api-behavior/forge-api-behavior.html">
+<link rel="import" href="../shared/api.html">
+
+<dom-module id="forge-status-card">
+
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+
+  <template>
+
+    <paper-material elevation="1">
+      <iron-icon icon="[[icon]]"></iron-icon>
+      <h2>[[role]]</h2>
+
+    </paper-material>
+
+  </template>
+
+  <script>
+  (function() {
+
+    var validRoles = {
+      ApplicationService: {
+        icon: "icons:settings"
+      },
+      BackEnd: {
+        icon: "device:storage"
+      },
+      FrontEnd: {
+        icon: "social:public"
+      },
+      DistributionApi: {
+        icon: "icons:cloud-circle"
+      }
+    };
+
+    Polymer({
+      is: 'forge-status-card',
+      behaviors: [ForgeBehaviors.ApiBehavior],
+      properties: {
+        role: {
+          type: String,
+          default: 'ApplicationService',
+          observer: '_enumRole'
+        },
+        icon: {
+          type: String,
+          readOnly: true
+        },
+        status: {
+          type: String,
+          readOnly: true
+        }
+      },
+      ready: function() {
+        var _this = this;
+        setTimeout(function() {
+          Forge.Api.HeartBeats().then(function(result) {
+
+          });
+        }, 2000);
+      },
+      _enumRole: function(newValue, oldValue) {
+
+        var newRole = validRoles[newValue];
+
+        if (!newRole) {
+          this.role = oldValue;
+          newRole =  validRoles[oldValue];
+        }
+
+        console.log(newRole);
+
+        this._setIcon(newRole.icon);
+
+      }
+    });
+
+  })();
+  </script>
+
+</dom-module>

@@ -17,6 +17,7 @@
   "homepage": "https://github.com/deltatre-webplu/forge-webcomponents#readme",
   "dependencies": {
     "node-uuid": "^1.4.7",
-    "q": "^1.4.1"
+    "q": "^1.4.1",
+    "timed-cache": "^1.0.5"
   }
 }
