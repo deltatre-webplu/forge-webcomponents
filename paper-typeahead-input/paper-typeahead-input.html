@@ -72,10 +72,6 @@ paper-item{
   top:28px;
   margin: 0;
 }
-.typeahead-without-label{
-  position:absolute;
-  top:-8px;
-}
 </style>
 
 <template>
@@ -89,7 +85,7 @@ paper-item{
   </template>
 
   <div style="position:relative;">
-    <div class$="typeahead {{_getTypeaheadClasses(noLabelFloat)}}">{{_getTypeaheadDisplay(_typeahead)}}</div>
+    <div class$="typeahead typeahead-with-label">{{_getTypeaheadDisplay(_typeahead)}}</div>
     <paper-input
     value="{{inputValue}}"
     on-keyup="_keyup"
@@ -377,12 +373,6 @@ Polymer({
       return input.substring(0,1) + _typeahead.substring(1);
     }
     return "";
-  },
-  _getTypeaheadClasses:function(noLabelFloat){
-    if (noLabelFloat && typeof(noLabelFloat) != 'undefined' && noLabelFloat == true) {
-      return "typeahead-without-label";
-    }
-    return "typeahead-with-label";
   },
   _itemSelect:function(e, detail){
     this.fire('pt-item-select',detail);
