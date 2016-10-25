@@ -1,4 +1,5 @@
 # Others
+.bin/
 sql/
 *.Cache
 ClientBin/

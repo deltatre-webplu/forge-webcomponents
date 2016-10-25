@@ -1,0 +1,24 @@
+<script src="../node_modules/q/q.js"></script>
+<script src="../node_modules/node-uuid/uuid.js"></script>
+
+<script>
+(function() {
+
+  var instances = [];
+
+  window.ForgeBehaviors = window.ForgeBehaviors || {};
+  ForgeBehaviors.ApiBehavior = {
+
+    guid: uuid.v4(),
+
+    attached: function() {
+      instances.push(this);
+    },
+    detached: function() {
+      this.arrayDelete(instances, this);
+    }
+
+  };
+
+})();
+</script>
