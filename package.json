@@ -1,0 +1,18 @@
+{
+  "name": "forge-webcomponents",
+  "version": "1.2.0",
+  "description": "A suite of pre-defined WebComponents for Forge",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deltatre-webplu/forge-webcomponents.git"
+  },
+  "author": "WebPLU",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/deltatre-webplu/forge-webcomponents/issues"
+  },
+  "homepage": "https://github.com/deltatre-webplu/forge-webcomponents#readme"
+}
