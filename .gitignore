@@ -1,5 +1,5 @@
 # Others
-.bin/
+node_modules/
 bower/
 sql/
 *.Cache
