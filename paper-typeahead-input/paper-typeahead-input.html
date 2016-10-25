@@ -69,7 +69,7 @@ paper-item{
 }
 .typeahead-with-label{
   position:absolute;
-  top:12px;
+  top:28px;
   margin: 0;
 }
 .typeahead-without-label{
@@ -89,7 +89,7 @@ paper-item{
   </template>
 
   <div style="position:relative;">
-    <p class$="typeahead {{_getTypeaheadClasses(noLabelFloat)}}">{{_getTypeaheadDisplay(_typeahead)}}</p>
+    <div class$="typeahead {{_getTypeaheadClasses(noLabelFloat)}}">{{_getTypeaheadDisplay(_typeahead)}}</div>
     <paper-input
     value="{{inputValue}}"
     on-keyup="_keyup"
