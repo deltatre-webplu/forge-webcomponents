@@ -1,121 +1,127 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/social-icons.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/device-icons.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-material/paper-material.html">
-<link rel="import" href="../forge-api-behavior/forge-api-behavior.html">
+
+
+<link rel="import" href="../forge-api-behavior/forge-heartbeats-polling-behavior.html">
+<link rel="import" href="../libraries/libraries.html">
 <link rel="import" href="../shared/api.html">
+<link rel="import" href="../shared/style.html">
 
 <dom-module id="forge-status-card">
 
-  <style>
-    :host {
-      display: block;
+<style>
+:host {
+  display: block;
+}
+
+.status-card {
+  padding: 8px;
+}
+
+.status-0 {
+  background-color: var(--status-green-color);
+}
+.status-1 {
+  background-color: var(--status-red-color)
+}
+.status-2 {
+  background-color: var(--status-yellow-color);
+}
+
+.role-icon {
+  --iron-icon-height: 96px;
+  --iron-icon-width: 96px;
+  --iron-icon-fill-color: white;
+}
+
+.role-name {
+  @apply(--paper-font-title);
+  text-align: right;
+  color: white;
+}
+
+</style>
+
+<template>
+
+  <paper-material elevation="1" class$="status-card status-[[status]]">
+    <iron-icon class="role-icon" icon="[[icon]]"></iron-icon>
+    <div class="role-name">[[role]]</div>
+  </paper-material>
+
+</template>
+
+<script>
+(function() {
+
+  "use strict";
+
+  var validRoles = {
+    ApplicationService: {
+      icon: "icons:settings"
+    },
+    BackEnd: {
+      icon: "device:storage"
+    },
+    FrontEnd: {
+      icon: "social:public"
+    },
+    DistributionApi: {
+      icon: "icons:cloud-circle"
     }
-    .success {
-      background-color: var(--paper-green-a200);
-    }
-    .failure {
-      background-color: var(--paper-red-a200)
-    }
-    .warning {
-      background-color: var(--paper-yellow-a200);
-    }
-  </style>
+  };
 
-  <template>
-
-    <paper-material elevation="1" class$="{{getStatusColor(role)}}">
-      <iron-icon icon="[[icon]]"></iron-icon>
-      <h2>[[role]]</h2>
-
-    </paper-material>
-
-  </template>
-
-  <script>
-  (function() {
-
-    var validRoles = {
-      ApplicationService: {
-        icon: "icons:settings"
+  Polymer({
+    is: 'forge-status-card',
+    behaviors: [ForgeBehaviors.HeartbeatsPollingBehavior],
+    properties: {
+      role: {
+        type: String,
+        value: 'ApplicationService',
+        observer: '_enumRole'
       },
-      BackEnd: {
-        icon: "device:storage"
+      icon: {
+        type: String,
+        readOnly: true
       },
-      FrontEnd: {
-        icon: "social:public"
-      },
-      DistributionApi: {
-        icon: "icons:cloud-circle"
+      status: {
+        type: Number,
+        value: 0,
+        readOnly: true
       }
-    };
-
-    Polymer({
-      is: 'forge-status-card',
-      behaviors: [ForgeBehaviors.ApiBehavior],
-      properties: {
-        role: {
-          type: String,
-          default: 'ApplicationService',
-          observer: '_enumRole'
-        },
-        icon: {
-          type: String,
-          readOnly: true
-        },
-        status: {
-          type: String,
-          readOnly: true
-        }
-      },
-      ready: function() {
-        var _this = this;
-        setTimeout(function() {
-          Forge.Api.HeartBeats().then(function(result) {
-            
-          });
-        }, 2000);
-      },
-      _enumRole: function(newValue, oldValue) {
-
-        var newRole = validRoles[newValue];
-
-        if (!newRole) {
-          this.role = oldValue;
-          newRole =  validRoles[oldValue];
-        }
-
-        console.log(newRole);
-
-        this._setIcon(newRole.icon);
-
-      },
-      getStatusColor: function(status) {
-
-        switch (status) {
-          case '0':
-          return 'success';
-          break;
-          case '1':
-          return 'failure';
-          break;
-          case '2':
-          return 'warning';
-          break;
-          default:
-          return 'failure';
-          break;
-        }
-        // this.updateStyles();
+    },
+    onHeartbeat: function(result) {
+      var self = this;
+      var current = result.find(function(r) {
+        return r.Key === self.role;
+      });
+      if (current) {
+        self._setStatus(current.Status);
       }
-    });
+    },
+    _enumRole: function(newValue, oldValue) {
 
-  })();
-  </script>
+      var newRole = validRoles[newValue];
+
+      if (!newRole) {
+        this.role = oldValue;
+        newRole =  validRoles[oldValue];
+      }
+
+      this._setIcon(newRole.icon);
+
+    }
+  });
+
+})();
+</script>
 
 </dom-module>

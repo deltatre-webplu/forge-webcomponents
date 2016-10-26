@@ -1,0 +1,55 @@
+<link rel="import" href="../libraries/libraries.html">
+<link rel="import" href="../shared/api.html">
+
+<script>
+(function() {
+
+  var instances = [];
+
+  var _pollingHeartbeats = false;
+
+  function callHeartbeats() {
+
+    if (instances.length < 1) return;
+
+    var start = +new Date();
+
+    Forge.Api.HeartBeats().then(function(result) {
+
+      instances.forEach(function(i) {
+        i.onHeartbeat(result);
+      });
+      var end = +new Date();
+      var timeout = 5000 - (end - start);
+      setTimeout(callHeartbeats, Math.min(timeout, 0));
+      
+    });
+
+  }
+
+  window.ForgeBehaviors = window.ForgeBehaviors || {};
+
+  ForgeBehaviors.HeartbeatsPollingBehavior = {
+
+    guid: uuid.v4(),
+
+    detached: function() {
+      this.arrayDelete(instances, this);
+    },
+    ready: function() {
+      instances.push(this);
+      this.pollHeartbeats();
+    },
+    pollHeartbeats: function() {
+      if (_pollingHeartbeats) return;
+      _pollingHeartbeats = true;
+      callHeartbeats();
+    },
+    onHeartbeat: function() {
+      throw new Error('onHeartbeat not properly overridden');
+    }
+
+  };
+
+})();
+</script>

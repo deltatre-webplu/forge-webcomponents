@@ -1,0 +1,66 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/social-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/device-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-material/paper-material.html">
+<link rel="import" href="../forge-api-behavior/forge-api-behavior.html">
+<link rel="import" href="../libraries/libraries.html">
+<link rel="import" href="../shared/api.html">
+
+<dom-module id="forge-nodes-status-card">
+
+  <style>
+    :host {
+      display: block;
+    }
+  </style>
+
+  <template>
+
+    <paper-material elevation="1">
+
+    </paper-material>
+
+  </template>
+
+  <script>
+  (function() {
+
+    "use strict";
+
+    Polymer({
+      is: 'forge-nodes-status-card',
+      behaviors: [ForgeBehaviors.ApiBehavior],
+      properties: {
+      },
+      ready: function() {
+        var self = this;
+        Forge.Api.HeartBeats().then(function(result) {
+          var current = result.find(function(r) { return r.Key === self.role; });
+          if (current) {
+            self._setStatus(current.Status);
+          }
+        });
+      },
+      _enumRole: function(newValue, oldValue) {
+
+        var newRole = validRoles[newValue];
+
+        if (!newRole) {
+          this.role = oldValue;
+          newRole =  validRoles[oldValue];
+        }
+
+        this._setIcon(newRole.icon);
+
+      }
+    });
+
+  })();
+  </script>
+
+</dom-module>
