@@ -21,8 +21,9 @@
       });
       var end = +new Date();
       var timeout = 5000 - (end - start);
-      setTimeout(callHeartbeats, Math.min(timeout, 0));
-      
+      console.log(timeout);
+      setTimeout(callHeartbeats, Math.max(timeout, 0));
+
     });
 
   }
@@ -46,7 +47,7 @@
       callHeartbeats();
     },
     onHeartbeat: function() {
-      throw new Error('onHeartbeat not properly overridden');
+      console.error("onHeartbeat not properly overridden");
     }
 
   };

@@ -7,13 +7,11 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/device-icons.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
 
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-material/paper-material.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 
-
-<link rel="import" href="../forge-api-behavior/forge-heartbeats-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
 <link rel="import" href="../libraries/libraries.html">
 <link rel="import" href="../shared/api.html">
-<link rel="import" href="../shared/style.html">
 
 <dom-module id="forge-status-card">
 
@@ -23,7 +21,7 @@
 }
 
 .status-card {
-  padding: 8px;
+  display: block;
 }
 
 .status-0 {
@@ -52,10 +50,12 @@
 
 <template>
 
-  <paper-material elevation="1" class$="status-card status-[[status]]">
-    <iron-icon class="role-icon" icon="[[icon]]"></iron-icon>
-    <div class="role-name">[[role]]</div>
-  </paper-material>
+  <paper-card class$="status-card status-[[status]]">
+    <div class="card-content">
+      <iron-icon class="role-icon" icon="[[icon]]"></iron-icon>
+      <div class="role-name">[[role]]</div>
+    </div>
+  </paper-card>
 
 </template>
 
@@ -94,7 +94,7 @@
       },
       status: {
         type: Number,
-        value: 0,
+        value: 3,
         readOnly: true
       }
     },

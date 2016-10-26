@@ -1,108 +1,131 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-icon-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/social-icons.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/device-icons.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
 
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-material/paper-material.html">
-<link rel="import" href="../forge-api-behavior/forge-heartbeats-polling-behavior.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-collapse/iron-collapse.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+
 <link rel="import" href="../libraries/libraries.html">
 <link rel="import" href="../shared/api.html">
 
+<link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
+
 <dom-module id="forge-nodes-status-card">
 
-  <style>
-    :host {
-      display: block;
+<style>
+:root {
+
+  --paper-item-focused-before: {
+    background-color: transparent;
+  }
+
+}
+
+:host {
+  display: block;
+}
+
+.nodes-status-card {
+  display: block;
+}
+
+.status {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--google-grey-300);
+}
+
+.status-0 {
+  background: var(--status-green-color);
+}
+.status-1 {
+  background: var(--status-red-color)
+}
+.status-2 {
+  background: var(--status-yellow-color);
+}
+
+</style>
+
+<template>
+
+  <paper-card class="nodes-status-card" heading="Nodes">
+
+    <div class="card-content">
+
+      <template is="dom-repeat" items="{{groups}}">
+        <paper-icon-item>
+          <div class$="status status-[[item.Status]]" item-icon></div>
+          <paper-item-body class="group-title">[[item.Key]]</paper-item-body>
+          <paper-icon-button icon="expand-more" alt="expand" on-click="toggle"></paper-icon-button>
+        </paper-icon-item>
+        <iron-collapse id$="collapse-[[item.Key]]">
+          <template is="dom-repeat" items="{{item.Nodes}}">
+            <paper-icon-item>
+              <div class$="status status-[[item.Status]]" item-icon></div>
+              <paper-item-body>[[item.NodeId]]</paper-item-body>
+            </paper-icon-item>
+          </template>
+        </iron-collapse>
+      </template>
+
+    </div>
+
+    <div class="card-actions">
+      <paper-button on-click="restore">reset</paper-button>
+    </div>
+
+  </paper-card>
+
+</template>
+
+<script>
+(function() {
+  // icon: "icons:report-problem"
+  // icon: "icons:check-circle"
+  "use strict";
+
+  Polymer({
+    is: 'forge-nodes-status-card',
+    behaviors: [ForgeBehaviors.HeartbeatsPollingBehavior],
+    properties: {
+      groups: {
+        type: Array,
+        notify: true,
+        value: []
+      }
+    },
+    onHeartbeat: function(result) {
+      this.groups = result;
+    },
+    toggle: function(e) {
+      var collapse = this.$$("#collapse-" + e.model.item.Key);
+      collapse.toggle();
+    },
+    restore: function() {
+      for (var i = 0; i < this.groups.length; i++) {
+        this.set("groups." + i + ".Status", 3);
+        this.set("groups." + i + ".Nodes", []);
+      }
+      //this.groups = JSON.parse(JSON.stringify(this.groups));
     }
+  });
 
-    .status-0 {
-      color: var(--status-green-color);
-    }
-    .status-1 {
-      color: var(--status-red-color)
-    }
-    .status-2 {
-      color: var(--status-yellow-color);
-    }
-  </style>
-
-  <template>
-    <paper-card>
-      <paper-material elevation="1">
-        <iron-icon class="status-[[status]]" icon="[[icon]]"></iron-icon>
-        <div></div>
-      </paper-material>
-      <paper-material elevation="1">
-        <iron-icon class="status-[[status]]" icon="[[icon]]"></iron-icon>
-        <div></div>
-      </paper-material>
-      <paper-material elevation="1">
-        <iron-icon class="role-[[status]]" icon="[[icon]]"></iron-icon>
-        <div></div>
-      </paper-material>
-      <paper-material elevation="1">
-        <iron-icon class="role-[[status]]" icon="[[icon]]"></iron-icon>
-        <div></div>
-      </paper-material>
-    </paper-card>
-  </template>
-
-  <script>
-  (function() {
-// icon: "icons:report-problem"
-// icon: "icons:check-circle"
-    "use strict";
-    var validRoles = ["ApplicationService","BackEnd","FrontEnd","DistributionApi"]
-
-    Polymer({
-      is: 'forge-nodes-status-card',
-      behaviors: [ForgeBehaviors.HeartbeatsPollingBehavior],
-      properties: {
-        role: {
-          type: String,
-          default:"ApplicationService",
-          readOnly:true
-        },
-        icon: {
-          type: String,
-          default:"icons:check-circle"
-        },
-        status: {
-          type: Number,
-          default:0
-        },
-        nodes:{
-          type: Array
-        }
-      },
-      ready: function() {
-        var self = this;
-        console.log(self);
-        Forge.Api.HeartBeats().then(function(result) {
-          var current = result.find(function(r) { return r.Key === self.role; });
-          if (current) {
-            self._setStatus(current.Status);
-          }
-        });
-      },
-      // _enumRole: function(newValue, oldValue) {
-      //
-      //   var newRole = validRoles[newValue];
-      //
-      //   if (!newRole) {
-      //     this.role = oldValue;
-      //     newRole =  validRoles[oldValue];
-      //   }
-      //
-      //   this._setIcon(newRole.icon);
-      //
-      // }
-    });
-
-  })();
-  </script>
+})();
+</script>
 
 </dom-module>
