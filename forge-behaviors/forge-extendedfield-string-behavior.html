@@ -19,9 +19,15 @@
       },
       schema: {
         type: Object
+      },
+      disabled: {
+        type: Boolean,
+        value: false
       }
     },
     triggerSendCommand: function() {
+
+      if (this.disabled) return;
 
       const entity = {
         aggregateId: this.entity.entityId,
@@ -51,7 +57,7 @@
 
     },
     triggerOnValueChanged: function() {
-      if (this._lastKnownValue === this.value) return;
+      if (this.disabled || (this._lastKnownValue === this.value)) return;
       this._lastKnownValue = this.value;
       this.fire('valueChanged', this.value);
     }

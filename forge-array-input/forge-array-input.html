@@ -24,6 +24,7 @@
     <template is="dom-if" if="[[ !schema.items.enum ]]">
       <paper-input
         placeholder="[[placeholder]]"
+        disabled=[[disabled]]
         label="[[label]]"
         on-keypress="_keyPressed"
         value="{{inputValue}}"></paper-input>
@@ -31,11 +32,12 @@
     <template is="dom-if" if="[[ schema.items.enum ]]">
       <paper-typeahead-input
         label="[[label]]"
+        disabled=[[disabled]]
         placeholder="[[placeholder]]"
         local-candidates="{{_computeAllowedValues(schema, value.*)}}"
         input-value={{inputValue}}></paper-typeahead-input>
     </template>
-    <forge-chips list="[[value]]"></forge-chips>
+    <forge-chips list="[[value]]" disabled=[[disabled]]></forge-chips>
 
   </template>
 

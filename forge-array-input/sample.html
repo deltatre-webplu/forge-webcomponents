@@ -31,6 +31,26 @@
       schema='{"type":"array","title":"Enum Array Input", "items" : { "type": "string", "enum": ["Gino", "Pilotino", "Paolino", "Paperino", "Giacomino"] }}'>
     </forge-array-input>
 
+    <h2>Simple String Array Input Disabled</h2>
+    <forge-array-input
+      value='["Homer", "Bart"]'
+      disabled="true"
+      label="Array Input"
+      field-name="MyFieldName"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Array Input", "items" : { "type": "string" }}'>
+    </forge-array-input>
+
+    <h2>Enum Array Input Disabled</h2>
+    <forge-array-input
+      value='["Gino", "Pilotino"]'
+      disabled="true"
+      label="Enum Array Input"
+      field-name="MyFieldName"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Enum Array Input", "items" : { "type": "string", "enum": ["Gino", "Pilotino", "Paolino", "Paperino", "Giacomino"] }}'>
+    </forge-array-input>
+
     <script>
 
       var elements = document.querySelectorAll('forge-array-input');

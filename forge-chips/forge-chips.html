@@ -22,13 +22,20 @@
 
   </style>
 
-  <!-- local DOM goes here -->
+  <!-- local DOM goes here
+
+  -->
   <div class="list">
 
     <template is="dom-repeat" items="{{list}}">
       <forge-chip>
         <span>[[item]]</span>
-        <iron-icon icon="icons:cancel" class="delete" on-tap="_delete" data-index="[[index]]"></iron-icon>
+        <template is="dom-if" if="[[disabled]]">
+          <iron-icon icon="icons:lock-outline" class="delete"></iron-icon>
+        </template>
+        <template is="dom-if" if="[[!disabled]]">
+          <iron-icon icon="icons:cancel" class="delete" on-tap="_delete" data-index="[[index]]"></iron-icon>
+        </template>
       </forge-chip>
     </template>
 
@@ -43,10 +50,15 @@ Polymer({
   properties: {
     list: {
       type: Array
+    },
+    disabled: {
+      type: Boolean,
+      value: false
     }
   },
 
   _delete: function(e) {
+    if (this.disabled) return;
     this.fire('chip-removed', e.target.dataIndex);
   }
 
