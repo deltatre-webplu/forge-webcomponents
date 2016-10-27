@@ -18,7 +18,9 @@
 <template>
 
   <h1>[[url]]</h1>
-
+  <p>
+    <span>avg: [[average]] peak: [[max]]</span>
+  </p>
 </template>
 
 <script>
@@ -31,6 +33,17 @@
     properties: {
       url: {
         type: String
+      },
+      average:{
+        type: Number,
+        readOnly: true
+      },
+      max:{
+        type: Number,
+        readOnly: true
+      },
+      name:{
+        type: String
       }
     },
     attached: function() {
@@ -40,7 +53,14 @@
       this.register(this.url);
     },
     onMetrics: function(result) {
-
+      var self = this;
+      var current = result.find(function(r) {
+        return r.Name === self.name;
+      });
+      if (current) {
+        self._setAverage(current.Average.isInfinite || current.Average.isNaN ? 0 : Math.round(current.Average));
+        self._setMax(current.Max.isInfinite || current.Max.isNaN ? 0 : Math.round(current.Max));
+      }
     }
   });
 
