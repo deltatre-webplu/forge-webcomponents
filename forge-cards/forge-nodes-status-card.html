@@ -73,6 +73,10 @@
   background: var(--google-grey-100);
 }
 
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+}
 </style>
 
 <template>
@@ -105,6 +109,9 @@
 
     <div class="card-actions">
       <paper-button on-click="restore">reset</paper-button>
+      <template is="dom-if" if="[[lastHeartbeatUpdate]]">
+        <span style="margin-top:10px; font-size:14px;">Last update: [[lastHeartbeatUpdate]]</span>
+      </template>
     </div>
 
   </paper-card>
@@ -125,9 +132,13 @@
         type: Array,
         notify: true,
         value: []
+      },
+      lastHeartbeatUpdate: {
+        type: String
       }
     },
     onHeartbeat: function(result) {
+      if(result) this.lastHeartbeatUpdate = moment().fromNow();
 
       result.forEach(function(g) {
         var role = Forge.SystemRoles[g.Key];
