@@ -7,10 +7,18 @@
       window.Polymer = window.Polymer || {};
       window.Polymer.dom = 'shadow';
       */
+      window.ForgeWebComponents = window.ForgeWebComponents || {};
+      window.ForgeWebComponents.Settings = window.ForgeWebComponents.Settings || {};
+      window.ForgeWebComponents.Settings.RootUrl = "/api-mock/"
     </script>
+
     <link rel="import" href="forge-status-card.html">
     <link rel="import" href="forge-nodes-status-card.html">
+    <link rel="import" href="forge-metrics-card.html">
+    <link rel="import" href="forge-metrics-panel.html">
+
     <link rel="import" href="../custom-styles/forge-core-style.html">
+
   </head>
   <body>
 
@@ -23,6 +31,17 @@
     <forge-status-card role="FrontEnd"></forge-status-card>
 
     <forge-nodes-status-card></forge-nodes-status-card>
+
+    <forge-metrics-card heading="Distribution Api">
+      <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000"></forge-metrics-panel>
+      <forge-metrics-panel url="/api/statistics/computed?queryId=distExecTime&refreshMs=5000"></forge-metrics-panel>
+    </forge-metrics-card>
+
+    <forge-metrics-card heading="FrontEnd">
+      <forge-metrics-panel url="/api/statistics/computed?queryId=execTime&refreshMs=5000"></forge-metrics-panel>
+      <forge-metrics-panel url="/api/statistics/computed?queryId=reqSec&refreshMs=5000"></forge-metrics-panel>
+      <forge-metrics-panel url="/api/statistics/computed?queryId=dataReqSec&refreshMs=5000"></forge-metrics-panel>
+    </forge-metrics-card>
 
     <script>
     </script>

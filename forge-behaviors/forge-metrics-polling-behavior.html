@@ -1,0 +1,82 @@
+<link rel="import" href="../libraries/libraries.html">
+<link rel="import" href="../shared/variables.html">
+<link rel="import" href="../shared/api.html">
+
+<script>
+(function() {
+
+  window.ForgeWebComponents = window.ForgeWebComponents || {};
+  ForgeWebComponents.Behaviors = ForgeWebComponents.Behaviors || {};
+
+  var instances = {};
+  var _polling = false;
+
+  function pollMetrics() {
+
+    var endpoints = Object.keys(instances);
+    if (endpoints.length < 1) return;
+
+    var start = +new Date();
+
+    var promises = [];
+
+    for (var i = 0; i < endpoints.length; i++) {
+      var endpoint = endpoints[i];
+      var promise = ForgeWebComponents.Api.Raw(endpoint).then(function(result) {
+        var registered = instances[endpoint];
+        registered.forEach(function(i) {
+          i.onMetrics(result);
+        });
+      }, function() {
+        // handle error? or do nothing?
+      });
+      promises.push(promise);
+    }
+
+    Q.all(promises).done(function() {
+
+      var end = +new Date();
+      var timeout = 5000 - (end - start);
+      setTimeout(pollMetrics, Math.max(timeout, 0));
+
+    });
+  }
+
+  ForgeWebComponents.Behaviors.MetricsPollingBehavior = {
+
+    detached: function() {
+      for (var endpoint in instances) {
+        this.unregister(endpoint);
+      }
+    },
+    register: function(apiEndpoint) {
+
+      if (!instances[apiEndpoint]) {
+        instances[apiEndpoint] = [];
+      }
+
+      if (instances[apiEndpoint].indexOf(this) < 0) {
+        instances[apiEndpoint].push(this);
+      }
+
+      console.log(instances);
+
+    },
+    unregister: function(apiEndpoint) {
+      if (instances[apiEndpoint] && instances[apiEndpoint].indexOf(this) >= 0) {
+        this.arrayDelete(instances[endpoint], this);
+      }
+    },
+    startPolling: function() {
+      if (_polling) return;
+      _polling = true;
+      pollMetrics();
+    },
+    onMetrics: function() {
+      console.error("onMetrics not properly overridden");
+    }
+
+  };
+
+})();
+</script>

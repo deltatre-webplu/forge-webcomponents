@@ -14,7 +14,11 @@
   window.ForgeWebComponents.Api = {
 
     HeartBeats: function() {
-      return dnoaXhr('/api/heartbeats/groupBy/RoleType');
+      return dnoaXhr(addRootUrl('/api/heartbeats/groupBy/RoleType'));
+    },
+
+    Raw: function(url) {
+      return dnoaXhr(addRootUrl(url));
     }
 
   };
@@ -22,20 +26,21 @@
   function dnoaXhr(path) {
 
     response = Q.defer();
-    performRequestMock(path, response);
+    performRequest(path, response);
     return response.promise;
 
   }
 
   function performRequest(path, response) {
 
-    var request = new XMLHttpRequest(); // ActiveX blah blah
+    var request = new XMLHttpRequest(); // XMLHttpRequest blah blah
     request.open("GET", path, true);
     //request.timeout = something;
     request.onreadystatechange = function () {
       if (request.readyState === 4) {
         if (request.status === 200) {
-          response.resolve(request.responseText);
+          var result = JSON.parse(request.responseText);
+          response.resolve(result);
         } else {
           response.reject("HTTP " + request.status + " for " + path);
         }
@@ -45,27 +50,27 @@
 
   }
 
-  function performRequestMock(path, response) {
-
-    var result1 = [
-      {"Key":"DistributionApi","Status":0,"Nodes":[{"NodeId":"DistributionApi-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"DistributionApi","Status":0}]},
-      {"Key":"BackEnd","Status":0,"Nodes":[{"NodeId":"BackOffice-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"BackEnd","Status":0}]},
-      {"Key":"ApplicationService","Status":2,"Nodes":[{"NodeId":"WinService-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"ApplicationService","Status":0}]},
-      {"Key":"FrontEnd","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]}
-    ];
-
-    var result2 = [
-      {"Key":"DistributionApi","Status":1,"Nodes":[]},
-      {"Key":"BackEnd","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]},
-      {"Key":"ApplicationService","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]},
-      {"Key":"FrontEnd","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]}
-    ];
-
-    window.switch = !window.switch;
-
-    response.resolve(window.switch ? result1 : result1);
-
-  }
+  // function performRequestMock(path, response) {
+  //
+  //   var result1 = [
+  //     {"Key":"DistributionApi","Status":0,"Nodes":[{"NodeId":"DistributionApi-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"DistributionApi","Status":0}]},
+  //     {"Key":"BackEnd","Status":0,"Nodes":[{"NodeId":"BackOffice-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"BackEnd","Status":0}]},
+  //     {"Key":"ApplicationService","Status":2,"Nodes":[{"NodeId":"WinService-LI-101","MachineName":"LI-101","MachineIP":"fe80::3125:91d2:fbf0:89fc%8,fe80::15bb:d086:d1d2:3c97%4,192.168.56.1,172.31.2.101","ApplicationVersion":"1.0.0.0","RoleType":"ApplicationService","Status":0}]},
+  //     {"Key":"FrontEnd","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]}
+  //   ];
+  //
+  //   var result2 = [
+  //     {"Key":"DistributionApi","Status":1,"Nodes":[]},
+  //     {"Key":"BackEnd","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]},
+  //     {"Key":"ApplicationService","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]},
+  //     {"Key":"FrontEnd","Status":1,"Nodes":[{"NodeId":"-","MachineName":"-","MachineIP":"-","ApplicationVersion":null,"RoleType":"FrontEnd","Status":1}]}
+  //   ];
+  //
+  //   window.switch = !window.switch;
+  //
+  //   response.resolve(window.switch ? result1 : result1);
+  //
+  // }
 
 })();
 </script>

@@ -143,6 +143,7 @@
       }
     },
     onHeartbeat: function(result) {
+      
       if(result) this.lastHeartbeatUpdate = moment().fromNow();
 
       result.forEach(function(g) {

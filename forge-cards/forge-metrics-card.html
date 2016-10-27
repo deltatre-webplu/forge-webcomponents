@@ -1,0 +1,55 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
+
+<dom-module id="forge-metrics-card">
+
+<style>
+:root {
+}
+
+:host {
+  display: block;
+}
+
+.metrics-card {
+  display: block;
+}
+</style>
+
+<template>
+
+  <paper-card class="metrics-card" heading="[[heading]]">
+
+    <div class="card-content">
+      <content></content>
+    </div>
+
+    <div class="card-actions">
+      <paper-button on-click="_moreInfo">more info</paper-button>
+    </div>
+
+  </paper-card>
+
+</template>
+
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-metrics-card',
+    properties: {
+      heading: {
+        type: String
+      }
+    },
+    _moreInfo: function(e) {
+    }
+  });
+
+})();
+</script>
+
+</dom-module>

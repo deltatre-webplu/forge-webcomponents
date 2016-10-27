@@ -12,7 +12,7 @@
 
   var _pollingHeartbeats = false;
 
-  function callHeartbeats() {
+  function pollHeartbeats() {
 
     if (instances.length < 1) return;
 
@@ -25,16 +25,13 @@
       });
       var end = +new Date();
       var timeout = 5000 - (end - start);
-      console.log(timeout);
-      setTimeout(callHeartbeats, Math.max(timeout, 0));
+      setTimeout(pollHeartbeats, Math.max(timeout, 0));
 
     });
 
   }
 
   ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior = {
-
-    guid: uuid.v4(),
 
     detached: function() {
       this.arrayDelete(instances, this);
@@ -46,7 +43,7 @@
     pollHeartbeats: function() {
       if (_pollingHeartbeats) return;
       _pollingHeartbeats = true;
-      callHeartbeats();
+      pollHeartbeats();
     },
     onHeartbeat: function() {
       console.error("onHeartbeat not properly overridden");

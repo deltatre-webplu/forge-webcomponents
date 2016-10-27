@@ -14,11 +14,5 @@
   "bugs": {
     "url": "https://github.com/deltatre-webplu/forge-webcomponents/issues"
   },
-  "homepage": "https://github.com/deltatre-webplu/forge-webcomponents#readme",
-  "devDependencies": {
-    "lodash": "^4.16.4",
-    "node-uuid": "^1.4.7",
-    "q": "^1.4.1",
-    "timed-cache": "^1.0.5"
-  }
+  "homepage": "https://github.com/deltatre-webplu/forge-webcomponents#readme"
 }
