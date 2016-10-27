@@ -66,7 +66,7 @@
 
   Polymer({
     is: 'forge-status-card',
-    behaviors: [ForgeBehaviors.HeartbeatsPollingBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior],
     properties: {
       role: {
         type: String,
@@ -94,11 +94,11 @@
     },
     _enumRole: function(newValue, oldValue) {
 
-      var newRole = Forge.SystemRoles[newValue];
+      var newRole = ForgeWebComponents.Settings.SystemRoles[newValue];
 
       if (!newRole) {
         this.role = oldValue;
-        newRole =  Forge.SystemRoles[oldValue];
+        newRole =  ForgeWebComponents.Settings.SystemRoles[oldValue];
       }
 
       this._setIcon(newRole.icon);

@@ -5,6 +5,9 @@
 <script>
 (function() {
 
+  window.ForgeWebComponents = window.ForgeWebComponents || {};
+  ForgeWebComponents.Behaviors = ForgeWebComponents.Behaviors || {};
+
   var instances = [];
 
   var _pollingHeartbeats = false;
@@ -15,7 +18,7 @@
 
     var start = +new Date();
 
-    Forge.Api.HeartBeats().then(function(result) {
+    ForgeWebComponents.Api.HeartBeats().then(function(result) {
 
       instances.forEach(function(i) {
         i.onHeartbeat(result);
@@ -29,9 +32,7 @@
 
   }
 
-  window.ForgeBehaviors = window.ForgeBehaviors || {};
-
-  ForgeBehaviors.HeartbeatsPollingBehavior = {
+  ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior = {
 
     guid: uuid.v4(),
 

@@ -77,6 +77,11 @@
   display: flex;
   justify-content: space-between;
 }
+
+.heartbeat-last-update {
+  @apply(--paper-font-body-1);
+  margin-top: 8px;
+}
 </style>
 
 <template>
@@ -110,7 +115,7 @@
     <div class="card-actions">
       <paper-button on-click="restore">reset</paper-button>
       <template is="dom-if" if="[[lastHeartbeatUpdate]]">
-        <span style="margin-top:10px; font-size:14px;">Last update: [[lastHeartbeatUpdate]]</span>
+        <span class="heartbeat-last-update">Last update: [[lastHeartbeatUpdate]]</span>
       </template>
     </div>
 
@@ -126,7 +131,7 @@
 
   Polymer({
     is: 'forge-nodes-status-card',
-    behaviors: [ForgeBehaviors.HeartbeatsPollingBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior],
     properties: {
       groups: {
         type: Array,
@@ -141,7 +146,7 @@
       if(result) this.lastHeartbeatUpdate = moment().fromNow();
 
       result.forEach(function(g) {
-        var role = Forge.SystemRoles[g.Key];
+        var role = ForgeWebComponents.Settings.SystemRoles[g.Key];
         if (role) g.Icon = role.icon;
       });
 

@@ -3,11 +3,18 @@
 <script>
 (function() {
 
-  window.Forge = window.Forge || {};
-  window.Forge.Api = {
+  // gives an url with a local path (if ForgeWebComponents.Settings.RootUrl is set)
+  function addRootUrl(sourceUrl) {
+    var rootUrl = (ForgeWebComponents.Settings.RootUrl + "").replace(/\/+$/, "");
+    sourceUrl = sourceUrl.replace(/^\/+/, "");
+    return rootUrl + '/' + sourceUrl;
+  }
+
+  window.ForgeWebComponents = window.ForgeWebComponents || {};
+  window.ForgeWebComponents.Api = {
 
     HeartBeats: function() {
-      return dnoaXhr('/api/heartbeats');
+      return dnoaXhr('/api/heartbeats/groupBy/RoleType');
     }
 
   };

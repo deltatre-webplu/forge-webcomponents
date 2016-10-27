@@ -22,7 +22,7 @@
   <script>
   Polymer({
     is: 'forge-youtube-video-input',
-    behaviors: [ForgeBehaviors.ExtendedFieldStringBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
     onInput: function() {
       this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
     },
