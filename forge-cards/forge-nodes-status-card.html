@@ -17,6 +17,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
 
 <link rel="import" href="../libraries/libraries.html">
+<link rel="import" href="../shared/variables.html">
 <link rel="import" href="../shared/api.html">
 
 <link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
@@ -59,6 +60,19 @@
   background: var(--status-yellow-color);
 }
 
+.role-icon {
+  margin: 4px;
+  --iron-icon-fill-color: white;
+}
+
+.group-title {
+  @apply(--paper-font-title);
+}
+
+.paper-item-group {
+  background: var(--google-grey-100);
+}
+
 </style>
 
 <template>
@@ -67,16 +81,20 @@
 
     <div class="card-content">
 
-      <template is="dom-repeat" items="{{groups}}">
-        <paper-icon-item>
-          <div class$="status status-[[item.Status]]" item-icon></div>
-          <paper-item-body class="group-title">[[item.Key]]</paper-item-body>
+      <template is="dom-repeat" items="{{groups}}" as="group">
+        <paper-icon-item class="paper-item-group">
+          <div class$="status status-[[group.Status]]" item-icon>
+            <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
+          </div>
+          <paper-item-body class="group-title">[[group.Key]]</paper-item-body>
           <paper-icon-button icon="expand-more" alt="expand" on-click="toggle"></paper-icon-button>
         </paper-icon-item>
-        <iron-collapse id$="collapse-[[item.Key]]">
-          <template is="dom-repeat" items="{{item.Nodes}}">
+        <iron-collapse id$="collapse-[[group.Key]]">
+          <template is="dom-repeat" items="{{group.Nodes}}">
             <paper-icon-item>
-              <div class$="status status-[[item.Status]]" item-icon></div>
+              <div class$="status status-[[item.Status]]" item-icon>
+                <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
+              </div>
               <paper-item-body>[[item.NodeId]]</paper-item-body>
             </paper-icon-item>
           </template>
@@ -110,18 +128,32 @@
       }
     },
     onHeartbeat: function(result) {
+
+      result.forEach(function(g) {
+        var role = Forge.SystemRoles[g.Key];
+        if (role) g.Icon = role.icon;
+      });
+
       this.groups = result;
     },
     toggle: function(e) {
-      var collapse = this.$$("#collapse-" + e.model.item.Key);
+      var collapse = this.$$("#collapse-" + e.model.group.Key);
+      var opened = !collapse.opened;
       collapse.toggle();
+      if (opened) {
+        e.target.setAttribute('icon', 'expand-less');
+        e.target.setAttribute('alt', 'collapse');
+      }
+      else {
+        e.target.setAttribute('icon', 'expand-more')
+        e.target.setAttribute('alt', 'expand');
+      }
     },
     restore: function() {
       for (var i = 0; i < this.groups.length; i++) {
         this.set("groups." + i + ".Status", 3);
         this.set("groups." + i + ".Nodes", []);
       }
-      //this.groups = JSON.parse(JSON.stringify(this.groups));
     }
   });
 

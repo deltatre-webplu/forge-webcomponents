@@ -11,7 +11,7 @@
 
 <link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
 <link rel="import" href="../libraries/libraries.html">
-<link rel="import" href="../shared/api.html">
+<link rel="import" href="../shared/variables.html">
 
 <dom-module id="forge-status-card">
 
@@ -64,21 +64,6 @@
 
   "use strict";
 
-  var validRoles = {
-    ApplicationService: {
-      icon: "icons:settings"
-    },
-    BackEnd: {
-      icon: "device:storage"
-    },
-    FrontEnd: {
-      icon: "social:public"
-    },
-    DistributionApi: {
-      icon: "icons:cloud-circle"
-    }
-  };
-
   Polymer({
     is: 'forge-status-card',
     behaviors: [ForgeBehaviors.HeartbeatsPollingBehavior],
@@ -109,11 +94,11 @@
     },
     _enumRole: function(newValue, oldValue) {
 
-      var newRole = validRoles[newValue];
+      var newRole = Forge.SystemRoles[newValue];
 
       if (!newRole) {
         this.role = oldValue;
-        newRole =  validRoles[oldValue];
+        newRole =  Forge.SystemRoles[oldValue];
       }
 
       this._setIcon(newRole.icon);
