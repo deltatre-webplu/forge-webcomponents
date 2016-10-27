@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script>
+      /*
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+      */
+    </script>
+    <link rel="import" href="forge-image-preview.html">
+  </head>
+  <body>
+    <forge-image-preview
+      value=""
+      label="Image map"
+      field-name="MyFieldName"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"string","description":"The image map url","title":"Image map","extended-type":"forge-image-preview"}'>
+      </forge-youtube-video-input>
+    <script>
+      document.querySelector('forge-image-preview').addEventListener('sendCommand', function (e) {
+        console.log('on sendCommand:', e.detail);
+      });
+      document.querySelector('forge-image-preview').addEventListener('valueChanged', function (e) {
+        console.log('on change:', e.detail);
+      });
+    </script>
+  </body>
+</html>

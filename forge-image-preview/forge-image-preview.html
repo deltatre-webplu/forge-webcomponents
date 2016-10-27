@@ -1,0 +1,36 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-input/paper-input.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-image/iron-image.html">
+<link rel="import" href="../forge-extendedfield-string-behavior/forge-extendedfield-string-behavior.html">
+<link rel="import" href="../shared/style.html">
+
+<dom-module id="forge-image-preview">
+
+  <style>
+    :host {
+      display: block;
+      padding: 0 2px;
+    }
+  </style>
+
+  <template>
+
+    <paper-input value="{{value}}" label="[[label]]" on-input="onInput" on-change="onChange"></paper-input>
+    <iron-image src="{{value}}" fade="true" style="width:100%; height:400px;" sizing="contain" position="top left"></iron-image>
+
+  </template>
+
+  <script>
+  Polymer({
+    is: 'forge-image-preview',
+    behaviors: [ForgeBehaviors.ExtendedFieldStringBehavior],
+    onInput: function() {
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+    },
+    onChange: function() {
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+    }
+  });
+  </script>
+
+</dom-module>
