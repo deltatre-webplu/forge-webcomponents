@@ -15,7 +15,14 @@
   <template>
 
     <paper-input value="{{value}}" label="[[label]]" on-input="onInput" on-change="onChange"></paper-input>
-    <iron-image src="{{value}}" fade="true" style="width:100%; height:400px;" sizing="contain" position="top left"></iron-image>
+    <template is="dom-if" if="[[show]]">
+      <iron-image src="{{value}}"
+        fade="true"
+        style="width:100%; height:400px;"
+        sizing="contain"
+        position="top left"
+        on-loaded-changed="_onLoadedChanged"></iron-image>
+    </template>
 
   </template>
 
@@ -23,6 +30,16 @@
   Polymer({
     is: 'forge-image-preview',
     behaviors: [ForgeBehaviors.ExtendedFieldStringBehavior],
+    properties: {
+      show: {
+        type: Boolean,
+        value: true,
+        readOnly: true
+      }
+    },
+    _onLoadedChanged: function(e) {
+      this._setShow(e.detail.value);
+    },
     onInput: function() {
       this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
     },

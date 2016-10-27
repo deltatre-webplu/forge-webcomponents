@@ -8,16 +8,18 @@
       window.Polymer.dom = 'shadow';
       */
     </script>
+    <link rel="import" href="../custom-styles/forge-core-style.html">
     <link rel="import" href="forge-image-preview.html">
   </head>
   <body>
     <forge-image-preview
-      value=""
+      value="http://cdn.collider.com/wp-content/uploads/at-any-price-dennis-quaid.jpg"
       label="Image map"
       field-name="MyFieldName"
       entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
       schema='{"type":"string","description":"The image map url","title":"Image map","extended-type":"forge-image-preview"}'>
-      </forge-youtube-video-input>
+    </forge-image-preview>
+    <h2>I am below the picture</h2>
     <script>
       document.querySelector('forge-image-preview').addEventListener('sendCommand', function (e) {
         console.log('on sendCommand:', e.detail);
