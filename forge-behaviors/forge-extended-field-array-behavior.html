@@ -26,6 +26,7 @@
       }
     },
     triggerOnValueChanged: function() {
+      if (this.disabled) return;
       this.fire('valueChanged', this.value);
     }
   };
