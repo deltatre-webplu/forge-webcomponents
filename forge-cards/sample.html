@@ -16,6 +16,7 @@
     <link rel="import" href="forge-nodes-status-card.html">
     <link rel="import" href="forge-metrics-card.html">
     <link rel="import" href="forge-metrics-panel.html">
+    <link rel="import" href="forge-exceeding-threshold-panel.html">
 
     <link rel="import" href="../custom-styles/forge-core-style.html">
 
@@ -70,6 +71,12 @@
                            cardColor="#BBDEFB"
                            headColor="#5baff5">
       </forge-metrics-panel>
+      <forge-exceeding-threshold-panel url="api/statistics/counted?queryId=itemsExceeding&refreshMs=5000"
+                           icon="icons:alarm"
+                           title="Items exceeding threshold"
+                           cardColor="#5cb85c"
+                           headColor="#357935">
+      </forge-exceeding-threshold-panel>
     </forge-metrics-card>
 
     <script>

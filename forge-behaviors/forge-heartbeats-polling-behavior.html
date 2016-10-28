@@ -19,7 +19,6 @@
     var start = +new Date();
 
     ForgeWebComponents.Api.HeartBeats().then(function(result) {
-
       instances.forEach(function(i) {
         i.onHeartbeat(result);
       });
