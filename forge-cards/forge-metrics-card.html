@@ -3,6 +3,8 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
 
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+
 <dom-module id="forge-metrics-card">
 
 <style>
@@ -16,12 +18,36 @@
 .metrics-card {
   display: block;
 }
+
+.card-header {
+  padding:16px;
+  display: inline-block;
+  box-sizing: border-box;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  background: grey;
+  border-radius:50%;
+  --iron-icon-fill-color: white;
+  margin-right: 12px;
+}
+
+.title {
+  @apply(--paper-font-headline);
+  vertical-align: middle;
+}
 </style>
 
 <template>
 
-  <paper-card class="metrics-card" heading="[[heading]]">
+  <paper-card class="metrics-card">
+    <div class="card-header">
+       <iron-icon class="icon" icon="[[icon]]"></iron-icon>
 
+       <span class="title">[[heading]]</span>
+       </div>
     <div class="card-content">
       <content></content>
     </div>
@@ -42,6 +68,9 @@
     is: 'forge-metrics-card',
     properties: {
       heading: {
+        type: String
+      },
+      icon:{
         type: String
       }
     },

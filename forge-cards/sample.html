@@ -32,19 +32,43 @@
 
     <forge-nodes-status-card></forge-nodes-status-card>
 
-    <forge-metrics-card heading="Distribution Api">
-      <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000" name="sumSeries(stats.webplu.Cms.Dev.*.DistributionRequests.*)">
+    <forge-metrics-card heading="Distribution Api" icon="icons:cloud-circle">
+      <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000"
+                           name="sumSeries(stats.webplu.Cms.Dev.*.DistributionRequests.*)"
+                           icon="icons:assessment"
+                           title="Distribution Requests/sec"
+                           cardColor="#BBDEFB"
+                           headColor="#5baff5">
       </forge-metrics-panel>
-      <forge-metrics-panel url="/api/statistics/computed0?queryId=distExecTime&refreshMs=5000" name="averageSeries(stats.timers.webplu.Cms.Dev.*.DistributionRequests.*.mean)">
+      <forge-metrics-panel url="/api/statistics/computed0?queryId=distExecTime&refreshMs=5000"
+                           name="averageSeries(stats.timers.webplu.Cms.Dev.*.DistributionRequests.*.mean)"
+                           icon="image:timer"
+                           title="Distribution Execution Time (ms)"
+                           cardColor="#5cb85c"
+                           headColor="#357935">
       </forge-metrics-panel>
     </forge-metrics-card>
 
-    <forge-metrics-card heading="FrontEnd">
-      <forge-metrics-panel url="/api/statistics/computed1?queryId=execTime&refreshMs=5000" name="averageSeries(stats.timers.webplu.Cms.Dev.*.Requests.*.*.mean)">
+    <forge-metrics-card heading="Front End" icon="social:public">
+      <forge-metrics-panel url="/api/statistics/computed1?queryId=execTime&refreshMs=5000"
+                           name="averageSeries(stats.timers.webplu.Cms.Dev.*.Requests.*.*.mean)"
+                           icon="icons:assessment"
+                           title="Requests/sec"
+                           cardColor="#BBDEFB"
+                           headColor="#5baff5">
       </forge-metrics-panel>
-      <forge-metrics-panel url="/api/statistics/computed2?queryId=reqSec&refreshMs=5000" name="sumSeries(stats.webplu.Cms.Dev.*.Requests.*)">
+      <forge-metrics-panel url="/api/statistics/computed2?queryId=reqSec&refreshMs=5000"
+                           name="sumSeries(stats.webplu.Cms.Dev.*.Requests.*)"
+                           icon="image:timer"
+                           title="Execution Time (ms)"
+                           cardColor="#5cb85c"
+                           headColor="#357935">
       </forge-metrics-panel>
-      <forge-metrics-panel url="/api/statistics/computed3?queryId=dataReqSec&refreshMs=5000" name="sumSeries(stats.webplu.Cms.Dev.*.Data.*.query.*)">
+      <forge-metrics-panel url="/api/statistics/computed3?queryId=dataReqSec&refreshMs=5000"
+                           icon="icons:dns"
+                           title="Data queries/sec"
+                           cardColor="#BBDEFB"
+                           headColor="#5baff5">
       </forge-metrics-panel>
     </forge-metrics-card>
 
@@ -52,3 +76,10 @@
     </script>
   </body>
 </html>
+<!--
+name="sumSeries(stats.webplu.Cms.Dev.*.DistributionRequests.*)"
+name="averageSeries(stats.timers.webplu.Cms.Dev.*.DistributionRequests.*.mean)"
+name="averageSeries(stats.timers.webplu.Cms.Dev.*.Requests.*.*.mean)"
+name="sumSeries(stats.webplu.Cms.Dev.*.Requests.*)"
+name="sumSeries(stats.webplu.Cms.Dev.*.Data.*.query.*)"
+-->
