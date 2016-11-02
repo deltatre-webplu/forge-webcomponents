@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script>
+      /*
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+      */
+      window.ForgeWebComponents = window.ForgeWebComponents || {};
+      window.ForgeWebComponents.Settings = window.ForgeWebComponents.Settings || {};
+      window.ForgeWebComponents.Settings.RootUrl = "/api-mock/";
+    </script>
+
+    <link rel="import" href="forge-status-dashboard.html">
+
+    <link rel="import" href="../custom-styles/forge-core-style.html">
+
+  </head>
+  <body>
+    <forge-status-dashboard></forge-status-dashboard>
+  </body>
+</html>

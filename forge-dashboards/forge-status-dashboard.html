@@ -1,0 +1,110 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../forge-cards/forge-cards.html">
+
+<dom-module id="forge-status-dashboard">
+
+  <style include="iron-flex iron-flex-alignment">
+
+    .dashboard-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: row;
+    }
+
+    @media (max-width: 1500px) {
+      .dashboard-container {
+        display: block;
+      }
+    }
+
+    .padded {
+      padding: 8px;
+    }
+
+  </style>
+
+  <template>
+
+    <div class="dashboard-container">
+      <div class="layout vertical flex">
+
+        <div class="layout horizontal">
+
+          <forge-status-card class="padded flex" role="ApplicationService"></forge-status-card>
+          <forge-status-card class="padded flex" role="BackEnd"></forge-status-card>
+          <forge-status-card class="padded flex" role="DistributionApi"></forge-status-card>
+          <forge-status-card class="padded flex" role="FrontEnd"></forge-status-card>
+
+        </div>
+
+        <forge-nodes-status-card class="padded"></forge-nodes-status-card>
+
+      </div>
+      <div class="layout horizontal flex">
+
+        <forge-metrics-card class="padded flex"
+                            heading="Distribution Api"
+                            icon="icons:cloud-circle"
+                            more-info-url="/more-info">
+          <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000"
+                               icon="icons:assessment"
+                               title="Distribution Requests/sec">
+          </forge-metrics-panel>
+          <forge-metrics-panel url="/api/statistics/computed?queryId=distExecTime&refreshMs=5000"
+                               icon="image:timer"
+                               title="Distribution Execution Time (ms)"
+                               threshold-warning="500"
+                               threshold-danger="1000">
+          </forge-metrics-panel>
+        </forge-metrics-card>
+
+        <forge-metrics-card class="padded flex"
+                            heading="Front End"
+                            icon="social:public"
+                            more-info-url="/more-info">
+          <forge-metrics-panel url="/api/statistics/computed?queryId=execTime&refreshMs=5000"
+                               icon="icons:assessment"
+                               title="Requests/sec">
+          </forge-metrics-panel>
+          <forge-metrics-panel url="/api/statistics/computed?queryId=reqSec&refreshMs=5000"
+                               icon="image:timer"
+                               title="Execution Time (ms)"
+                               threshold-warning="1000"
+                               threshold-danger="3000">
+          </forge-metrics-panel>
+          <forge-metrics-panel url="/api/statistics/computed?queryId=dataReqSec&refreshMs=5000"
+                               icon="icons:dns"
+                               title="Data queries/sec">
+          </forge-metrics-panel>
+          <forge-exceeding-threshold-panel url="api/statistics/counted?queryId=itemsExceeding&refreshMs=5000"
+                               icon="icons:alarm"
+                               title="Items exceeding threshold"
+                               threshold-danger="1">
+          </forge-exceeding-threshold-panel>
+        </forge-metrics-card>
+
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    Polymer({
+      is: 'forge-status-dashboard'
+    });
+
+  })();
+  </script>
+
+</dom-module>
