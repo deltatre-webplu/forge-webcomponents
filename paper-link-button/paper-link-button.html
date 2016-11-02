@@ -1,0 +1,52 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
+
+<dom-module id="paper-link-button">
+
+<style>
+:host {
+  display: block;
+}
+
+a {
+  text-decoration: none;
+}
+
+a paper-button,
+a:active paper-button,
+a:visited paper-button {
+  color: #000;
+}
+</style>
+
+<template>
+
+  <a href$="[[href]]" tabindex="-1">
+    <paper-button>
+      <content></content>
+    </paper-button>
+  </a>
+
+</template>
+
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'paper-link-button',
+    properties: {
+      href: {
+        type: String
+      },
+      text: {
+        type: String
+      }
+    }
+  });
+
+})();
+</script>
+
+</dom-module>

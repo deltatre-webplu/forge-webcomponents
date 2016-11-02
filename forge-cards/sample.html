@@ -33,21 +33,20 @@
 
     <forge-nodes-status-card></forge-nodes-status-card>
 
-    <forge-metrics-card heading="Distribution Api" icon="icons:cloud-circle">
+    <forge-metrics-card heading="Distribution Api"
+                        icon="icons:cloud-circle"
+                        more-info-url="/more-info">
       <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000"
-                           name="sumSeries(stats.webplu.Cms.Dev.*.DistributionRequests.*)"
                            icon="icons:assessment"
                            title="Distribution Requests/sec">
       </forge-metrics-panel>
       <forge-metrics-panel url="/api/statistics/computed0?queryId=distExecTime&refreshMs=5000"
-                           name="averageSeries(stats.timers.webplu.Cms.Dev.*.DistributionRequests.*.mean)"
                            icon="image:timer"
                            title="Distribution Execution Time (ms)"
                            threshold-warning="100"
                            threshold-danger="300">
       </forge-metrics-panel>
       <forge-metrics-panel url="/api/statistics/computed0?queryId=distExecTime&refreshMs=5000"
-                           name="averageSeries(stats.timers.webplu.Cms.Dev.*.DistributionRequests.*.mean)"
                            icon="image:timer"
                            title="Distribution Execution Time (ms)"
                            threshold-warning="1000"
@@ -55,14 +54,14 @@
       </forge-metrics-panel>
     </forge-metrics-card>
 
-    <forge-metrics-card heading="Front End" icon="social:public">
+    <forge-metrics-card heading="Front End"
+                        icon="social:public"
+                        more-info-url="/more-info">
       <forge-metrics-panel url="/api/statistics/computed1?queryId=execTime&refreshMs=5000"
-                           name="averageSeries(stats.timers.webplu.Cms.Dev.*.Requests.*.*.mean)"
                            icon="icons:assessment"
                            title="Requests/sec">
       </forge-metrics-panel>
       <forge-metrics-panel url="/api/statistics/computed2?queryId=reqSec&refreshMs=5000"
-                           name="sumSeries(stats.webplu.Cms.Dev.*.Requests.*)"
                            icon="image:timer"
                            title="Execution Time (ms)"
                            threshold-warning="1000"
@@ -84,10 +83,3 @@
 
   </body>
 </html>
-<!--
-name="sumSeries(stats.webplu.Cms.Dev.*.DistributionRequests.*)"
-name="averageSeries(stats.timers.webplu.Cms.Dev.*.DistributionRequests.*.mean)"
-name="averageSeries(stats.timers.webplu.Cms.Dev.*.Requests.*.*.mean)"
-name="sumSeries(stats.webplu.Cms.Dev.*.Requests.*)"
-name="sumSeries(stats.webplu.Cms.Dev.*.Data.*.query.*)"
--->

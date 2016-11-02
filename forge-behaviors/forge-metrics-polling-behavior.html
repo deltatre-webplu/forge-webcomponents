@@ -1,6 +1,6 @@
 <link rel="import" href="../libraries/libraries.html">
 <link rel="import" href="../shared/variables.html">
-<link rel="import" href="../shared/api.html">
+<link rel="import" href="../forge-api/forge-api.html">
 
 <script>
 (function() {
@@ -10,6 +10,7 @@
 
   var instances = {};
   var _polling = false;
+  var api = ForgeWebComponents.Api;
 
   function pollMetrics() {
 
@@ -21,7 +22,7 @@
     var promises = [];
 
     endpoints.forEach(function(endpoint){
-      var promise = ForgeWebComponents.Api.Raw(endpoint).then(function(result) {
+      var promise = api.raw(endpoint).then(function(result) {
         var registered = instances[endpoint];
         registered.forEach(function(r) {
             r.onMetrics(result);

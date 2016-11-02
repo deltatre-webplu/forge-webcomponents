@@ -1,0 +1,20 @@
+<link rel="import" href="http.html">
+<link rel="import" href="api-core.html">
+
+<script>
+(function() {
+
+  var http = window.ForgeWebComponents.Http;
+  var api = window.ForgeWebComponents.Api;
+
+  api.HeartBeats = {
+    fetchByRoleType: function() {
+      return http.get(api.addRootUrl('/api/heartbeats/groupBy/RoleType'));
+    },
+    reset: function() {
+      return http.post(api.addRootUrl('/api/heartbeats/reset'));
+    }
+  };
+
+})();
+</script>

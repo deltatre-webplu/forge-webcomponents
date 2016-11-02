@@ -1,0 +1,28 @@
+<link rel="import" href="http.html">
+
+<script>
+(function() {
+
+  var http = window.ForgeWebComponents.Http;
+
+  function addRootUrl(sourceUrl) {
+
+    if (!ForgeWebComponents.Settings.RootUrl) return sourceUrl;
+
+    var rootUrl = (ForgeWebComponents.Settings.RootUrl + "").replace(/\/+$/, "");
+    sourceUrl = sourceUrl.replace(/^\/+/, "");
+    return rootUrl + '/' + sourceUrl;
+
+  }
+
+  window.ForgeWebComponents.Api = {
+
+    addRootUrl: addRootUrl,
+    raw: function(url) {
+      return http.get(addRootUrl(url));
+    }
+
+  };
+
+})();
+</script>

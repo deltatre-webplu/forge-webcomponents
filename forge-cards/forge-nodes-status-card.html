@@ -18,7 +18,7 @@
 
 <link rel="import" href="../libraries/libraries.html">
 <link rel="import" href="../shared/variables.html">
-<link rel="import" href="../shared/api.html">
+<link rel="import" href="../forge-api/forge-api.html">
 
 <link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
 
@@ -129,6 +129,8 @@
   // icon: "icons:check-circle"
   "use strict";
 
+  var hbApi = ForgeWebComponents.Api.HeartBeats;
+
   Polymer({
     is: 'forge-nodes-status-card',
     behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior],
@@ -143,7 +145,7 @@
       }
     },
     onHeartbeat: function(result) {
-      
+
       if(result) this.lastHeartbeatUpdate = moment().fromNow();
 
       result.forEach(function(g) {
@@ -167,6 +169,7 @@
       }
     },
     restore: function() {
+      hbApi.reset();
       for (var i = 0; i < this.groups.length; i++) {
         this.set("groups." + i + ".Status", 3);
         this.set("groups." + i + ".Nodes", []);

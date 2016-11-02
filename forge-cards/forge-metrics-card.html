@@ -1,7 +1,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
+<link rel="import" href="../paper-link-button/paper-link-button.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
 
@@ -9,10 +9,17 @@
 
 <style>
 :root {
+
 }
 
 :host {
   display: block;
+}
+:host ::content forge-metrics-panel {
+  margin-bottom: 16px;
+}
+:host ::content forge-metrics-panel:last-child {
+  margin-bottom: 0;
 }
 
 .metrics-card {
@@ -20,9 +27,10 @@
 }
 
 .card-header {
-  padding:16px;
-  display: inline-block;
-  box-sizing: border-box;
+  padding: 16px;
+  font-size: 24px;
+  font-weight: 400;
+  color: #000;
 }
 
 .icon {
@@ -38,6 +46,7 @@
   @apply(--paper-font-headline);
   vertical-align: middle;
 }
+
 </style>
 
 <template>
@@ -52,9 +61,9 @@
     <div class="card-content">
       <content></content>
     </div>
-    
+
     <div class="card-actions">
-      <paper-button on-click="_moreInfo">more info</paper-button>
+      <paper-link-button href="[[moreInfoUrl]]">more info</paper-link-button>
     </div>
 
   </paper-card>
@@ -73,9 +82,10 @@
       },
       icon:{
         type: String
+      },
+      moreInfoUrl: {
+        type: String
       }
-    },
-    _moreInfo: function(e) {
     }
   });
 
