@@ -43,15 +43,16 @@
 <template>
 
   <paper-card class="metrics-card">
-    <div class="card-header">
-       <iron-icon class="icon" icon="[[icon]]"></iron-icon>
 
-       <span class="title">[[heading]]</span>
-       </div>
+    <div class="card-header">
+      <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+      <span class="title">[[heading]]</span>
+    </div>
+
     <div class="card-content">
       <content></content>
     </div>
-
+    
     <div class="card-actions">
       <paper-button on-click="_moreInfo">more info</paper-button>
     </div>

@@ -10,16 +10,14 @@
 <dom-module id="forge-metrics-panel">
 
 <style>
-:root {
-}
-
 :host {
   display: block;
 }
 
 .header{
-  display: inline-block;
-  box-sizing: border-box;
+  background-color: var(--status-neutral-dark-color);
+  color: white;
+  padding: 0 4px;
 }
 
 .icon {
@@ -29,35 +27,63 @@
   float:right;
 }
 
-.text {
+.item {
   color: var(--paper-grey-900);
-  padding: 5px;
+  padding: 4px;
   font-size: 18px;
+  background-color: var(--status-neutral-color);
 }
 
 .metrics-values{
-  padding: 5px;
-  height: 90px;
-  display: table-cell;
-  vertical-align: bottom;
+  position: relative;
+  height: 72px;
+}
+
+.metrics-text {
+  position:absolute;
+  bottom: 0;
+  padding: 0 4px;
 }
 
 .strong{
   font-weight: 600;
   font-size: 24px;
 }
+
+.threshold-warning {
+  background-color: var(--status-yellow-color);
+}
+.threshold-warning .header {
+  background-color: var(--status-yellow-dark-color);
+}
+
+.threshold-danger {
+  background-color: var(--status-red-color);
+}
+.threshold-danger .header {
+  background-color: var(--status-red-dark-color);
+}
+
+.threshold-success {
+  background-color: var(--status-green-color);
+}
+.threshold-success .header {
+  background-color: var(--status-green-dark-color);
+}
+
 </style>
 
 <template>
 
-
-    <paper-item-body two-line style$="background-color: {{cardcolor}};" class="text">
-    <span class="header strong" style$="background-color: {{headcolor}};">[[title]]</span>
+  <paper-item-body two-line class$="item [[threshold]]">
+    <span class="header strong">[[title]]</span>
     <div class="metrics-values">
-      avg	<span class="strong">[[average]]</span>	peak <span class="strong">[[max]]</span>
+      <div class="metrics-text">
+        avg	<span class="strong">[[average]]</span>	peak <span class="strong">[[max]]</span>
+      </div>
       <iron-icon class="icon" icon="[[icon]]"></iron-icon>
     </div>
-    </paper-item-body>
+  </paper-item-body>
 
 </template>
 
@@ -80,20 +106,21 @@
         type: Number,
         readOnly: true
       },
-      // name: {
-      //   type: String
-      // },
       icon: {
         type: String
       },
       title:{
         type: String
       },
-      headcolor: {
-        type: String
+      threshold: {
+        type: String,
+        readOnly: true
       },
-      cardcolor:{
-        type: String
+      thresholdWarning: {
+        type: Number
+      },
+      thresholdDanger: {
+        type: Number
       }
     },
     attached: function() {
@@ -103,15 +130,22 @@
       this.register(this.url);
     },
     onMetrics: function(result) {
-      var self = this;
       var current = result[0];
-      console.log(this);
-      // var current = result.find(function(r) {
-      //   // return r.Name === self.name;
-      // });
       if (current) {
-        self._setAverage(current.Average.isInfinite || current.Average.isNaN ? 0 : Math.round(current.Average));
-        self._setMax(current.Max.isInfinite || current.Max.isNaN ? 0 : Math.round(current.Max));
+
+        this._setAverage(current.Average.isInfinite || current.Average.isNaN ? 0 : Math.round(current.Average));
+        this._setMax(current.Max.isInfinite || current.Max.isNaN ? 0 : Math.round(current.Max));
+
+        if (this.thresholdDanger && this.average >= this.thresholdDanger) {
+          this._setThreshold('threshold-danger');
+        }
+        else if (this.thresholdWarning && this.average >= this.thresholdWarning) {
+          this._setThreshold('threshold-warning');
+        }
+        else if (this.thresholdWarning || this.thresholdDanger) {
+          this._setThreshold('threshold-success');
+        }
+
       }
     }
   });

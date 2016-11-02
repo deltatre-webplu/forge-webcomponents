@@ -25,7 +25,7 @@
 
   function dnoaXhr(path) {
 
-    response = Q.defer();
+    var response = Q.defer();
     performRequest(path, response);
     return response.promise;
 

@@ -10,16 +10,14 @@
 <dom-module id="forge-exceeding-threshold-panel">
 
 <style>
-:root {
-}
-
 :host {
   display: block;
 }
 
 .header{
-  display: inline-block;
-  box-sizing: border-box;
+  background-color: var(--status-neutral-dark-color);
+  color: white;
+  padding: 0 4px;
 }
 
 .icon {
@@ -29,36 +27,63 @@
   float:right;
 }
 
-.text {
+.item {
   color: var(--paper-grey-900);
-  padding: 5px;
+  padding: 4px;
   font-size: 18px;
+  background-color: var(--status-neutral-color);
 }
 
 .metrics-values{
-  padding: 5px;
-  height: 90px;
-  display: table-cell;
-  vertical-align: bottom;
+  position: relative;
+  height: 72px;
+}
+
+.metrics-text {
+  position:absolute;
+  bottom: 0;
+  padding: 0 4px;
 }
 
 .strong{
   font-weight: 600;
   font-size: 24px;
 }
+
+.threshold-warning {
+  background-color: var(--status-yellow-color);
+}
+.threshold-warning .header {
+  background-color: var(--status-yellow-dark-color);
+}
+
+.threshold-danger {
+  background-color: var(--status-red-color);
+}
+.threshold-danger .header {
+  background-color: var(--status-red-dark-color);
+}
+
+.threshold-success {
+  background-color: var(--status-green-color);
+}
+.threshold-success .header {
+  background-color: var(--status-green-dark-color);
+}
 </style>
 
 <template>
 
-
-    <paper-item-body two-line style$="background-color: {{cardcolor}};" class="text">
-    <span class="header strong" style$="background-color: {{headcolor}};">[[title]]</span>
-    <div class="metrics-values">
-      <template is="dom-repeat" items="[[items]]">{{item}}
-      [[item.key]]	<span class="strong">[[item.value]]</span>
-      </template>
-      <iron-icon class="icon" icon="[[icon]]"></iron-icon>
-    </div>
+    <paper-item-body two-line class$="item [[threshold]]">
+      <span class="header strong">[[title]]</span>
+      <div class="metrics-values">
+        <div class="metrics-text">
+          <template is="dom-repeat" items="[[items]]">
+            [[item.name]]	<span class="strong">[[item.value]]</span>
+          </template>
+        </div>
+        <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+      </div>
     </paper-item-body>
 
 </template>
@@ -66,6 +91,11 @@
 <script>
 (function() {
   "use strict";
+
+  function Entry(name, value) {
+    this.name = name;
+    this.value = value;
+  }
 
   Polymer({
     is: 'forge-exceeding-threshold-panel',
@@ -76,22 +106,24 @@
       },
       items: {
         type: Array,
-        value: function(){ return []; }
+        value: [],
+        readOnly: true
       },
-      // name: {
-      //   type: String
-      // },
       icon: {
         type: String
       },
       title:{
         type: String
       },
-      headcolor: {
-        type: String
+      threshold: {
+        type: String,
+        readOnly: true
       },
-      cardcolor:{
-        type: String
+      thresholdWarning: {
+        type: Number
+      },
+      thresholdDanger: {
+        type: Number
       }
     },
     attached: function() {
@@ -101,16 +133,40 @@
       this.register(this.url);
     },
     onMetrics: function(result) {
-      var self = this;
-      console.log(this);
-      // var current = result.find(function(r) {
-      //   // return r.Name === self.name;
-      // });
-      if (result) {
 
-        console.log(result);
-        self._setItems(result);
+      var items = result.map(function(r) {
+        return new Entry(r.Name, r.Value);
+      });
+
+      this._setItems(items);
+      this._calculateThreshold(items);
+
+    },
+    _calculateThreshold: function(items) {
+
+      if (!this.thresholdDanger && !this.thresholdWarning) {
+        return;
       }
+
+      var thresholdClass = 'threshold-success';
+
+      for (var i = 0; i < items.length; i++) {
+
+        var item = items[i];
+
+        if (this.thresholdDanger && item.value >= this.thresholdDanger) {
+          thresholdClass = 'threshold-danger';
+          break;
+        }
+        else if (this.thresholdWarning && item.value >= this.thresholdWarning) {
+          thresholdClass = 'threshold-warning';
+          break;
+        }
+
+      }
+
+      this._setThreshold(thresholdClass);
+
     }
   });
 

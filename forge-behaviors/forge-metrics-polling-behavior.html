@@ -22,14 +22,14 @@
 
     endpoints.forEach(function(endpoint){
       var promise = ForgeWebComponents.Api.Raw(endpoint).then(function(result) {
-      var registered = instances[endpoint];
-      registered.forEach(function(r) {
-          r.onMetrics(result);
+        var registered = instances[endpoint];
+        registered.forEach(function(r) {
+            r.onMetrics(result);
+          });
+        }, function() {
+          // handle error? or do nothing?
         });
-      }, function() {
-        // handle error? or do nothing?
-      });
-      promises.push(promise);
+        promises.push(promise);
     });
 
     Q.all(promises).done(function() {

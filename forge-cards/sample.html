@@ -37,16 +37,21 @@
       <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000"
                            name="sumSeries(stats.webplu.Cms.Dev.*.DistributionRequests.*)"
                            icon="icons:assessment"
-                           title="Distribution Requests/sec"
-                           cardColor="#BBDEFB"
-                           headColor="#5baff5">
+                           title="Distribution Requests/sec">
       </forge-metrics-panel>
       <forge-metrics-panel url="/api/statistics/computed0?queryId=distExecTime&refreshMs=5000"
                            name="averageSeries(stats.timers.webplu.Cms.Dev.*.DistributionRequests.*.mean)"
                            icon="image:timer"
                            title="Distribution Execution Time (ms)"
-                           cardColor="#5cb85c"
-                           headColor="#357935">
+                           threshold-warning="100"
+                           threshold-danger="300">
+      </forge-metrics-panel>
+      <forge-metrics-panel url="/api/statistics/computed0?queryId=distExecTime&refreshMs=5000"
+                           name="averageSeries(stats.timers.webplu.Cms.Dev.*.DistributionRequests.*.mean)"
+                           icon="image:timer"
+                           title="Distribution Execution Time (ms)"
+                           threshold-warning="1000"
+                           threshold-danger="3000">
       </forge-metrics-panel>
     </forge-metrics-card>
 
@@ -54,33 +59,29 @@
       <forge-metrics-panel url="/api/statistics/computed1?queryId=execTime&refreshMs=5000"
                            name="averageSeries(stats.timers.webplu.Cms.Dev.*.Requests.*.*.mean)"
                            icon="icons:assessment"
-                           title="Requests/sec"
-                           cardColor="#BBDEFB"
-                           headColor="#5baff5">
+                           title="Requests/sec">
       </forge-metrics-panel>
       <forge-metrics-panel url="/api/statistics/computed2?queryId=reqSec&refreshMs=5000"
                            name="sumSeries(stats.webplu.Cms.Dev.*.Requests.*)"
                            icon="image:timer"
                            title="Execution Time (ms)"
-                           cardColor="#5cb85c"
-                           headColor="#357935">
+                           threshold-warning="1000"
+                           threshold-danger="3000">
       </forge-metrics-panel>
       <forge-metrics-panel url="/api/statistics/computed3?queryId=dataReqSec&refreshMs=5000"
                            icon="icons:dns"
-                           title="Data queries/sec"
-                           cardColor="#BBDEFB"
-                           headColor="#5baff5">
+                           title="Data queries/sec">
       </forge-metrics-panel>
       <forge-exceeding-threshold-panel url="api/statistics/counted?queryId=itemsExceeding&refreshMs=5000"
                            icon="icons:alarm"
                            title="Items exceeding threshold"
-                           cardColor="#5cb85c"
-                           headColor="#357935">
+                           threshold-danger="1">
       </forge-exceeding-threshold-panel>
     </forge-metrics-card>
 
     <script>
     </script>
+
   </body>
 </html>
 <!--
