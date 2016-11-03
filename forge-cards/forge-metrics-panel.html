@@ -18,6 +18,8 @@
   background-color: var(--status-neutral-dark-color);
   color: white;
   padding: 0 4px;
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .icon {
@@ -29,8 +31,6 @@
 
 .item {
   color: var(--paper-grey-900);
-  padding: 4px;
-  font-size: 18px;
   background-color: var(--status-neutral-color);
 }
 
@@ -42,7 +42,7 @@
 .metrics-text {
   position:absolute;
   bottom: 0;
-  padding: 0 4px;
+  padding: 4px;
 }
 
 .strong{
@@ -76,7 +76,7 @@
 <template>
 
   <paper-item-body two-line class$="item [[threshold]]">
-    <span class="header strong">[[title]]</span>
+    <span class="header">[[title]]</span>
     <div class="metrics-values">
       <div class="metrics-text">
         avg	<span class="strong">[[average]]</span>	peak <span class="strong">[[max]]</span>
