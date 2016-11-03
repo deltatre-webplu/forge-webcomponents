@@ -34,7 +34,7 @@
     detached: function() {
       this.arrayDelete(instances, this);
     },
-    ready: function() {
+    attached: function() {
       instances.push(this);
       this.pollHeartbeats();
     },

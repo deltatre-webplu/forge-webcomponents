@@ -124,10 +124,11 @@
       }
     },
     attached: function() {
+      this.register(this.url);
       this.startPolling();
     },
-    ready: function() {
-      this.register(this.url);
+    detached: function() {
+      this.unregister(this.url);
     },
     onMetrics: function(result) {
       var current = result[0];

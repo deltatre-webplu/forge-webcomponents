@@ -43,11 +43,8 @@
 
   ForgeWebComponents.Behaviors.MetricsPollingBehavior = {
 
-    detached: function() {
-      for (var endpoint in instances) {
-        this.unregister(endpoint);
-      }
-    },
+    _apiEndpoints: [],
+
     register: function(apiEndpoint) {
 
       if (!instances[apiEndpoint]) {
@@ -59,16 +56,19 @@
       }
 
     },
+
     unregister: function(apiEndpoint) {
       if (instances[apiEndpoint] && instances[apiEndpoint].indexOf(this) >= 0) {
         this.arrayDelete(instances[apiEndpoint], this);
       }
     },
+
     startPolling: function() {
       if (_polling) return;
       _polling = true;
       pollMetrics();
     },
+
     onMetrics: function() {
       console.error("onMetrics not properly overridden");
     }
