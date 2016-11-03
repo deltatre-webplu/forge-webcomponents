@@ -1,0 +1,92 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-icon-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/social-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/device-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+
+<link rel="import" href="../shared/variables.html">
+<link rel="import" href="../forge-api/forge-api.html">
+
+<link rel="import" href="../forge-behaviors/forge-wcm-stats-behavior.html">
+
+<dom-module id="forge-active-entities-card">
+
+<style>
+:root {
+
+  --paper-item-focused-before: {
+    background-color: transparent;
+  }
+
+}
+
+:host {
+  display: block;
+  padding: 4px;
+}
+
+.forge-active-entities-card {
+  display: block;
+}
+</style>
+
+<template>
+
+  <paper-card class="forge-active-entities-card" heading="Last Active Entities">
+
+    <div class="card-content">
+
+      <template is="dom-repeat" items="{{entities}}">
+        <div>[[item.Title]]</div>
+      </template>
+
+    </div>
+
+  </paper-card>
+
+</template>
+
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-active-entities-card',
+    behaviors: [ForgeWebComponents.Behaviors.WcmStatsPollingBehavior],
+    properties: {
+      url: {
+        type: String,
+        value: "/api/realtime/active_entities"
+      },
+      entities: {
+        type: Array,
+        notify: true,
+        value: []
+      }
+    },
+    attached: function() {
+      this.polling.register(this.url, this);
+      this.polling.start();
+    },
+    detached: function() {
+      this.polling.unregister(this.url, this);
+    },
+    onPollingUpdate: function(result) {
+      this.entities = result;
+    }
+  });
+
+})();
+</script>
+
+</dom-module>

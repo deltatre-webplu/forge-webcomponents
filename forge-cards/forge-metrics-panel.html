@@ -100,10 +100,12 @@
       },
       average: {
         type: Number,
+        value: 0,
         readOnly: true
       },
       max: {
         type: Number,
+        value: 0,
         readOnly: true
       },
       icon: {
@@ -124,13 +126,13 @@
       }
     },
     attached: function() {
-      this.register(this.url);
-      this.startPolling();
+      this.polling.register(this.url, this);
+      this.polling.start();
     },
     detached: function() {
-      this.unregister(this.url);
+      this.polling.unregister(this.url, this);
     },
-    onMetrics: function(result) {
+    onPollingUpdate: function(result) {
       var current = result[0];
       if (current) {
 

@@ -1,0 +1,19 @@
+[{
+	"Id": "1892b3bf-abcf-48c5-8963-7c4189608b18",
+	"Date": "2016-11-03T14:02:52.521Z",
+	"ActorId": "6e91c781-b4cf-4776-94d3-766efe217c44",
+	"ActorName": "Deltatre Webplu",
+	"ActorEmail": "platforms.team.webplu@deltatre.com",
+	"EventName": "EntityTitleSet",
+	"Verb": "update",
+	"TargetId": "1e3ae45f-3807-4ff7-8061-b88daae6a71d",
+	"Context": "wcm",
+	"Properties": {
+		"EntityTitle": "Muppet3",
+		"EntityType": "customentity",
+		"ObjectType": "title",
+		"ObjectValue": "Muppet3"
+	},
+	"AggregateRevision": 41,
+	"AggregateType": "customentity"
+}]

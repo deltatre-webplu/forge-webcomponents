@@ -3,9 +3,7 @@
 
   "use strict";
 
-  window.ForgeWebComponents = window.ForgeWebComponents || {};
-  window.ForgeWebComponents.Settings = window.ForgeWebComponents.Settings || {};
-  window.ForgeWebComponents.Settings.SystemRoles = {
+  var systemRoles = {
     ApplicationService: {
       icon: "icons:settings"
     },
@@ -19,6 +17,10 @@
       icon: "icons:cloud-circle"
     }
   };
+
+  window.ForgeWebComponents = window.ForgeWebComponents || {};
+  window.ForgeWebComponents.Settings = window.ForgeWebComponents.Settings || {};
+  window.ForgeWebComponents.Settings.SystemRoles = systemRoles;
 
 })();
 </script>

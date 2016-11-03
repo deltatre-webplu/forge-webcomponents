@@ -127,13 +127,13 @@
       }
     },
     attached: function() {
-      this.register(this.url);
-      this.startPolling();
+      this.polling.register(this.url, this);
+      this.polling.start();
     },
     detached: function() {
-      this.unregister(this.url);
+      this.polling.unregister(this.url, this);
     },
-    onMetrics: function(result) {
+    onPollingUpdate: function(result) {
 
       var items = result.map(function(r) {
         return new Entry(r.Name, r.Value);
