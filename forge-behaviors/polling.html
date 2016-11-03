@@ -15,7 +15,7 @@
   Polling.prototype.start = function() {
     if (this.active) return;
     this.active = true;
-    this.poll();
+    setTimeout(this.poll.bind(this), 500);
   };
 
   Polling.prototype.poll = function() {

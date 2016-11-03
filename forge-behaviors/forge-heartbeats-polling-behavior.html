@@ -1,4 +1,4 @@
-<link rel="import" href="../shared/variables.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
 <link rel="import" href="../forge-api/forge-api.html">
 
 <script>
@@ -10,6 +10,7 @@
   var instances = [];
   var _polling = false;
   var hbApi = ForgeWebComponents.Api.HeartBeats;
+  var interval = 10000;
 
   function pollHeartbeats() {
 
@@ -25,7 +26,7 @@
         i.onHeartbeat(result);
       });
       var end = +new Date();
-      var timeout = 5000 - (end - start);
+      var timeout = interval - (end - start);
       setTimeout(pollHeartbeats, Math.max(timeout, 0));
 
     });

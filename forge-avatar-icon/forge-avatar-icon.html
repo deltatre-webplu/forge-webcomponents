@@ -1,0 +1,64 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="../forge-shared/forge-shared.html">
+
+<dom-module id="forge-avatar-icon">
+
+  <style>
+    .icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+  </style>
+
+  <template>
+
+    <div class="icon" style$="background-color:[[color.background]];color:[[color.foreground]]">
+      [[initials]]
+    </div>
+
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    Polymer({
+      is: 'forge-avatar-icon',
+      properties: {
+        avatarName: {
+          type: String
+        },
+        avatarId: {
+          type: String,
+        },
+        color: {
+          type: Object,
+          notify: true,
+          computed: '_computeColor(avatarId)'
+        },
+        initials: {
+          type: String,
+          notify: true,
+          computed: '_computeInitials(avatarName)'
+        },
+      },
+      _computeColor: function(avatarId) {
+        return ForgeWebComponents.Helpers.ColorHelper.colorFromGuid(avatarId);
+      },
+      _computeInitials: function(avatarName) {
+        return avatarName
+          ? avatarName.split(' ').map(function (s) { return s.charAt(0); }).join('').substr(0, 2).toUpperCase()
+          : '?';
+      }
+    });
+
+  })();
+  </script>
+
+</dom-module>

@@ -15,12 +15,11 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
 
 <link rel="import" href="../forge-shared/forge-shared.html">
-<link rel="import" href="../forge-api/forge-api.html">
-
 <link rel="import" href="../forge-behaviors/forge-wcm-stats-behavior.html">
 <link rel="import" href="../moment-element/moment-element.html">
+<link rel="import" href="../forge-avatar-icon/forge-avatar-icon.html">
 
-<dom-module id="forge-active-entities-card">
+<dom-module id="forge-active-editors-card">
 
 <style>
 :host {
@@ -43,19 +42,24 @@ paper-card {
 
 <template>
 
-  <paper-card heading="Last Active Entities">
+  <paper-card heading="Last Active Editors">
 
     <div>
 
-      <template is="dom-repeat" items="{{entities}}">
-        <paper-item>
+      <template is="dom-repeat" items="{{entries}}">
+
+        <paper-icon-item>
+          <div item-icon>
+            <forge-avatar-icon avatar-name="[[item.ActorName]]" avatar-id="[[item.ActorId]]"><forge-avatar-icon>
+          </div>
           <paper-item-body two-line>
-            <div class="header">[[item.Title]] ([[item.EntityType]])</div>
+            <div class="header">[[item.ActorName]]</div>
             <div secondary>
-              <span>was edited by</span> <span class="strong">[[item.LastUpdateUser]]</span> <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
+              <span>[[item.Verb]]</span> <span class="strong">[[item.Properties.ObjectType]]</span> <moment-element date-time="[[item.Date]]"></moment-element>
             </div>
           </paper-item-body>
-        </paper-item>
+        </paper-icon-item>
+
       </template>
 
     </div>
@@ -69,14 +73,14 @@ paper-card {
   "use strict";
 
   Polymer({
-    is: 'forge-active-entities-card',
+    is: 'forge-active-editors-card',
     behaviors: [ForgeWebComponents.Behaviors.WcmStatsPollingBehavior],
     properties: {
       url: {
         type: String,
-        value: "/api/realtime/active_entities"
+        value: "/api/history/items/context"
       },
-      entities: {
+      entries: {
         type: Array,
         notify: true,
         value: []
@@ -90,7 +94,7 @@ paper-card {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-      this.entities = result;
+      this.entries = result;
     }
   });
 

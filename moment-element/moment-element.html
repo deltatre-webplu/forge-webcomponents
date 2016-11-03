@@ -1,0 +1,40 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<dom-module id="moment-element">
+
+<style>
+</style>
+
+<template>[[output]]</template>
+
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'moment-element',
+    properties: {
+      dateTime: {
+        type: String
+      },
+      format: {
+        type: String,
+        value: "fromNow"
+      },
+      output: {
+        type: String,
+        notify: true,
+        computed: '_computeOutput(dateTime, format)'
+      }
+    },
+    _computeOutput: function(datetime, format) {
+      var output = moment(datetime);
+      output = output.fromNow();
+      return output;
+    }
+  });
+
+})();
+</script>
+
+</dom-module>
