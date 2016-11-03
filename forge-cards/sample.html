@@ -13,7 +13,7 @@
     </script>
 
     <link rel="import" href="../libraries/libraries.html">
-    
+
     <link rel="import" href="forge-status-card.html">
     <link rel="import" href="forge-nodes-status-card.html">
     <link rel="import" href="forge-metrics-card.html">
@@ -37,7 +37,7 @@
 
     <forge-metrics-card heading="Distribution Api"
                         icon="icons:cloud-circle"
-                        more-info-url="/more-info">
+                        more-info-url="#/performance">
       <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000"
                            icon="icons:assessment"
                            title="Distribution Requests/sec">
@@ -58,7 +58,7 @@
 
     <forge-metrics-card heading="Front End"
                         icon="social:public"
-                        more-info-url="/more-info">
+                        more-info-url="#/performance">
       <forge-metrics-panel url="/api/statistics/computed1?queryId=execTime&refreshMs=5000"
                            icon="icons:assessment"
                            title="Requests/sec">

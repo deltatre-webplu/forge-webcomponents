@@ -53,7 +53,7 @@
         <forge-metrics-card class="padded flex"
                             heading="Distribution Api"
                             icon="icons:cloud-circle"
-                            more-info-url="/more-info">
+                            more-info-url="#/performance">
           <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000"
                                icon="icons:assessment"
                                title="Distribution Requests/sec">
@@ -69,12 +69,12 @@
         <forge-metrics-card class="padded flex"
                             heading="Front End"
                             icon="social:public"
-                            more-info-url="/more-info">
-          <forge-metrics-panel url="/api/statistics/computed?queryId=execTime&refreshMs=5000"
+                            more-info-url="#/performance">
+          <forge-metrics-panel url="/api/statistics/computed?queryId=reqSec&refreshMs=5000"
                                icon="icons:assessment"
                                title="Requests/sec">
           </forge-metrics-panel>
-          <forge-metrics-panel url="/api/statistics/computed?queryId=reqSec&refreshMs=5000"
+          <forge-metrics-panel url="/api/statistics/computed?queryId=execTime&refreshMs=5000"
                                icon="image:timer"
                                title="Execution Time (ms)"
                                threshold-warning="1000"
