@@ -14,7 +14,11 @@
   function pollMetrics() {
 
     var endpoints = Object.keys(instances);
-    if (endpoints.length < 1) return;
+
+    if (endpoints.length < 1) {
+      _polling = false;
+      return;
+    };
 
     var start = +new Date();
 
@@ -47,8 +51,6 @@
 
     register: function(apiEndpoint) {
 
-      console.log('metrics registered');
-
       if (!instances[apiEndpoint]) {
         instances[apiEndpoint] = [];
       }
@@ -60,9 +62,11 @@
     },
 
     unregister: function(apiEndpoint) {
-      console.log('metrics unregistered');
       if (instances[apiEndpoint] && instances[apiEndpoint].indexOf(this) >= 0) {
         this.arrayDelete(instances[apiEndpoint], this);
+        if (instances[apiEndpoint].length == 0) {
+          delete instances[apiEndpoint];
+        }
       }
     },
 

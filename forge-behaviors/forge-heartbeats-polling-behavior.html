@@ -8,12 +8,15 @@
   ForgeWebComponents.Behaviors = ForgeWebComponents.Behaviors || {};
 
   var instances = [];
-  var _pollingHeartbeats = false;
+  var _polling = false;
   var hbApi = ForgeWebComponents.Api.HeartBeats;
 
   function pollHeartbeats() {
 
-    if (instances.length < 1) return;
+    if (instances.length < 1) {
+      _polling = false;
+      return;
+    }
 
     var start = +new Date();
 
@@ -32,17 +35,15 @@
   ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior = {
 
     detached: function() {
-      console.log('heartbeats detached');
       this.arrayDelete(instances, this);
     },
     attached: function() {
-      console.log('heartbeats attached');
       instances.push(this);
       this.pollHeartbeats();
     },
     pollHeartbeats: function() {
-      if (_pollingHeartbeats) return;
-      _pollingHeartbeats = true;
+      if (_polling) return;
+      _polling = true;
       pollHeartbeats();
     },
     onHeartbeat: function() {
