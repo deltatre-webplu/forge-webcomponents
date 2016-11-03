@@ -32,9 +32,11 @@
   ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior = {
 
     detached: function() {
+      console.log('heartbeats detached');
       this.arrayDelete(instances, this);
     },
     attached: function() {
+      console.log('heartbeats attached');
       instances.push(this);
       this.pollHeartbeats();
     },

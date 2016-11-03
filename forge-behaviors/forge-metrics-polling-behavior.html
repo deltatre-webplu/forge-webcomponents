@@ -47,6 +47,8 @@
 
     register: function(apiEndpoint) {
 
+      console.log('metrics registered');
+
       if (!instances[apiEndpoint]) {
         instances[apiEndpoint] = [];
       }
@@ -58,6 +60,7 @@
     },
 
     unregister: function(apiEndpoint) {
+      console.log('metrics unregistered');
       if (instances[apiEndpoint] && instances[apiEndpoint].indexOf(this) >= 0) {
         this.arrayDelete(instances[apiEndpoint], this);
       }
