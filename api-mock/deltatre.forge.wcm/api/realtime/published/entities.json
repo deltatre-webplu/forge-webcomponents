@@ -1,0 +1,19 @@
+{
+	"Total": 100,
+	"TotalByEntities": [{
+		"EntityType": "story",
+		"Total": 20
+	}, {
+		"EntityType": "photo",
+		"Total": 20
+	}, {
+		"EntityType": "album",
+		"Total": 20
+	}, {
+		"EntityType": "player",
+		"Total": 20
+	}, {
+		"EntityType": "team",
+		"Total": 20
+	}]
+}

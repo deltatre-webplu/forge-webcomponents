@@ -1,0 +1,24 @@
+<link rel="import" href="polling.html">
+
+<script>
+(function() {
+
+  window.ForgeWebComponents = window.ForgeWebComponents || {};
+  ForgeWebComponents.Behaviors = ForgeWebComponents.Behaviors || {};
+
+  var polling = new ForgeWebComponents.Polling(10000);//600000
+
+  ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior = {
+
+    polling: polling,
+
+    onPollingUpdate: function() {
+      console.error("onPollingUpdate not properly overridden");
+    },
+
+    onPollingStart:function(){}
+
+  };
+
+})();
+</script>

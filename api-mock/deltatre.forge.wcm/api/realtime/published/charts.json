@@ -1,0 +1,8 @@
+[
+  ["EntityType", "Total", { "role": "style" } ],
+  ["Storyes", 20, "color: gray"],
+  ["Photos", 20, "color: #76A7FA"],
+  ["Albums", 20, "opacity: 0.2"],
+  ["Players", 20, "stroke-color: #703593; stroke-width: 4; fill-color: #C5A5CF"],
+  ["Teams", 20, "stroke-color: #871B47; stroke-opacity: 0.6; stroke-width: 8; fill-color: #BC5679; fill-opacity: 0.2"]
+]

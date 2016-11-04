@@ -1,0 +1,60 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/google-chart/google-chart.html">
+
+
+<link rel="import" href="../forge-behaviors/forge-wcm-published-behavior.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+
+<dom-module id="forge-published-chart-card">
+
+<style>
+:host {
+  display: block;
+}
+
+paper-card {
+  display: block;
+}
+
+google-chart {
+      height: 300px;
+      width: 400px;
+    }
+</style>
+
+<template>
+
+  <paper-card heading="Chart overview of entities published by type">
+    <div>
+      <google-chart
+      id="published-chart"
+      type="pie"
+      options='{"title": "Overview of entities published"}'
+      data='{{url}}'>
+      </google-chart>
+    </div>
+  </paper-card>
+</template>
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-published-chart-card',
+    properties: {
+      url: {
+        type: String,
+        value: ""
+      }
+    }
+  });
+
+})();
+</script>
+
+</dom-module>

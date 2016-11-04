@@ -1,0 +1,118 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/social-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/device-icons.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+
+<link rel="import" href="../forge-behaviors/forge-wcm-published-behavior.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+
+<dom-module id="forge-published-overview-card">
+
+<style>
+:root {
+  --paper-item-focused-before: {
+    background-color: transparent;
+  }
+}
+:host {
+  display: block;
+}
+
+paper-card {
+  display: block;
+}
+
+.header {
+  padding: 16px;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.entityTotal {
+  font-size: 16px;
+}
+
+.entity-icon-wrapper {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--google-grey-300);
+}
+.entity-icon {
+  margin: 8px;
+  width: 24px;
+  height: 24px;
+  --iron-icon-fill-color: white;
+}
+
+google-chart {
+      height: 300px;
+      width: 400px;
+    }
+</style>
+
+<template>
+
+  <paper-card heading="Total entities published: [[grandTotal]]">
+    <div>
+      <template is="dom-repeat" items="{{entities}}">
+        <paper-icon-item>
+          <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+            <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
+          </div>
+          <paper-item-body>
+            <div class="entityTotal">Total [[item.PluralType]] published: [[item.Total]]</div>
+          </paper-item-body>
+        </paper-icon-item>
+      </template>
+
+    </div>
+  </paper-card>
+</template>
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-published-overview-card',
+    behaviors: [ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior],
+    properties: {
+      url: {
+        type: String,
+        value: "deltatre.forge.wcm/api/realtime/published/entities"
+      }
+    },
+    entities:[],
+    grandTotal:0,
+    attached: function() {
+      this.polling.register(this.url, this);
+      this.polling.start();
+    },
+    detached: function() {
+      this.polling.unregister(this.url, this);
+    },
+    onPollingUpdate: function(result) {
+
+      result.TotalByEntities.forEach(function(e) {
+        console.log(e);
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+        e.PluralType = e.EntityType == 'story' ? 'stories' : e.EntityType + 's';
+      });
+      this.grandTotal = result.Total;
+      this.entities = result.TotalByEntities;
+
+    }
+  });
+
+})();
+</script>
+
+</dom-module>
