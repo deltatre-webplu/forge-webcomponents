@@ -1,0 +1,54 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../forge-cards/forge-cards.html">
+
+<dom-module id="forge-editorial-dashboard">
+
+  <style include="iron-flex iron-flex-alignment">
+
+    .dashboard-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: row;
+    }
+
+    @media (max-width: 1000px) {
+      .dashboard-container {
+        display: block;
+      }
+    }
+
+    .padded {
+      padding: 8px;
+    }
+
+  </style>
+
+  <template>
+
+    <div class="dashboard-container">
+      <forge-active-entities-card class="padded flex"></forge-active-entities-card>
+      <forge-active-editors-card class="padded flex"></forge-active-editors-card>
+    </div>
+
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    Polymer({
+      is: 'forge-editorial-dashboard'
+    });
+
+  })();
+  </script>
+
+</dom-module>
