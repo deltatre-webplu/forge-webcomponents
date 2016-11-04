@@ -14,6 +14,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
 
+<link rel="import" href="../forge-shared/forge-icons.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
 <link rel="import" href="../forge-api/forge-api.html">
 
@@ -39,6 +40,21 @@ paper-card {
 .strong {
   font-weight: 700;
 }
+
+.entity-icon-wrapper {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--google-grey-300);
+}
+.entity-icon {
+  margin: 8px;
+  width: 24px;
+  height: 24px;
+  --iron-icon-fill-color: white;
+}
 </style>
 
 <template>
@@ -48,14 +64,19 @@ paper-card {
     <div>
 
       <template is="dom-repeat" items="{{entities}}">
-        <paper-item>
+
+        <paper-icon-item class="paper-item-group">
+          <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+            <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
+          </div>
           <paper-item-body two-line>
             <div class="header">[[item.Title]] ([[item.EntityType]])</div>
             <div secondary>
               <span>was edited by</span> <span class="strong">[[item.LastUpdateUser]]</span> <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
             </div>
           </paper-item-body>
-        </paper-item>
+        </paper-icon-item>
+
       </template>
 
     </div>
@@ -90,7 +111,13 @@ paper-card {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
+
+      result.forEach(function(e) {
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+      });
+
       this.entities = result;
+
     }
   });
 
