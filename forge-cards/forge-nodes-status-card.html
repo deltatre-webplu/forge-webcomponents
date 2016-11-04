@@ -92,7 +92,7 @@
             <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
           </div>
           <paper-item-body class="group-title">[[group.Key]]</paper-item-body>
-          <paper-icon-button icon="expand-more" alt="expand" on-click="toggle"></paper-icon-button>
+          <paper-icon-button icon="expand-more" alt="expand" on-tap="toggle"></paper-icon-button>
         </paper-icon-item>
         <iron-collapse id$="collapse-[[group.Key]]">
           <template is="dom-repeat" items="{{group.Nodes}}">
