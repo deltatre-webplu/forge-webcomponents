@@ -12,6 +12,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-progress/paper-progress.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
 
 <link rel="import" href="../forge-shared/forge-shared.html">
@@ -30,6 +31,12 @@ paper-card {
   display: block;
 }
 
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
 .header {
   font-weight: 400;
   font-size: 16px;
@@ -44,7 +51,9 @@ paper-card {
 
   <paper-card heading="Last Active Editors">
 
-    <div>
+    <paper-progress hidden$="[[hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
 
       <template is="dom-repeat" items="{{entries}}">
 
@@ -72,6 +81,25 @@ paper-card {
 (function() {
   "use strict";
 
+  var verbToPastVerb = {
+    "add": "created",
+    "send for approval": "sent for approval"
+  };
+
+  function toPastTense(verb) {
+
+    if (verbToPastVerb[verb]) {
+      return verbToPastVerb[verb];
+    }
+
+    if (verb.endsWith("e")) {
+      return verb + "d";
+    }
+
+    return verb + "ed";
+
+  }
+
   Polymer({
     is: 'forge-active-editors-card',
     behaviors: [ForgeWebComponents.Behaviors.WcmStatsPollingBehavior],
@@ -79,13 +107,10 @@ paper-card {
       url: {
         type: String,
         value: "/api/history/items/context/wcm"
-      },
-      entries: {
-        type: Array,
-        notify: true,
-        value: []
       }
     },
+    hideLoading: true,
+    entries: [],
     attached: function() {
       this.polling.register(this.url, this);
       this.polling.start();
@@ -94,7 +119,14 @@ paper-card {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
+      result.forEach(function(e) {
+        e.PastTenseVerb = toPastTense(e.Verb);
+      });
       this.entries = result;
+      this.hideLoading = true;
+    },
+    onPollingStart: function() {
+      this.hideLoading = false;
     }
   });
 

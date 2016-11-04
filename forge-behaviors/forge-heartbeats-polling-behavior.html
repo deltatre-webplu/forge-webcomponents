@@ -11,6 +11,7 @@
   var _polling = false;
   var hbApi = ForgeWebComponents.Api.HeartBeats;
   var interval = 10000;
+  var timeoutRef = null;
 
   function pollHeartbeats() {
 
@@ -22,12 +23,14 @@
     var start = +new Date();
 
     hbApi.fetchByRoleType().then(function(result) {
+
       instances.forEach(function(i) {
         i.onHeartbeat(result);
       });
+
       var end = +new Date();
       var timeout = interval - (end - start);
-      setTimeout(pollHeartbeats, Math.max(timeout, 0));
+      timeoutRef = setTimeout(pollHeartbeats, Math.max(timeout, 0));
 
     });
 
@@ -37,6 +40,10 @@
 
     detached: function() {
       this.arrayDelete(instances, this);
+      if (instances.length < 1) {
+        _polling = false;
+        clearTimeout(timeoutRef);
+      }
     },
     attached: function() {
       instances.push(this);

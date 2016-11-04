@@ -38,6 +38,12 @@ paper-icon-item {
   cursor: hand;
 }
 
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
 .header {
   font-weight: 400;
   font-size: 16px;
@@ -67,7 +73,9 @@ paper-icon-item {
 
   <paper-card heading="Last Active Entities">
 
-    <div>
+    <paper-progress hidden$="[[hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
 
       <template is="dom-repeat" items="{{entities}}">
 
@@ -88,6 +96,7 @@ paper-icon-item {
 
     </div>
 
+
   </paper-card>
 
 </template>
@@ -103,13 +112,10 @@ paper-icon-item {
       url: {
         type: String,
         value: "deltatre.forge.wcm/api/realtime/active_entities"
-      },
-      entities: {
-        type: Array,
-        notify: true,
-        value: []
       }
     },
+    entities: [],
+    hideLoading: true,
     attached: function() {
       this.polling.register(this.url, this);
       this.polling.start();
@@ -125,7 +131,10 @@ paper-icon-item {
       });
 
       this.entities = result;
-
+      this.hideLoading = true;
+    },
+    onPollingStart: function() {
+      this.hideLoading = false;
     },
     _openItem: function(e) {
       var entity = e.model.item;

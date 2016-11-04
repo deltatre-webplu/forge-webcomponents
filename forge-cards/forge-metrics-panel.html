@@ -98,33 +98,24 @@
       url: {
         type: String
       },
-      average: {
-        type: Number,
-        value: 0,
-        readOnly: true
-      },
-      max: {
-        type: Number,
-        value: 0,
-        readOnly: true
-      },
       icon: {
         type: String
       },
       title:{
         type: String
       },
-      threshold: {
-        type: String,
-        readOnly: true
-      },
       thresholdWarning: {
-        type: Number
+        type: Number,
+        value: 0
       },
       thresholdDanger: {
-        type: Number
+        type: Number,
+        value: 0
       }
     },
+    average: 0,
+    max: 0,
+    threshold: null,
     attached: function() {
       this.polling.register(this.url, this);
       this.polling.start();
@@ -136,17 +127,17 @@
       var current = result[0];
       if (current) {
 
-        this._setAverage(current.Average.isInfinite || current.Average.isNaN ? 0 : Math.round(current.Average));
-        this._setMax(current.Max.isInfinite || current.Max.isNaN ? 0 : Math.round(current.Max));
+        this.average = (current.Average.isInfinite || current.Average.isNaN) ? 0 : Math.round(current.Average);
+        this.max = (current.Max.isInfinite || current.Max.isNaN) ? 0 : Math.round(current.Max);
 
         if (this.thresholdDanger && this.average >= this.thresholdDanger) {
-          this._setThreshold('threshold-danger');
+          this.threshold = 'threshold-danger';
         }
         else if (this.thresholdWarning && this.average >= this.thresholdWarning) {
-          this._setThreshold('threshold-warning');
+          this.threshold = 'threshold-warning';
         }
         else if (this.thresholdWarning || this.thresholdDanger) {
-          this._setThreshold('threshold-success');
+          this.threshold = 'threshold-success';
         }
 
       }

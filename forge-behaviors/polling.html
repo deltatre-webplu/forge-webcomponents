@@ -35,11 +35,15 @@
     var self = this;
     endpoints.forEach(function(endpoint) {
 
+      var registered = self.instances[endpoint];
+      if (!registered) return;
+
+      registered.forEach(function(r) {
+        r.onPollingStart();
+      });
+
       var promise = api.raw(endpoint)
        .then(function(result) {
-
-         var registered = self.instances[endpoint];
-         if (!registered) return;
 
          registered.forEach(function(r) {
            r.onPollingUpdate(result);

@@ -104,28 +104,23 @@
       url: {
         type: String
       },
-      items: {
-        type: Array,
-        value: [],
-        readOnly: true
-      },
       icon: {
         type: String
       },
       title:{
         type: String
       },
-      threshold: {
-        type: String,
-        readOnly: true
-      },
       thresholdWarning: {
-        type: Number
+        type: Number,
+        value: 0
       },
       thresholdDanger: {
-        type: Number
+        type: Number,
+        value: 0
       }
     },
+    threshold: null,
+    items: [],
     attached: function() {
       this.polling.register(this.url, this);
       this.polling.start();
@@ -139,7 +134,7 @@
         return new Entry(r.Name, r.Value);
       });
 
-      this._setItems(items);
+      this.items = items;
       this._calculateThreshold(items);
 
     },
@@ -166,7 +161,7 @@
 
       }
 
-      this._setThreshold(thresholdClass);
+      this.threshold = thresholdClass;
 
     }
   });
