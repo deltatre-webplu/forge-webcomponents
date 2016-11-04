@@ -9,6 +9,7 @@
 
     this.instances = {};
     this.interval = interval || 60000;
+    this.timeout = null;
     this.active = false;
   }
 
@@ -20,12 +21,10 @@
 
   Polling.prototype.poll = function() {
 
-    var self = this;
-
     var endpoints = Object.keys(this.instances);
 
     if (endpoints.length < 1) {
-      self.active = false;
+      this.active = false;
       return;
     };
 
@@ -33,6 +32,7 @@
 
     var promises = [];
 
+    var self = this;
     endpoints.forEach(function(endpoint) {
 
       var promise = api.raw(endpoint)
@@ -59,7 +59,7 @@
 
       var end = +new Date();
       var timeout = self.interval - (end - start);
-      setTimeout(self.poll.bind(self), Math.max(timeout, 0));
+      self.timeout = setTimeout(self.poll.bind(self), Math.max(timeout, 0));
 
     });
 
@@ -88,6 +88,12 @@
       if (this.instances[endpoint].length == 0) {
         delete this.instances[endpoint];
       }
+
+      if (Object.keys(this.instances).length < 1) {
+        this.active = false;
+        clearTimeout(this.timeout);
+      };
+
     }
 
   }
