@@ -1,0 +1,33 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/app-localize-behavior/app-localize-behavior.html">
+
+<script>
+(function() {
+
+  window.ForgeWebComponents = window.ForgeWebComponents || {};
+  ForgeWebComponents.Behaviors = ForgeWebComponents.Behaviors || {};
+
+  ForgeWebComponents.Behaviors.ForgeLanguageChangeBehavior = {
+
+    properties: {
+      language: {
+        type: String,
+        value: 'en'
+      },
+    },
+
+    onLanguageChanged: function(e) {
+      this.language = e.language;
+    },
+
+    attached: function() {
+      document.addEventListener('ForgeLanguageChanged', this.onLanguageChanged.bind(this));
+    },
+
+    detached: function() {
+      document.removeEventListener('ForgeLanguageChanged', this.onLanguageChanged.bind(this));
+    }
+
+  };
+
+})();
+</script>

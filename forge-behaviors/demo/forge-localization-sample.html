@@ -1,0 +1,27 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="../forge-localize-behavior.html">
+
+<dom-module id="forge-localization-sample">
+
+<style>
+</style>
+
+<template>
+  <h1>[[localize('test2')]]</h1>
+  <h1>[[localize('test')]]</h1>
+</template>
+
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-localization-sample',
+    behaviors: [ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+  });
+
+})();
+</script>
+
+</dom-module>

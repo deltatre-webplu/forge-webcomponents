@@ -1,0 +1,20 @@
+{
+  "en": {
+    "test": "Test ENG"
+  },
+  "fr": {
+    "test": "Test FR",
+    "test2": "je suis un pomme de terre"
+  },
+  "it": {
+    "test": "Test ITA",
+    "test2": "ciao dawg",
+    "Last Active Editors": "Editor attivi di recente",
+    "updated": "ha aggiornato",
+    "was edited by": "aggiornato da",
+    "story":"storia",
+    "photo":"foto",
+    "selection":"selezione",
+    "document":"documento"
+  }
+}

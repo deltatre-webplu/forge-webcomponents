@@ -20,6 +20,8 @@
 <link rel="import" href="../forge-api/forge-api.html">
 
 <link rel="import" href="../forge-behaviors/forge-wcm-stats-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
 <link rel="import" href="../moment-element/moment-element.html">
 
 <dom-module id="forge-active-entities-card">
@@ -71,7 +73,7 @@ paper-icon-item {
 
 <template>
 
-  <paper-card heading="Last Active Entities">
+  <paper-card heading="[[localize('Last Active Entities')]]">
 
     <paper-progress hidden$="[[hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
@@ -85,9 +87,9 @@ paper-icon-item {
             <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
           </div>
           <paper-item-body two-line>
-            <div class="header">[[item.Title]] ([[item.EntityType]])</div>
+            <div class="header">[[item.Title]] ([[localize(item.EntityType)]])</div>
             <div secondary>
-              <span>was edited by</span> <span class="strong">[[item.LastUpdateUser]]</span> <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
+              <span>[[localize('was edited by')]]</span> <span class="strong">[[item.LastUpdateUser]]</span> <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
             </div>
           </paper-item-body>
         </paper-icon-item>
@@ -107,7 +109,7 @@ paper-icon-item {
 
   Polymer({
     is: 'forge-active-entities-card',
-    behaviors: [ForgeWebComponents.Behaviors.WcmStatsPollingBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.WcmStatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
         type: String,

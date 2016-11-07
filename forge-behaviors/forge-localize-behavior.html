@@ -1,0 +1,62 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="forge-languagechange-behavior.html">
+<link rel="import" href="../forge-api/forge-api.html">
+
+<script>
+(function() {
+
+  window.ForgeWebComponents = window.ForgeWebComponents || {};
+  ForgeWebComponents.Behaviors = ForgeWebComponents.Behaviors || {};
+
+  var api = ForgeWebComponents.Api;
+
+  ForgeLocalizeBehavior = {
+
+    /**
+     * Returns a computed `localize` method, based on the current `language`.
+     * Overwrites the "__computeLocalize" of the AppLocalizeBehavior
+     */
+    __computeLocalize: function(language, resources, formats) {
+      var proto = this.constructor.prototype;
+
+      // Everytime any of the parameters change, invalidate the strings cache.
+      proto.__localizationCache.messages = {};
+
+      return function() {
+        var key = arguments[0];
+        if (!key || !resources || !language)
+          return;
+
+        // Cache the key/value pairs for the same language, so that we don't
+        // do extra work if we're just reusing strings across an application.
+        var messageKey = key + resources[language][key];
+        var msg = proto.__localizationCache.messages[messageKey];
+
+        if (!msg) {
+          msg = new IntlMessageFormat(resources[language][key] || key, language, formats);
+          proto.__localizationCache.messages[messageKey] = msg;
+        }
+
+        var args = {};
+        for (var i = 1; i < arguments.length; i+=2) {
+          args[arguments[i]] = arguments[i+1];
+        }
+
+        return msg.format(args);
+      };
+    },
+
+    attached: function() {
+      this.loadResources(api.addRootUrl('/api/vocabulary'));
+    }
+
+  };
+
+  ForgeWebComponents.Behaviors.ForgeLocalizeBehavior = [
+    Polymer.AppLocalizeBehavior,
+    ForgeWebComponents.Behaviors.ForgeLanguageChangeBehavior,
+    ForgeLocalizeBehavior
+  ];
+
+})();
+</script>
