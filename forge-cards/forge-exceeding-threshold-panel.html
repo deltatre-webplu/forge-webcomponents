@@ -6,6 +6,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/image-icons.html">
 
 <link rel="import" href="../forge-behaviors/forge-metrics-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <dom-module id="forge-exceeding-threshold-panel">
 
@@ -75,11 +76,11 @@
 <template>
 
     <paper-item-body two-line class$="item [[threshold]]">
-      <span class="header">[[title]]</span>
+      <span class="header">[[localize(title)]]</span>
       <div class="metrics-values">
         <div class="metrics-text">
           <template is="dom-repeat" items="[[items]]">
-            [[item.name]]	<span class="strong">[[item.value]]</span>
+            [[localize(item.name)]]	<span class="strong">[[item.value]]</span>
           </template>
         </div>
         <iron-icon class="icon" icon="[[icon]]"></iron-icon>
@@ -99,7 +100,7 @@
 
   Polymer({
     is: 'forge-exceeding-threshold-panel',
-    behaviors: [ForgeWebComponents.Behaviors.MetricsPollingBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.MetricsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
         type: String

@@ -17,6 +17,7 @@
 <link rel="import" href="../forge-api/forge-api.html">
 
 <link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <dom-module id="forge-nodes-status-card">
 
@@ -82,7 +83,7 @@
 
 <template>
 
-  <paper-card class="nodes-status-card" heading="Nodes">
+  <paper-card class="nodes-status-card" heading="[[localize('Nodes')]]">
 
     <div class="card-content">
 
@@ -91,7 +92,7 @@
           <div class$="status status-[[group.Status]]" item-icon>
             <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
           </div>
-          <paper-item-body class="group-title">[[group.Key]]</paper-item-body>
+          <paper-item-body class="group-title">[[localize(group.Key)]]</paper-item-body>
           <paper-icon-button icon="expand-more" alt="expand" on-tap="toggle"></paper-icon-button>
         </paper-icon-item>
         <iron-collapse id$="collapse-[[group.Key]]">
@@ -109,9 +110,12 @@
     </div>
 
     <div class="card-actions">
-      <paper-button on-click="restore">reset</paper-button>
+      <paper-button on-click="restore">[[localize("reset")]]</paper-button>
       <template is="dom-if" if="[[lastHeartbeatUpdate]]">
-        <span class="heartbeat-last-update">Last update: [[lastHeartbeatUpdate]]</span>
+        <div class="heartbeat-last-update">
+          <span>[[localize("Last update")]]: </span>
+          <moment-element date-time="[[lastHeartbeatUpdate]]"></moment-element>
+        </div>
       </template>
     </div>
 
@@ -129,7 +133,7 @@
 
   Polymer({
     is: 'forge-nodes-status-card',
-    behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       groups: {
         type: Array,
@@ -142,7 +146,7 @@
     },
     onHeartbeat: function(result) {
 
-      if(result) this.lastHeartbeatUpdate = moment().fromNow();
+      if(result) this.lastHeartbeatUpdate = new Date();
 
       result.forEach(function(g) {
         var role = ForgeWebComponents.Settings.SystemRoles[g.Key];
@@ -164,7 +168,7 @@
         // names must be equal
         return 0;
       });
-      
+
     },
     toggle: function(e) {
       var collapse = this.$$("#collapse-" + e.model.group.Key);

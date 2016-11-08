@@ -5,6 +5,8 @@
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
 
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
 <dom-module id="forge-metrics-card">
 
 <style>
@@ -55,7 +57,7 @@
 
     <div class="card-header">
       <iron-icon class="icon" icon="[[icon]]"></iron-icon>
-      <span class="title">[[heading]]</span>
+      <span class="title">[[localize(heading)]]</span>
     </div>
 
     <div class="card-content">
@@ -63,7 +65,7 @@
     </div>
 
     <div class="card-actions">
-      <paper-link-button href="[[moreInfoUrl]]">more info</paper-link-button>
+      <paper-link-button href="[[moreInfoUrl]]">[[localize("More Info")]]</paper-link-button>
     </div>
 
   </paper-card>
@@ -76,6 +78,7 @@
 
   Polymer({
     is: 'forge-metrics-card',
+    behaviors: [ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       heading: {
         type: String

@@ -10,6 +10,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 
 <link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
 
 <dom-module id="forge-status-card">
@@ -52,7 +53,7 @@
   <paper-card class$="status-card status-[[status]]">
     <div class="card-content">
       <iron-icon class="role-icon" icon="[[icon]]"></iron-icon>
-      <div class="role-name">[[role]]</div>
+      <div class="role-name">[[localize(role)]]</div>
     </div>
   </paper-card>
 
@@ -65,7 +66,7 @@
 
   Polymer({
     is: 'forge-status-card',
-    behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       role: {
         type: String,

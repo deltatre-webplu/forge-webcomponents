@@ -6,6 +6,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/image-icons.html">
 
 <link rel="import" href="../forge-behaviors/forge-metrics-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <dom-module id="forge-metrics-panel">
 
@@ -76,10 +77,10 @@
 <template>
 
   <paper-item-body two-line class$="item [[threshold]]">
-    <span class="header">[[title]]</span>
+    <span class="header">[[localize(title)]]</span>
     <div class="metrics-values">
       <div class="metrics-text">
-        avg	<span class="strong">[[average]]</span>	peak <span class="strong">[[max]]</span>
+        [[localize("avg")]]	<span class="strong">[[average]]</span>	[[localize("peak")]] <span class="strong">[[max]]</span>
       </div>
       <iron-icon class="icon" icon="[[icon]]"></iron-icon>
     </div>
@@ -93,7 +94,7 @@
 
   Polymer({
     is: 'forge-metrics-panel',
-    behaviors: [ForgeWebComponents.Behaviors.MetricsPollingBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.MetricsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
         type: String
