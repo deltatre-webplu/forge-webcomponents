@@ -20,6 +20,7 @@
     },
 
     attached: function() {
+      this.language = ForgeWebComponents.Settings.DefaultLocale;
       document.addEventListener('ForgeLanguageChanged', this.onLanguageChanged.bind(this));
     },
 

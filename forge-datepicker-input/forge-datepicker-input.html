@@ -1,0 +1,106 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-input/paper-input.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-dialog/paper-dialog.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
+<link rel="import" href="../paper-date-picker/paper-date-picker.html">
+
+<link rel="import" href="../forge-behaviors/forge-extendedfield-string-behavior.html">
+
+<dom-module id="forge-datepicker-input">
+
+  <style>
+    :host {
+      display: block;
+    }
+
+    .datepicker-input-container {
+      display: flex;
+      flex-direction: row;
+    }
+
+    .datepicker-input-container .datepicker-input {
+      flex-grow: 1;
+      --paper-input-container-disabled: {
+        opacity: 1;
+      };
+    }
+
+    .datepicker-input-container .datepicker-button {
+      margin: 8px;
+    }
+  </style>
+
+  <template>
+
+    <div class="datepicker-input-container">
+      <paper-input class="datepicker-input" value="{{formattedValue}}" label="[[label]]" disabled="true"></paper-input>
+      <paper-icon-button class="datepicker-button" icon="icons:date-range" on-click="openDatepicker" disabled="[[disabled]]"></paper-icon-button>
+      <paper-icon-button class="datepicker-button" icon="icons:close" on-click="deleteDate" disabled="[[disabled]]"></paper-icon-button>
+    </div>
+
+    <paper-dialog id="datePicker"
+      modal
+      on-iron-overlay-closed="onDatePickerClosed">
+
+      <paper-date-picker id="picker" date="[[_evalDate(value)]]"></paper-date-picker>
+
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm autofocus>Accept</paper-button>
+      </div>
+
+    </paper-dialog>
+
+  </template>
+
+  <script>
+  Polymer({
+
+    is: 'forge-datepicker-input',
+    behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
+
+    properties: {
+      formattedValue: {
+        type: String,
+        computed: 'computeFormattedValue(value)'
+      }
+    },
+
+    openDatepicker: function() {
+      this.$.datePicker.open();
+    },
+
+    computeFormattedValue: function(value) {
+      if (!value) {
+        return null;
+      }
+      return moment(value).format('LL');
+    },
+
+    _evalDate: function(value) {
+      if (!value) {
+        return new Date();
+      }
+      return moment(value).toDate();
+    },
+
+    deleteDate: function() {
+      this.value = null;
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+    },
+
+    onDatePickerClosed: function() {
+      if (event.detail.confirmed) {
+        var date = moment(this.$.picker.date);
+        this.value = date.format('YYYY-MM-DD');
+        this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+      }
+    }
+
+  });
+  </script>
+
+</dom-module>

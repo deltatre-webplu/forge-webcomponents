@@ -58,9 +58,16 @@
 
     },
     triggerOnValueChanged: function() {
+
       if (this.disabled || (this._lastKnownValue === this.value)) return;
       this._lastKnownValue = this.value;
-      this.fire('valueChanged', this.value);
+
+      var changedValue = this.value;
+      if (this.value === null) {
+        changedValue = "#NOSET#";
+      }
+
+      this.fire('valueChanged', changedValue);
     }
   };
 

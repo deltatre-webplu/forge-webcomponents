@@ -56,19 +56,29 @@ paper-card {
 
     <div class="card-content">
 
-      <template is="dom-repeat" items="{{entries}}">
+      <template is="dom-if" if="[[entries.length]]">
 
-        <paper-icon-item>
-          <div item-icon>
-            <forge-avatar-icon avatar-name="[[item.ActorName]]" avatar-id="[[item.ActorId]]"><forge-avatar-icon>
-          </div>
-          <paper-item-body two-line>
-            <div class="header">[[item.ActorName]]</div>
-            <div secondary>
-              <span>[[localize(item.PastTenseVerb)]]</span> <span class="strong">[[localize(item.Properties.ObjectType)]]</span> <moment-element date-time="[[item.Date]]"></moment-element>
+        <template is="dom-repeat" items="[[entries]]">
+
+          <paper-icon-item>
+            <div item-icon>
+              <forge-avatar-icon avatar-name="[[item.ActorName]]" avatar-id="[[item.ActorId]]"><forge-avatar-icon>
             </div>
-          </paper-item-body>
-        </paper-icon-item>
+            <paper-item-body two-line>
+              <div class="header">[[item.ActorName]]</div>
+              <div secondary>
+                <span>[[localize(item.PastTenseVerb)]]</span> <span class="strong">[[localize(item.Properties.ObjectType)]]</span> <moment-element date-time="[[item.Date]]"></moment-element>
+              </div>
+            </paper-item-body>
+          </paper-icon-item>
+
+        </template>
+
+      </template>
+
+      <template is="dom-if" if="[[!entries.length]]">
+
+        <div>TEST</div>
 
       </template>
 
