@@ -50,7 +50,7 @@ class Query extends QueryBase {
        { $sort : { "_id.Month" : 1,"_id.Day" : 1 , "_id.Hour" : 1 } }
      ]).toArray();
 
-		 res.forEach
+		 
 		 return output;
   }
 
