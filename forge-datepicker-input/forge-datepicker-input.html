@@ -38,7 +38,9 @@
     <div class="datepicker-input-container">
       <paper-input class="datepicker-input" value="{{formattedValue}}" label="[[label]]" disabled="true"></paper-input>
       <paper-icon-button class="datepicker-button" icon="icons:date-range" on-click="openDatepicker" disabled="[[disabled]]"></paper-icon-button>
-      <paper-icon-button class="datepicker-button" icon="icons:close" on-click="deleteDate" disabled="[[disabled]]"></paper-icon-button>
+      <template is="dom-if" if="[[value]]">
+        <paper-icon-button class="datepicker-button" icon="icons:close" on-click="deleteDate" disabled="[[disabled]]"></paper-icon-button>
+      </template>
     </div>
 
     <paper-dialog id="datePicker"
