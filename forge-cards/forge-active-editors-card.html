@@ -78,7 +78,8 @@ paper-card {
 
       <template is="dom-if" if="[[!entries.length]]">
 
-        <div>TEST</div>
+        [[localize("wcm.noneWorkingOncontent")]]
+        <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
 
       </template>
 
@@ -138,6 +139,9 @@ paper-card {
     },
     onPollingStart: function() {
       this.hideLoading = false;
+    },
+    _tellNewStory: function() {
+      location.href = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink('story', null, 'new', 'new');
     }
   });
 

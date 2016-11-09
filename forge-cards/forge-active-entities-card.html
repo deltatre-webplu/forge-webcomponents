@@ -79,20 +79,31 @@ paper-icon-item {
 
     <div class="card-content">
 
-      <template is="dom-repeat" items="{{entities}}">
+      <template is="dom-if" if="[[entities.length]]">
 
-        <paper-icon-item on-tap="_openItem">
-          <paper-ripple></paper-ripple>
-          <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
-            <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
-          </div>
-          <paper-item-body two-line>
-            <div class="header">[[item.Title]] ([[localize(item.EntityType)]])</div>
-            <div secondary>
-              <span>[[localize('wcm.wasEditedBy')]]</span> <span class="strong">[[item.LastUpdateUser]]</span> <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
+        <template is="dom-repeat" items="{{entities}}">
+
+          <paper-icon-item on-tap="_openItem">
+            <paper-ripple></paper-ripple>
+            <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+              <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
             </div>
-          </paper-item-body>
-        </paper-icon-item>
+            <paper-item-body two-line>
+              <div class="header">[[item.Title]] ([[localize(item.EntityType)]])</div>
+              <div secondary>
+                <span>[[localize('wcm.wasEditedBy')]]</span> <span class="strong">[[item.LastUpdateUser]]</span> <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
+              </div>
+            </paper-item-body>
+          </paper-icon-item>
+
+        </template>
+
+      </template>
+
+      <template is="dom-if" if="[[!entities.length]]">
+
+        [[localize("wcm.noEntitiesInProgress")]]
+        <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
 
       </template>
 
@@ -141,6 +152,9 @@ paper-icon-item {
     _openItem: function(e) {
       var entity = e.model.item;
       location.href = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink(entity.EntityType, null, entity.Id, entity.TranslationId);
+    },
+    _tellNewStory: function() {
+      location.href = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink('story', null, 'new', 'new');
     }
   });
 
