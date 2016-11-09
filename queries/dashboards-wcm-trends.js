@@ -33,36 +33,55 @@ class Query extends QueryBase {
 
   _lastDay(col){
 
+		var
+
     var promise = col.aggregate([
-        {$match:{"PublishedOn":{$gt:new Date(Date.now() - 24*60*60 * 1000)}}},
-        { "$project": {
-              "EntityId":"$EntityId",
-              "EntityType":"$EntityType",
-              "Year": { $year: "$PublishedOn" },
-              "Day": { $dayOfMonth: "$PublishedOn" },
-              "Month": { $month: "$PublishedOn" },
-              "Hour":{$hour:"$PublishedOn"}}
-          },
-         {$group:{_id:{"EntityId":"$EntityId","Year":"$Year","Month":"$Month","Day":"$Day","Hour":"$Hour"}}},
-         {$group:{_id:{"Year":"$_id.Year","Month":"$_id.Month","Day":"$_id.Day","Hour":"$_id.Hour"},"Total":{$sum:1}}
-       },
-       { $sort : { "_id.Month" : 1,"_id.Day" : 1 , "_id.Hour" : 1 } }
-     ]).toArray();
+	    {
+				$match: {
+					"PublishedOn":{$gt: new Date(Date.now() - 24*60*60 * 1000)}
+				}
+			},
+	    {
+				"$project": {
+	      	"EntityId":"$EntityId",
+	        "EntityType":"$EntityType",
+	        "Year": { $year: "$PublishedOn" },
+	        "Day": { $dayOfMonth: "$PublishedOn" },
+	        "Month": { $month: "$PublishedOn" },
+	        "Hour":{$hour:"$PublishedOn"}
+				}
+	    },
+	    {
+				$group: {
+					_id: {"EntityId":"$EntityId","Year":"$Year","Month":"$Month","Day":"$Day","Hour":"$Hour"}
+				}
+			},
+	    {
+				$group: {
+					_id: {"Year":"$_id.Year","Month":"$_id.Month","Day":"$_id.Day","Hour":"$_id.Hour"},
+					"Total": { $sum:1 }
+				}
+	   	},
+	   	{
+				$sort : { "_id.Year" : 1, "_id.Month" : 1, "_id.Day" : 1 , "_id.Hour" : 1 }
+			}
+		]).toArray();
 
-		 return promise.then(function(res) {
+		return promise.then(function(res) {
 
-	 		var output=[["Hour", "published"]];
+			var output=[["Hour", "published"]];
 
 			res.forEach(function(e) {
-	 			var kv=[];
-	 		 	kv.push(e._id.Year+'/'+e._id.Month+'/'+e._id.Day+' '+e._id.Hour);
-	 			kv.push(e.Total);
-	 			output.push(kv)
- 		 	});
+				var kv=[];
+			 	kv.push(e._id.Year+'/'+e._id.Month+'/'+e._id.Day+' '+e._id.Hour);
+				kv.push(e.Total);
+				output.push(kv)
+		 	});
 
-	 		return output;
+			return output;
 
 	 	});
+
   }
 
   _lastMonth(col){
