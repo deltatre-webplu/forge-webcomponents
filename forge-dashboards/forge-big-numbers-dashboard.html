@@ -1,0 +1,60 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../forge-cards/forge-cards.html">
+
+<dom-module id="forge-big-numbers-dashboard">
+
+  <style include="iron-flex iron-flex-alignment">
+
+    .dashboard-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: row;
+    }
+
+    @media (max-width: 1000px) {
+      .dashboard-container {
+        display: block;
+      }
+    }
+
+    .padded {
+      padding: 8px;
+    }
+
+  </style>
+
+  <template>
+
+    <div class="dashboard-container">
+      <div class="layout vertical flex">
+        <forge-published-overview-card class="padded" url="/api/extended-queries/query/dashboards-wcm-published-totals"></forge-published-overview-card>
+        <forge-published-chart-card class="padded" url="/api/extended-queries/query/dashboards-wcm-published-totals?outputType=charts"></forge-published-chart-card>
+      </div>
+      <div class="layout vertical flex">
+        <forge-publishing-trends-card class="padded" url="/api/extended-queries/query/dashboards-wcm-trends?span=day"></forge-publishing-trends-card>
+        <forge-publishing-trends-card class="padded" url="/api/extended-queries/query/dashboards-wcm-trends?span=month"></forge-publishing-trends-card>
+        <forge-publishing-trends-card class="padded" url="/api/extended-queries/query/dashboards-wcm-trends?span=semester"></forge-publishing-trends-card>
+      </div>
+    </div>
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    Polymer({
+      is: 'forge-big-numbers-dashboard'
+    });
+
+  })();
+  </script>
+
+</dom-module>
