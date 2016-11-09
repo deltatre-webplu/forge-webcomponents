@@ -101,7 +101,6 @@ google-chart {
     onPollingUpdate: function(result) {
 
       result.TotalByEntities.forEach(function(e) {
-        console.log(e);
         e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
         e.PluralType = e.EntityType == 'story' ? 'stories' : e.EntityType + 's';
       });

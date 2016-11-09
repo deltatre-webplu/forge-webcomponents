@@ -9,32 +9,31 @@ class Query extends QueryBase {
 		return MongoClient.connect(this._config.backEndStoreConfiguration.ConnectionString)
 		.then((db) => {
   			var col = db.collection('wcm.EntitiesPublished');
-				var requestedQuery;
+				var results;
 				switch (options.span) {
 					case "day":
-						requestedQuery = this._lastDay(col);
+						results = this._lastDay(col);
 						break;
 					case "month":
-						 requestedQuery = this._lastMonth(col)
+						 results = this._lastMonth(col)
 						break;
 					case "semester":
-						requestedQuery = this._lastSemester(col)
+						results = this._lastSemester(col)
 						break;
 					default:
 						return null;
 						break;
 				}
-		    return requestedQuery
-				.then((results) => {
+				return results.then(function(res) {
 					db.close();
-					return results;
+					return res;
 				});
 		});
 	}
 
   _lastDay(col){
-		var output=[["Hour", "published"]];
-    var res = col.aggregate([
+
+    var promise = col.aggregate([
         {$match:{"PublishedOn":{$gt:new Date(Date.now() - 24*60*60 * 1000)}}},
         { "$project": {
               "EntityId":"$EntityId",
@@ -50,13 +49,25 @@ class Query extends QueryBase {
        { $sort : { "_id.Month" : 1,"_id.Day" : 1 , "_id.Hour" : 1 } }
      ]).toArray();
 
-		 
-		 return output;
+		 return promise.then(function(res) {
+
+	 		var output=[["Hour", "published"]];
+
+			res.forEach(function(e) {
+	 			var kv=[];
+	 		 	kv.push(e._id.Year+'/'+e._id.Month+'/'+e._id.Day+' '+e._id.Hour);
+	 			kv.push(e.Total);
+	 			output.push(kv)
+ 		 	});
+
+	 		return output;
+
+	 	});
   }
 
   _lastMonth(col){
-		var output=[["Day", "published"]];
-    var res = col.aggregate([
+
+    var promise = col.aggregate([
       {$match:{"PublishedOn":{$gt:new Date(Date.now() - 30*24*60*60*1000)}}},
       { "$project": {
             "EntityId":"$EntityId",
@@ -70,12 +81,26 @@ class Query extends QueryBase {
        {$sort : { "_id.Year" : 1,"_id.Month" : 1 , "_id.Day" : 1}}
     ]).toArray();
 
-		return output;
+		return promise.then(function(res) {
+
+			var output=[["Day", "published"]];
+
+			res.forEach(function(e) {
+				var kv=[];
+				kv.push(e._id.Year+'/'+e._id.Month+'/'+e._id.Day);
+				kv.push(e.Total);
+				output.push(kv)
+			});
+
+			return output;
+
+		});
+
   }
 
   _lastSemester(col){
-		var output=[["Week start", "published"]];
-    var res = col.aggregate([
+
+    var promise = col.aggregate([
       {$match:{"PublishedOn":{$gt:new Date(Date.now() - 182*24*60*60*1000)}}}
       ,{ "$project": {
             "EntityId":"$EntityId",
@@ -122,6 +147,20 @@ class Query extends QueryBase {
       ,{ $sort : { "_id.Year" : 1,"_id.Month" : 1 , "_id.Week" : 1 } }
     ]).toArray();
 
-		return output;
+		return promise.then(function(res) {
+
+			var output=[["Week start", "published"]];
+
+			res.forEach(function(e) {
+				var kv=[];
+				kv.push(e._id.weekStart);
+				kv.push(e.Total);
+				output.push(kv)
+			});
+
+			return output;
+
+		});
+
   }
 }
