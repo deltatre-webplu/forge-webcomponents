@@ -3,7 +3,7 @@
   "version": "1.2.0",
   "description": "A suite of pre-defined WebComponents for Forge",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "develop": "http-server . --cors"
   },
   "repository": {
     "type": "git",
@@ -14,5 +14,8 @@
   "bugs": {
     "url": "https://github.com/deltatre-webplu/forge-webcomponents/issues"
   },
-  "homepage": "https://github.com/deltatre-webplu/forge-webcomponents#readme"
+  "homepage": "https://github.com/deltatre-webplu/forge-webcomponents#readme",
+  "devDependencies": {
+    "http-server": "^0.9.0"
+  }
 }
