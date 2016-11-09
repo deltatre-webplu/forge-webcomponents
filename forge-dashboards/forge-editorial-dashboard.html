@@ -36,8 +36,13 @@
     <div class="dashboard-container">
       <forge-active-entities-card class="padded flex"></forge-active-entities-card>
       <forge-active-editors-card class="padded flex"></forge-active-editors-card>
-    </div>
 
+      <forge-published-overview-card class="padded flex" url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-published-totals"></forge-published-overview-card>
+      <forge-published-chart-card class="padded flex" url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-published-totals?outputType=charts"></forge-published-chart-card>
+      <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends?span=day"></forge-publishing-trends-card>
+      <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends?span=month"></forge-publishing-trends-card>
+      <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends?span=semester"></forge-publishing-trends-card>
+    </div>
   </template>
 
   <script>

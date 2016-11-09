@@ -9,26 +9,32 @@ class Query extends QueryBase {
 		return MongoClient.connect(this._config.backEndStoreConfiguration.ConnectionString)
 		.then((db) => {
   			var col = db.collection('wcm.EntitiesPublished');
-
-		    return Promise.all([this._lastDay(col), this._lastMonth(col), this._lastSemester(col)])
+				var requestedQuery;
+				switch (options.span) {
+					case "day":
+						requestedQuery = this._lastDay(col);
+						break;
+					case "month":
+						 requestedQuery = this._lastMonth(col)
+						break;
+					case "semester":
+						requestedQuery = this._lastSemester(col)
+						break;
+					default:
+						return null;
+						break;
+				}
+		    return requestedQuery
 				.then((results) => {
 					db.close();
 					return results;
 				});
-		})
-		.then((results) => {
-		    var result = {
-          lastDay: results[0],
-          lastMonth: results[1],
-          lastSemester: results[2]
-        };
-
-				return result;
 		});
 	}
 
   _lastDay(col){
-    return col.aggregate([
+		var output=[["Hour", "published"]];
+    var res = col.aggregate([
         {$match:{"PublishedOn":{$gt:new Date(Date.now() - 24*60*60 * 1000)}}},
         { "$project": {
               "EntityId":"$EntityId",
@@ -43,10 +49,14 @@ class Query extends QueryBase {
        },
        { $sort : { "_id.Month" : 1,"_id.Day" : 1 , "_id.Hour" : 1 } }
      ]).toArray();
+
+		 res.forEach
+		 return output;
   }
 
   _lastMonth(col){
-    return col.aggregate([
+		var output=[["Day", "published"]];
+    var res = col.aggregate([
       {$match:{"PublishedOn":{$gt:new Date(Date.now() - 30*24*60*60*1000)}}},
       { "$project": {
             "EntityId":"$EntityId",
@@ -59,10 +69,13 @@ class Query extends QueryBase {
        {$group:{_id:{"Year":"$_id.Year","Month":"$_id.Month","Day":"$_id.Day"},"Total":{$sum:1}}},
        {$sort : { "_id.Year" : 1,"_id.Month" : 1 , "_id.Day" : 1}}
     ]).toArray();
+
+		return output;
   }
 
   _lastSemester(col){
-    return col.aggregate([
+		var output=[["Week start", "published"]];
+    var res = col.aggregate([
       {$match:{"PublishedOn":{$gt:new Date(Date.now() - 182*24*60*60*1000)}}}
       ,{ "$project": {
             "EntityId":"$EntityId",
@@ -108,5 +121,7 @@ class Query extends QueryBase {
         }
       ,{ $sort : { "_id.Year" : 1,"_id.Month" : 1 , "_id.Week" : 1 } }
     ]).toArray();
+
+		return output;
   }
 }
