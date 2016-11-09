@@ -151,7 +151,8 @@ paper-icon-item {
     },
     _openItem: function(e) {
       var entity = e.model.item;
-      location.href = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink(entity.EntityType, null, entity.Id, entity.TranslationId);
+      var href = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink(entity.EntityType, null, entity.Id, entity.TranslationId);
+      if (href) location.href = href;
     },
     _tellNewStory: function() {
       location.href = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink('story', null, 'new', 'new');
