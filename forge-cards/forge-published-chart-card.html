@@ -6,8 +6,9 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/google-chart/google-chart.html">
 
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-resizable-behavior/iron-resizable-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
-<link rel="import" href="../forge-behaviors/forge-wcm-published-behavior.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
 
 <dom-module id="forge-published-chart-card">
@@ -22,23 +23,19 @@ paper-card {
 }
 
 google-chart {
-      height: 300px;
-      width: 400px;
-    }
+  height: auto;
+  width: 100%;
+}
 </style>
 
 <template>
 
-  <paper-card heading="Chart overview of entities published by type">
+  <paper-card heading="[[localize('wcm.chartHeadingEntitiesByType')]]">
     <div>
-      <google-chart
-      id="published-chart"
-      type="pie"
-      options='{"title": "Overview of entities published"}'
-      data='{{url}}'>
-      </google-chart>
+      <google-chart id="publishedChart" type="pie" data='[[data]]'></google-chart>
     </div>
   </paper-card>
+
 </template>
 <script>
 (function() {
@@ -46,11 +43,28 @@ google-chart {
 
   Polymer({
     is: 'forge-published-chart-card',
+    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
-        type: String,
-        value: ""
+        type: String
       }
+    },
+    listeners: {
+      'iron-resize': '_onIronResize'
+    },
+    data:null,
+    attached: function() {
+      this.polling.register(this.url, this);
+      this.polling.start();
+    },
+    detached: function() {
+      this.polling.unregister(this.url, this);
+    },
+    onPollingUpdate: function(result) {
+      this.data = result;
+    },
+    _onIronResize: function() {
+      this.$.publishedChart.redraw();
     }
   });
 

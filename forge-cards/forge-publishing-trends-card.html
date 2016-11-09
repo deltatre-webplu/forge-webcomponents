@@ -4,21 +4,15 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-icon-item.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/google-chart/google-chart.html">
 
-<link rel="import" href="../forge-behaviors/forge-wcm-published-behavior.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-resizable-behavior/iron-resizable-behavior.html">
+
 <link rel="import" href="../forge-shared/forge-shared.html">
-<link rel="import" href="../forge-shared/forge-icons.html">
 
-<dom-module id="forge-published-overview-card">
+<dom-module id="forge-publishing-trends-card">
 
 <style>
-:root {
-  --paper-item-focused-before: {
-    background-color: transparent;
-  }
-}
 :host {
   display: block;
 }
@@ -27,52 +21,21 @@ paper-card {
   display: block;
 }
 
-.header {
-  padding: 16px;
-  font-size: 24px;
-  font-weight: 400;
-}
-
-.entityTotal {
-  font-size: 16px;
-}
-
-.entity-icon-wrapper {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--google-grey-300);
-}
-.entity-icon {
-  margin: 8px;
-  width: 24px;
-  height: 24px;
-  --iron-icon-fill-color: white;
-}
-
 google-chart {
-      height: 300px;
-      width: 400px;
+      height: auto;
+      width:100%;
     }
 </style>
 
 <template>
-
-  <paper-card heading="Total entities published: [[grandTotal]]">
+<!-- type="area" || type="line" || type="column" -->
+  <paper-card heading="[[localize('wcm.chartHeadingEntitiesByTime')]]">
     <div>
-      <template is="dom-repeat" items="{{entities}}">
-        <paper-icon-item>
-          <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
-            <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
-          </div>
-          <paper-item-body>
-            <div class="entityTotal">Total [[item.PluralType]] published: [[item.Total]]</div>
-          </paper-item-body>
-        </paper-icon-item>
-      </template>
-
+      <google-chart
+      id="publishingTrendsChart"
+      type="column"
+      data='{{url}}'>
+      </google-chart>
     </div>
   </paper-card>
 </template>
@@ -81,16 +44,17 @@ google-chart {
   "use strict";
 
   Polymer({
-    is: 'forge-published-overview-card',
-    behaviors: [ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior],
+    is: 'forge-publishing-trends-card',
+    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
-        type: String,
-        value: ""
+        type: String
       }
     },
-    entities:[],
-    grandTotal:0,
+    listeners: {
+      'iron-resize': '_onIronResize'
+    },
+    data:null,
     attached: function() {
       this.polling.register(this.url, this);
       this.polling.start();
@@ -99,15 +63,10 @@ google-chart {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-
-      result.TotalByEntities.forEach(function(e) {
-        console.log(e);
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
-        e.PluralType = e.EntityType == 'story' ? 'stories' : e.EntityType + 's';
-      });
-      this.grandTotal = result.Total;
-      this.entities = result.TotalByEntities;
-
+      this.data = result;
+    },
+    _onIronResize: function() {
+      this.$.publishingTrendsChart.redraw();
     }
   });
 

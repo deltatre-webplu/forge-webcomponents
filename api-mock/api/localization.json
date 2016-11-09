@@ -552,7 +552,9 @@
 		"Go to the item defining this link rule": "Zum Element wechseln, dass diese Link Rule definiert",
 		"Compare with latest": "Mit aktuellem Stand vergleichen",
 		"applock.sessionExpired1": "$It looks like your session has expired",
-		"applock.sessionExpired2": "$You should log in again via GuiShell in order to continue using Forge."
+		"applock.sessionExpired2": "$You should log in again via GuiShell in order to continue using Forge.",
+		"wcm.chartHeadingEntitiesByType": "Entities published by type",
+		"wcm.chartHeadingEntitiesByTime": "Entities published by time"
 	},
 	"en": {
 		"dashboardNotSelectedTitle": "Welcome!",
@@ -732,7 +734,9 @@
 		"ApprovalWorkflowSendForApprovalCommand": "Send for Approval",
 		"ApprovalWorkflowRejectCommand": "Reject",
 		"ApprovalWorkflow.waiting": "Waiting for approval",
-		"ApprovalWorkflow.rejected": "Rejected"
+		"ApprovalWorkflow.rejected": "Rejected",
+		"wcm.chartHeadingEntitiesByType": "Entities published by type",
+		"wcm.chartHeadingEntitiesByTime": "Entities published by time"
 	},
 	"it": {
 		"dashboardNotSelectedTitle": "Benvenuto!",
@@ -899,6 +903,8 @@
 		"wcm.havingSource": "Aventi questa Origine",
 		"wcm.havingLanguage": "In questa Lingua",
 		"wcm.havingStage": "In questo Stage",
-		"wcm.havingTags": "Con questi Tag"
+		"wcm.havingTags": "Con questi Tag",
+		"wcm.chartHeadingEntitiesByType": "Entities published by type",
+		"wcm.chartHeadingEntitiesByTime": "Entities published by time"
 	}
 }

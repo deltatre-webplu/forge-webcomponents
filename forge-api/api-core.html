@@ -8,6 +8,7 @@
   function addRootUrl(sourceUrl) {
 
     if (!ForgeWebComponents.Settings.RootUrl) return sourceUrl;
+    if (sourceUrl.startsWith("http")) return sourceUrl;
 
     var rootUrl = (ForgeWebComponents.Settings.RootUrl + "").replace(/\/+$/, "");
     sourceUrl = sourceUrl.replace(/^\/+/, "");
