@@ -31,10 +31,7 @@ google-chart {
 <!-- type="area" || type="line" || type="column" -->
   <paper-card heading="[[localize('wcm.chartHeadingEntitiesByTime')]]">
     <div>
-      <google-chart
-      id="publishingTrendsChart"
-      type="line"
-      data='{{url}}'>
+      <google-chart id="publishingTrendsChart" type="line">
       </google-chart>
     </div>
   </paper-card>
@@ -65,7 +62,16 @@ google-chart {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-      this.data = result;
+
+      var data={};
+      data.cols=[{"id": "ga:hour",label:"Hour",type:"datetime"},{"id": "ga:published",label:"Published",type:"number"}];
+      data.rows=[];
+      for (var i = 1; i < result.length; i++) {
+        var c= [{v:new Date(result[i][0])},{v:result[i][1]}];
+        data.rows.push({c:c});
+      }
+      console.log(data);
+      this.$.publishingTrendsChart.data = data;
     },
     _onIronResize: function() {
       this.$.publishingTrendsChart.redraw();

@@ -105,12 +105,12 @@ class Query extends QueryBase {
           res[0]._id.Hour <= dh) {
 					var e = res.shift();
 					var resHour=e._id.Hour;
-					kv.push((resHour % 12 || '12') + ' ' + (resHour >= 12 ? 'pm' : 'am'));
+					kv.push(new Date(e._id.Year,e._id.Month,e._id.Day,resHour));
 					kv.push(e.Total);
 					output.push(kv);
 				}
 				else {
-					kv.push((dh % 12 || '12') + ' ' + (dh >= 12 ? 'pm' : 'am'));
+					kv.push(d);
 					kv.push(0);
 					output.push(kv);
 				}
