@@ -53,10 +53,11 @@ google-chart {
       }
     },
     listeners: {
-      'iron-resize': '_onIronResize'
+      'iron-resize': '_onIronResize',
+      'forge-language-changed': '_onLanguageChange'
     },
-    data:null,
-    options:null,
+    data: null,
+    options: null,
     attached: function() {
       this.polling.register(this.url, this);
       this.polling.start();
@@ -65,8 +66,14 @@ google-chart {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
+      this._result = result;
+      this._parseResult();
+    },
+    _parseResult: function() {
 
-      var working = result.slice();
+      if (!this._result) return;
+
+      var working = _.cloneDeep(this._result);
       var header = working.splice(0, 1)[0];
       var colors = [];
 
@@ -95,6 +102,9 @@ google-chart {
     },
     _onIronResize: function() {
       this.$.publishedChart.redraw();
+    },
+    _onLanguageChange: function() {
+      this._parseResult();
     }
   });
 

@@ -15,17 +15,34 @@
       },
     },
 
-    onLanguageChanged: function(e) {
+    notifyLanguageChange: function(e) {
+
       this.language = e.language;
+
+      if (!this.isAttached) {
+        return;
+      }
+
+      this.fire('forge-language-changed', e.language, {
+        node: this,
+        bubbles: false
+      });
+
     },
 
     attached: function() {
+
       this.language = ForgeWebComponents.Settings.DefaultLocale;
-      document.addEventListener('ForgeLanguageChanged', this.onLanguageChanged.bind(this));
+      this._boundNotifyLanguageChange = this.notifyLanguageChange.bind(this);
+
+      document.addEventListener('ForgeLanguageChanged', this._boundNotifyLanguageChange);
+
     },
 
     detached: function() {
-      document.removeEventListener('ForgeLanguageChanged', this.onLanguageChanged.bind(this));
+
+      document.removeEventListener('ForgeLanguageChanged', this._boundNotifyLanguageChange);
+
     }
 
   };
