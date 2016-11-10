@@ -8,6 +8,8 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
 
 <link rel="import" href="../forge-behaviors/forge-wcm-published-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
 <link rel="import" href="../forge-shared/forge-shared.html">
 <link rel="import" href="../forge-shared/forge-icons.html">
 
@@ -35,6 +37,7 @@ paper-card {
 
 .entityTotal {
   font-size: 16px;
+  text-transform: capitalize;
 }
 
 .entity-icon-wrapper {
@@ -45,36 +48,37 @@ paper-card {
   border-radius: 50%;
   background: var(--google-grey-300);
 }
+
 .entity-icon {
   margin: 8px;
   width: 24px;
   height: 24px;
   --iron-icon-fill-color: white;
 }
-
-google-chart {
-      height: 300px;
-      width: 400px;
-    }
 </style>
 
 <template>
 
-  <paper-card heading="Total entities published: [[grandTotal]]">
-    <div>
+  <paper-card heading="[[localize('wcm.chartHeadingEntitiesPublishedTotal')]]: [[grandTotal]]">
+
+    <div class="card-content">
+
       <template is="dom-repeat" items="{{entities}}">
         <paper-icon-item>
           <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
             <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
           </div>
           <paper-item-body>
-            <div class="entityTotal">Total [[item.PluralType]] published: [[item.Total]]</div>
+            <div class="entityTotal">[[localize(item.PluralType)]]: [[item.Total]]</div>
           </paper-item-body>
         </paper-icon-item>
+
       </template>
 
     </div>
+
   </paper-card>
+
 </template>
 <script>
 (function() {
@@ -82,12 +86,9 @@ google-chart {
 
   Polymer({
     is: 'forge-published-overview-card',
-    behaviors: [ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
-      url: {
-        type: String,
-        value: ""
-      }
+      url: String
     },
     entities:[],
     grandTotal:0,
@@ -102,12 +103,14 @@ google-chart {
 
       result.TotalByEntities.forEach(function(e) {
         e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
-        e.PluralType = e.EntityType == 'story' ? 'stories' : e.EntityType + 's';
+        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.EntityType);
       });
+
       this.grandTotal = result.Total;
-      this.entities = result.TotalByEntities;
+      this.entities = _.sortBy(result.TotalByEntities, ['Total']).reverse();
 
     }
+
   });
 
 })();

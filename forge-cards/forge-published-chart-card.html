@@ -32,7 +32,10 @@ google-chart {
 
   <paper-card heading="[[localize('wcm.chartHeadingEntitiesByType')]]">
     <div>
-      <google-chart id="publishedChart" type="pie" data='[[data]]'></google-chart>
+      <google-chart id="publishedChart"
+                    type="pie"
+                    options="[[options]]"
+                    data="[[data]]"></google-chart>
     </div>
   </paper-card>
 
@@ -53,6 +56,7 @@ google-chart {
       'iron-resize': '_onIronResize'
     },
     data:null,
+    options:null,
     attached: function() {
       this.polling.register(this.url, this);
       this.polling.start();
@@ -61,7 +65,33 @@ google-chart {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-      this.data = result;
+
+      var working = result.slice();
+      var header = working.splice(0, 1)[0];
+      var colors = [];
+
+      working.sort(function(a, b) {
+        return a[1] < b[1];
+      });
+
+      for (var i = 0; i < working.length; i++) {
+
+        var entityType = working[i][0];
+        var color = ForgeWebComponents.Settings.EntityIcons[entityType]
+          ?  ForgeWebComponents.Settings.EntityIcons[entityType].color
+          : '#e0e0e0';
+
+        //translate
+        working[i][0] = this.localize(entityType);
+
+        colors.push(color);
+
+      }
+
+      working.unshift(header);
+      this.data = working;
+      this.options = { colors: colors };
+
     },
     _onIronResize: function() {
       this.$.publishedChart.redraw();

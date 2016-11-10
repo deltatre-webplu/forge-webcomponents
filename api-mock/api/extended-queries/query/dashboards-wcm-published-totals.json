@@ -1,0 +1,25 @@
+{
+	"TotalByEntities": [{
+		"EntityType": "album",
+		"Total": 1
+	}, {
+		"EntityType": "selection",
+		"Total": 2
+	}, {
+		"EntityType": "document",
+		"Total": 16
+	}, {
+		"EntityType": "tag",
+		"Total": 39
+	}, {
+		"EntityType": "photo",
+		"Total": 31
+	}, {
+		"EntityType": "customentity",
+		"Total": 12
+	}, {
+		"EntityType": "story",
+		"Total": 10
+	}],
+	"Total": 111
+}

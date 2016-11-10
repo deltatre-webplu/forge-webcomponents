@@ -74,46 +74,10 @@
     }
 
   };
-
-  var linkHelper = {
-
-    buildEntityLink: function(entityType, entityCode, entityId, translationId) {
-
-      var rootUrl = "#/wcm/";
-      var result;
-
-      switch (entityType) {
-        case "story":
-          result = rootUrl + "stories/" + translationId
-          break;
-        case "customentity":
-          result = null;
-          break;
-        default:
-          result = rootUrl + entityType + "s/" + entityId;
-          break;
-      }
-
-      return result;
-
-    }
-
-  }
-
-  var eventHelper = {
-    changeLanguage: function(lang) {
-      var evt = document.createEvent("CustomEvent");
-      evt.initEvent("ForgeLanguageChanged", true, true); //true for can bubble, true for cancelable
-      evt.language = lang;
-      document.dispatchEvent(evt);
-    }
-  };
-
+  
   window.ForgeWebComponents = window.ForgeWebComponents || {};
   window.ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
   window.ForgeWebComponents.Helpers.ColorHelper = colorHelper;
-  window.ForgeWebComponents.Helpers.LinkHelper = linkHelper;
-  window.ForgeWebComponents.Helpers.EventHelper = eventHelper;
 
 })();
 </script>

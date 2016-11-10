@@ -55,8 +55,10 @@ google-chart {
       'iron-resize': '_onIronResize'
     },
     data:null,
-    attached: function() {
+    ready: function() {
       this.polling.register(this.url, this);
+    },
+    attached: function() {
       this.polling.start();
     },
     detached: function() {

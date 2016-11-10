@@ -21,13 +21,21 @@
 
   </head>
   <body>
-    <forge-published-overview-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-published-totals"></forge-published-overview-card>
-    <forge-published-chart-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-published-totals?outputType=charts"></forge-published-chart-card>
+
+    <div>
+      <button onclick="changeLanguage('en')">ENG</button>
+      <button onclick="changeLanguage('it')">ITA</button>
+    </div>
+
+    <forge-published-overview-card url="/api/extended-queries/query/dashboards-wcm-published-totals"></forge-published-overview-card>
+    <forge-published-chart-card url="/api/extended-queries/query/dashboards-wcm-published-totals-charts"></forge-published-chart-card>
     <!-- <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends"></forge-publishing-trends-card>
     <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends"></forge-publishing-trends-card>
     <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends"></forge-publishing-trends-card> -->
-
     <script>
+    function changeLanguage(lang) {
+      ForgeWebComponents.Helpers.EventHelper.changeLanguage(lang);
+    }
     </script>
 
   </body>

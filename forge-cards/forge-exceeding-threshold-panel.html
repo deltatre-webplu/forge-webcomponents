@@ -122,8 +122,10 @@
     },
     threshold: null,
     items: [],
-    attached: function() {
+    ready: function() {
       this.polling.register(this.url, this);
+    },
+    attached: function() {
       this.polling.start();
     },
     detached: function() {

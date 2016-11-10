@@ -155,18 +155,19 @@
 
       this.groups = result.sort(function(a,b) {
 
-        var nameA = a.Key.toUpperCase(); // ignore upper and lowercase
-        var nameB = b.Key.toUpperCase(); // ignore upper and lowercase
+        var A = a.Key.toUpperCase(); // ignore upper and lowercase
+        var B = b.Key.toUpperCase(); // ignore upper and lowercase
 
-        if (nameA < nameB) {
+        if (A < B) {
           return -1;
         }
-        if (nameA > nameB) {
+        if (A > B) {
           return 1;
         }
 
         // names must be equal
         return 0;
+        
       });
 
     },

@@ -24,6 +24,11 @@
   </head>
   <body>
 
+    <div>
+      <button onclick="changeLanguage('en')">ENG</button>
+      <button onclick="changeLanguage('it')">ITA</button>
+    </div>
+
     <forge-status-card role="ApplicationService"></forge-status-card>
 
     <forge-status-card role="BackEnd"></forge-status-card>
@@ -80,6 +85,9 @@
     </forge-metrics-card>
 
     <script>
+    function changeLanguage(lang) {
+      ForgeWebComponents.Helpers.EventHelper.changeLanguage(lang);
+    }
     </script>
 
   </body>

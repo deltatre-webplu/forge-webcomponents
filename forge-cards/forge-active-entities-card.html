@@ -140,7 +140,7 @@ paper-icon-item {
 
       result.forEach(function(e) {
         e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
-        //e.Link = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink(e.EntityType, null, e.Id, e.TranslationId);
+        //e.Link = ForgeWebComponents.Helpers.EntityHelper.createLink(e.EntityType, null, e.Id, e.TranslationId);
       });
 
       this.entities = result;
@@ -151,11 +151,11 @@ paper-icon-item {
     },
     _openItem: function(e) {
       var entity = e.model.item;
-      var href = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink(entity.EntityType, null, entity.Id, entity.TranslationId);
+      var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.EntityType, null, entity.Id, entity.TranslationId);
       if (href) location.href = href;
     },
     _tellNewStory: function() {
-      location.href = ForgeWebComponents.Helpers.LinkHelper.buildEntityLink('story', null, 'new', 'new');
+      location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', null, 'new', 'new');
     }
   });
 

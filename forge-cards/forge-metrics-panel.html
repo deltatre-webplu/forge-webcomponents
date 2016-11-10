@@ -117,8 +117,10 @@
     average: 0,
     max: 0,
     threshold: null,
-    attached: function() {
+    ready: function() {
       this.polling.register(this.url, this);
+    },
+    attached: function() {
       this.polling.start();
     },
     detached: function() {

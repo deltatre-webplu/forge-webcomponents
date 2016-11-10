@@ -45,8 +45,10 @@
         clearTimeout(timeoutRef);
       }
     },
-    attached: function() {
+    ready: function() {
       instances.push(this);
+    },
+    attached: function() {
       this.pollHeartbeats();
     },
     pollHeartbeats: function() {
