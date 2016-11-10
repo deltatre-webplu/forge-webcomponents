@@ -31,11 +31,12 @@ class Query extends QueryBase {
 	}
 
 	_lastDay(col) {
-
+		var timespan=24;
+		var startingDate=new Date(Date.now() - (timespan * 60 * 60 * 1000));
 		var promise = col.aggregate([{
 			$match: {
 				"PublishedOn": {
-					$gt: new Date(Date.now() - 24 * 60 * 60 * 1000)
+					$gt: startingDate
 				}
 			}
 		}, {
@@ -92,12 +93,28 @@ class Query extends QueryBase {
 				["Hour", "published"]
 			];
 
-			res.forEach(function(e) {
+			for (var i = 0; i <= timespan; i++) {
+				var d = new Date(startingDate.getTime() + (i * 60 * 60 * 1000));
+				var dh = d.getHours();
 				var kv = [];
-				kv.push(e._id.Year + '/' + e._id.Month + '/' + e._id.Day + ' ' + e._id.Hour);
-				kv.push(e.Total);
-				output.push(kv);
-			});
+
+				if(res && res.length>0 &&
+					res[0]._id.Year <= d.getUTCFullYear() &&
+          res[0]._id.Month <= (d.getUTCMonth()+1) &&
+          res[0]._id.Day <= d.getUTCDate() &&
+          res[0]._id.Hour <= dh) {
+					var e = res.shift();
+					var resHour=e._id.Hour;
+					kv.push((resHour % 12 || '12') + ' ' + (resHour >= 12 ? 'pm' : 'am'));
+					kv.push(e.Total);
+					output.push(kv);
+				}
+				else {
+					kv.push((dh % 12 || '12') + ' ' + (dh >= 12 ? 'pm' : 'am'));
+					kv.push(0);
+					output.push(kv);
+				}
+			}
 
 			return output;
 
@@ -106,11 +123,13 @@ class Query extends QueryBase {
 	}
 
 	_lastMonth(col) {
+		var timespan=30;
+		var startingDate=new Date(Date.now() - (timespan * 24 * 60 * 60 * 1000));
 
 		var promise = col.aggregate([{
 			$match: {
 				"PublishedOn": {
-					$gt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+					$gt: startingDate
 				}
 			}
 		}, {
@@ -161,12 +180,31 @@ class Query extends QueryBase {
 				["Day", "published"]
 			];
 
-			res.forEach(function(e) {
+			for (var i = 0; i <= timespan; i++) {
+				let d = new Date(startingDate.getTime() + (i * 24 * 60 * 60 * 1000));
+				let dd = d.getUTCDate();
 				var kv = [];
-				kv.push(e._id.Year + '/' + e._id.Month + '/' + e._id.Day);
-				kv.push(e.Total);
-				output.push(kv);
-			});
+
+				var objDate = new Date();
+				objDate.setMonth(d.getUTCMonth());
+				var locale = "en-us", month = objDate.toLocaleString(locale, { month: "short" });
+
+				if(res && res.length>0 &&
+					res[0]._id.Year <= d.getUTCFullYear() &&
+          res[0]._id.Month <= (d.getUTCMonth()+1) &&
+          res[0]._id.Day <= dd) {
+					var e = res.shift();
+					var resDay=e._id.Day;
+					kv.push(resDay + ' ' + month);
+					kv.push(e.Total);
+					output.push(kv);
+				}
+				else {
+					kv.push(dd + ' ' + month);
+					kv.push(0);
+					output.push(kv);
+				}
+			}
 
 			return output;
 
@@ -175,38 +213,23 @@ class Query extends QueryBase {
 	}
 
 	_lastSemester(col) {
+		var timespan = 26;
+		var extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
+		var startingDate = new Date(Date.now() - (timespan * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
 
-		var promise = col.aggregate([{
-			$match: {
-				"PublishedOn": {
-					$gt: new Date(Date.now() - 182 * 24 * 60 * 60 * 1000)
+		var promise = col.aggregate([
+			{
+				$match: {
+					"PublishedOn": {
+						$gt: startingDate
+					}
 				}
-			}
-		}, {
-			"$project": {
-				"EntityId": "$EntityId",
-				"EntityType": "$EntityType",
-				"weekStart": {
-					"$subtract": [{
+			}, {
+				"$project": {
+					"EntityId": "$EntityId",
+					"EntityType": "$EntityType",
+					"weekStart": {
 						"$subtract": [{
-							"$subtract": ["$PublishedOn", new Date("1970-01-01")]
-						}, {
-							"$cond": [{
-								"$eq": [{
-									"$dayOfWeek": "$PublishedOn"
-								}, 1]
-							},
-								0, {
-									"$multiply": [1000 * 60 * 60 * 24, {
-										"$subtract": [{
-											"$dayOfWeek": "$PublishedOn"
-										}, 1]
-									}]
-								}
-							]
-						}]
-					}, {
-						"$mod": [{
 							"$subtract": [{
 								"$subtract": ["$PublishedOn", new Date("1970-01-01")]
 							}, {
@@ -214,69 +237,76 @@ class Query extends QueryBase {
 									"$eq": [{
 										"$dayOfWeek": "$PublishedOn"
 									}, 1]
-								},
-									0, {
-										"$multiply": [
-											1000 * 60 * 60 * 24, {
-												"$subtract": [{
-													"$dayOfWeek": "$PublishedOn"
-												}, 1]
+								}, 0, {
+									"$multiply": [
+										1000 * 60 * 60 * 24, {
+											"$subtract": [{
+												"$dayOfWeek": "$PublishedOn"
+											}, 1]
+										}
+									]
+								}]
+							}]
+						}, {
+							"$mod": [{
+								"$subtract": [{
+									"$subtract": ["$PublishedOn", new Date("1970-01-01")]}, {
+										"$cond": [{
+											"$eq": [{
+												"$dayOfWeek": "$PublishedOn"
+											}, 1]
+										},
+											0, {
+												"$multiply": [
+													1000 * 60 * 60 * 24, {
+														"$subtract": [{
+															"$dayOfWeek": "$PublishedOn"
+														}, 1]
+													}
+												]
 											}
 										]
-									}
-								]
-							}]
-						},
-							1000 * 60 * 60 * 24
-						]
-					}]
-				},
-				"Year": {
-					$year: "$PublishedOn"
-				},
-				"Month": {
-					$month: "$PublishedOn"
-				},
-				"Week": {
-					$week: "$PublishedOn"
+									}]
+							},
+								1000 * 60 * 60 * 24
+							]
+						}]
+					},
+					"Week": {
+						$week: "$PublishedOn"
+					}
+				}
+			}, {
+				$group: {
+					_id: {
+						"EntityId": "$EntityId",
+						"Week": "$Week",
+						"weekStart": "$weekStart"
+					}
+				}
+			}, {
+				$project: {
+					_id: "$_id",
+					weekStart: {
+						$add: [new Date(0), "$_id.weekStart"]
+					}
+				}
+			}, {
+				$group: {
+					_id: {
+						"Week": "$_id.Week",
+						"weekStart": "$weekStart"
+					},
+					"Total": {
+						$sum: 1
+					}
+				}
+			}, {
+				$sort: {
+					"_id.Week": 1
 				}
 			}
-		}, {
-			$group: {
-				_id: {
-					"EntityId": "$EntityId",
-					"Year": "$Year",
-					"Month": "$Month",
-					"Week": "$Week",
-					"weekStart": "$weekStart"
-				}
-			}
-		}, {
-			$project: {
-				_id: "$_id",
-				weekStart: {
-					$add: [new Date(0), "$_id.weekStart"]
-				}
-			}
-		}, {
-			$group: {
-				_id: {
-					"Year": "$_id.Year",
-					"Month": "$_id.Month",
-					"Week": "$_id.Week",
-					"weekStart": "$weekStart"
-				},
-				"Total": {
-					$sum: 1
-				}
-			}
-		}, {
-			$sort: {
-				"_id.Year": 1,
-				"_id.Month": 1,
-				"_id.Week": 1
-			}
-		}]).toArray();
+		]).toArray();
 
 		return promise.then(function(res) {
 
@@ -284,12 +314,30 @@ class Query extends QueryBase {
 				["Week start", "published"]
 			];
 
-			res.forEach(function(e) {
+			for (var i = 0; i <= timespan; i++) {
+				let d = new Date(startingDate.getTime() + (i * 7 * 24 * 60 * 60 * 1000));
+				let dd = d.getUTCDate();
 				var kv = [];
-				kv.push(e._id.weekStart);
-				kv.push(e.Total);
-				output.push(kv);
-			});
+
+				if(res && res.length>0 &&
+					new Date(Date.parse(res[0]._id.weekStart)).getUTCFullYear() == d.getUTCFullYear() &&
+					new Date(Date.parse(res[0]._id.weekStart)).getUTCMonth() == (d.getUTCMonth()) &&
+					new Date(Date.parse(res[0]._id.weekStart)).getUTCDate() == dd) {
+
+					var e = res.shift();
+					var resWeek = e._id.weekStart;
+					kv.push(resWeek.toLocaleDateString());
+					kv.push(e.Total);
+					output.push(kv);
+
+				} else {
+
+					kv.push(d.toLocaleDateString());
+					kv.push(0);
+					output.push(kv);
+
+				}
+			}
 
 			return output;
 
