@@ -8,11 +8,15 @@
           2,
           "always"
       ],
-      "no-console": "off"
+      "no-console": "off",
+      "no-unused-vars": "warn"
     },
     "env": {
         "es6": true,
         "node": true
+    },
+    "globals": {
+        "QueryBase": true
     },
     "extends": "eslint:recommended"
 }
