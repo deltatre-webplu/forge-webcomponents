@@ -12,27 +12,79 @@
 (function() {
   "use strict";
 
+  var instances = [];
+  var timeout = null;
+  var interval = 10000;
+
+  function update() {
+
+    if (!instances.length) return;
+
+    instances.forEach(function(me) {
+      me._updateIncrement++;
+    });
+
+    timeout = setTimeout(update, interval);
+
+  }
+
+  function start() {
+    if (timeout || !instances.length) return;
+    timeout = setTimeout(update, interval);
+  }
+
+  function register(instance) {
+    if (instance.format !== "from-now") return;
+    instances.push(instance);
+  }
+
+  function unregister(instance) {
+
+    var index = instances.indexOf(instance);
+
+    if (index >= 0) {
+      instances.splice(index, 1);
+      if (instances.length == 0 && timeout) clearTimeout(timeout);
+    }
+
+  }
+
   Polymer({
     is: 'moment-element',
     behaviors: [ForgeWebComponents.Behaviors.ForgeLanguageChangeBehavior],
     properties: {
-      dateTime: {
-        type: String
-      },
+      dateTime: String,
       format: {
         type: String,
-        value: "fromNow"
+        value: "from-now"
+      },
+      _updateIncrement: {
+        type: Number,
+        value: 0
       },
       output: {
         type: String,
-        computed: '_computeOutput(language, dateTime, format)'
+        computed: '_computeOutput(language, dateTime, format, _updateIncrement)'
       }
     },
-    _computeOutput: function(language, datetime, format) {
+    ready: function() {
+      register(this);
+    },
+    attached: function() {
+      start();
+    },
+    detached: function() {
+      unregister(this);
+    },
+    _computeOutput: function(language, datetime, format, _updateIncrement) {
+
       if (moment.locale() !== language) moment.locale(language);
       var output = moment(datetime);
+
       output = output.fromNow();
+
       return output;
+
     }
   });
 
