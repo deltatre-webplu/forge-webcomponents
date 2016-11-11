@@ -29,7 +29,7 @@ google-chart {
 
 <template>
 <!-- type="area" || type="line" || type="column" -->
-  <paper-card heading="[[localize(title)]]">
+  <paper-card heading="[[localize(heading)]]">
     <div>
       <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none"}'></google-chart>
     </div>
@@ -46,7 +46,7 @@ google-chart {
       url: {
         type: String
       },
-      title: {
+      heading: {
         type: String
       }
     },
@@ -64,15 +64,19 @@ google-chart {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-      var _ = {};
-      _.cols=[{"id": "ga:"+result[0][0],label:result[0][0],type:"datetime"},{"id": "ga:"+result[0][1],label:result[0][1],type:"number"}];
-      _.rows=[];
+
+      var data = {};
+
+      data.cols=[{"id": "ga:"+result[0][0],label:result[0][0],type:"datetime"},{"id": "ga:"+result[0][1],label:result[0][1],type:"number"}];
+      data.rows=[];
+
       for (var i = 1; i < result.length; i++) {
         var c = [{v:new Date(result[i][0])},{v:result[i][1]}];
-        _.rows.push({c:c});
+        data.rows.push({c:c});
       }
 
-      this.$.publishingTrendsChart.data = _;
+      this.$.publishingTrendsChart.data = data;
+
     },
     _onIronResize: function() {
       this.$.publishingTrendsChart.redraw();
