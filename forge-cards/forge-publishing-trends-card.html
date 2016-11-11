@@ -31,7 +31,7 @@ google-chart {
 <!-- type="area" || type="line" || type="column" -->
   <paper-card heading="[[localize('wcm.chartHeadingEntitiesByTime')]]">
     <div>
-      <google-chart id="publishingTrendsChart" type="line">
+      <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "top"}'>
       </google-chart>
     </div>
   </paper-card>
@@ -62,16 +62,17 @@ google-chart {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-
-      var data={};
-      data.cols=[{"id": "ga:hour",label:"Hour",type:"datetime"},{"id": "ga:published",label:"Published",type:"number"}];
-      data.rows=[];
+      console.log(result);
+      var _ = {};
+      _.cols=[{"id": "ga:"+result[0][0],label:result[0][0],type:"datetime"},{"id": "ga:"+result[0][1],label:result[0][1],type:"number"}];
+      _.rows=[];
       for (var i = 1; i < result.length; i++) {
-        var c= [{v:new Date(result[i][0])},{v:result[i][1]}];
-        data.rows.push({c:c});
+        var c = [{v:new Date(result[i][0])},{v:result[i][1]}];
+        console.log(c[0]);
+        _.rows.push({c:c});
       }
-      console.log(data);
-      this.$.publishingTrendsChart.data = data;
+
+      this.$.publishingTrendsChart.data = _;
     },
     _onIronResize: function() {
       this.$.publishingTrendsChart.redraw();

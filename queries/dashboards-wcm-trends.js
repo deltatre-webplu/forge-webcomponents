@@ -95,8 +95,10 @@ class Query extends QueryBase {
 
 			for (var i = 0; i <= timespan; i++) {
 				var d = new Date(startingDate.getTime() + (i * 60 * 60 * 1000));
-				var dh = d.getHours();
+				var dh = d.getUTCHours();
 				var kv = [];
+				var date;
+				var t = 0;
 
 				if(res && res.length>0 &&
 					res[0]._id.Year <= d.getUTCFullYear() &&
@@ -104,16 +106,16 @@ class Query extends QueryBase {
           res[0]._id.Day <= d.getUTCDate() &&
           res[0]._id.Hour <= dh) {
 					var e = res.shift();
-					var resHour=e._id.Hour;
-					kv.push(new Date(e._id.Year,e._id.Month,e._id.Day,resHour));
-					kv.push(e.Total);
-					output.push(kv);
+					date = new Date(e._id.Year, e._id.Month-1, e._id.Day, e._id.Hour);
+					t = e.Total;
 				}
 				else {
-					kv.push(d);
-					kv.push(0);
-					output.push(kv);
+					date = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), dh);
 				}
+
+				kv.push(date.getTime());
+				kv.push(t);
+				output.push(kv);
 			}
 
 			return output;
@@ -184,26 +186,24 @@ class Query extends QueryBase {
 				let d = new Date(startingDate.getTime() + (i * 24 * 60 * 60 * 1000));
 				let dd = d.getUTCDate();
 				var kv = [];
-
-				var objDate = new Date();
-				objDate.setMonth(d.getUTCMonth());
-				var locale = "en-us", month = objDate.toLocaleString(locale, { month: "short" });
+				var date;
+				var t = 0;
 
 				if(res && res.length>0 &&
 					res[0]._id.Year <= d.getUTCFullYear() &&
           res[0]._id.Month <= (d.getUTCMonth()+1) &&
           res[0]._id.Day <= dd) {
 					var e = res.shift();
-					var resDay=e._id.Day;
-					kv.push(resDay + ' ' + month);
-					kv.push(e.Total);
-					output.push(kv);
+					date = new Date(e._id.Year, e._id.Month - 1, e._id.Day);
+					t = e.Total;
 				}
 				else {
-					kv.push(dd + ' ' + month);
-					kv.push(0);
-					output.push(kv);
+					date=new Date(d.getUTCFullYear(), d.getUTCMonth(),d.getUTCDate());
 				}
+
+				kv.push(date.getTime());
+				kv.push(t);
+				output.push(kv);
 			}
 
 			return output;
@@ -318,25 +318,22 @@ class Query extends QueryBase {
 				let d = new Date(startingDate.getTime() + (i * 7 * 24 * 60 * 60 * 1000));
 				let dd = d.getUTCDate();
 				var kv = [];
+				var date;
+				var t = 0;
 
 				if(res && res.length>0 &&
 					new Date(Date.parse(res[0]._id.weekStart)).getUTCFullYear() == d.getUTCFullYear() &&
-					new Date(Date.parse(res[0]._id.weekStart)).getUTCMonth() == (d.getUTCMonth()) &&
+					new Date(Date.parse(res[0]._id.weekStart)).getUTCMonth() == d.getUTCMonth() &&
 					new Date(Date.parse(res[0]._id.weekStart)).getUTCDate() == dd) {
 
 					var e = res.shift();
-					var resWeek = e._id.weekStart;
-					kv.push(resWeek.toLocaleDateString());
-					kv.push(e.Total);
-					output.push(kv);
-
-				} else {
-
-					kv.push(d.toLocaleDateString());
-					kv.push(0);
-					output.push(kv);
-
+					t = e.Total;
 				}
+
+				date=new Date(d.getUTCFullYear(), d.getUTCMonth(),dd);
+				kv.push(date.getTime());
+				kv.push(t);
+				output.push(kv);
 			}
 
 			return output;
