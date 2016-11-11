@@ -22,17 +22,16 @@ paper-card {
 }
 
 google-chart {
-      height: auto;
-      width:100%;
-    }
+  height: auto;
+  width:100%;
+}
 </style>
 
 <template>
 <!-- type="area" || type="line" || type="column" -->
-  <paper-card heading="[[localize('wcm.chartHeadingEntitiesByTime')]]">
+  <paper-card heading="[[localize(title)]]">
     <div>
-      <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "top"}'>
-      </google-chart>
+      <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none"}'></google-chart>
     </div>
   </paper-card>
 </template>
@@ -45,6 +44,9 @@ google-chart {
     behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
+        type: String
+      },
+      title: {
         type: String
       }
     },
