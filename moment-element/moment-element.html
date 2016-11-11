@@ -54,6 +54,10 @@
     behaviors: [ForgeWebComponents.Behaviors.ForgeLanguageChangeBehavior],
     properties: {
       dateTime: String,
+      timezone: {
+        type: String,
+        value: null
+      },
       format: {
         type: String,
         value: "from-now"
@@ -64,7 +68,7 @@
       },
       output: {
         type: String,
-        computed: '_computeOutput(language, dateTime, format, _updateIncrement)'
+        computed: '_computeOutput(language, dateTime, format, timezone, _updateIncrement)'
       }
     },
     ready: function() {
@@ -76,12 +80,21 @@
     detached: function() {
       unregister(this);
     },
-    _computeOutput: function(language, datetime, format, _updateIncrement) {
+    _computeOutput: function(language, datetime, format, timezone, _updateIncrement) {
 
       if (moment.locale() !== language) moment.locale(language);
-      var output = moment(datetime);
 
-      output = output.fromNow();
+      var moment_date = moment(datetime);
+      var output;
+
+      if (this.format === "from-now") {
+        output = moment_date.fromNow();
+      }
+      else {
+        output = timezone
+          ? moment_date.tz(timezone).format(this.format)
+          : moment_date.format(this.format);
+      }
 
       return output;
 
