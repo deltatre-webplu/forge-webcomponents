@@ -1,0 +1,28 @@
+[
+  {
+    "ScheduleId": "6edb090e-162d-43c3-a8c8-6467d0670425",
+    "EntityId": "fa4aa9ed-2692-4c8a-b0c6-487511350428",
+    "TranslationId": "29f75002-9d88-4d71-86da-eb5e2cd6045e",
+    "EntityType": "story",
+    "Title": "I am a story",
+    "Command": "SetFeaturedCommand",
+    "Status": 2,
+    "ScheduleInfo": {
+      "ScheduleAt": "2016-11-10T13:59:00Z",
+      "TimeZone": "Europe/Rome"
+    }
+  },
+  {
+    "ScheduleId": "875c261c-ecd0-4c37-af2f-e342eda46b78",
+    "EntityId": "2bac6c1a-406c-4448-b9f5-e45bf49055d8",
+    "TranslationId": "b4a1db5e-491c-46a2-a34d-db4df8241749",
+    "EntityType": "photo",
+    "Title": "avatar",
+    "Command": "UnPublishCommand",
+    "Status": 2,
+    "ScheduleInfo": {
+      "ScheduleAt": "2016-11-10T10:12:00Z",
+      "TimeZone": "Europe/Rome"
+    }
+  }
+]

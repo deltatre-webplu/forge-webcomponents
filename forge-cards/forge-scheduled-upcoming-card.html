@@ -1,0 +1,217 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-icon-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-ripple/paper-ripple.html">
+
+<link rel="import" href="../forge-shared/forge-icons.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-api/forge-api.html">
+
+<link rel="import" href="../forge-behaviors/forge-scheduled-stats-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<link rel="import" href="../moment-element/moment-element.html">
+
+<dom-module id="forge-scheduled-upcoming-card">
+
+<style include="iron-flex iron-flex-alignment">
+:host {
+  display: block;
+}
+
+paper-card {
+  display: block;
+}
+
+paper-icon-item {
+  cursor: pointer;
+  cursor: hand;
+}
+
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
+.header {
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.strong {
+  font-weight: 700;
+}
+
+.entity-icon-wrapper {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--google-grey-300);
+}
+.entity-icon {
+  margin: 8px;
+  width: 24px;
+  height: 24px;
+  --iron-icon-fill-color: white;
+}
+
+.schedule-group {
+  margin-bottom: 16px;
+}
+
+.schedule-group:last-child {
+  margin-bottom: 0;
+}
+
+.date {
+  width: 72px;
+}
+
+.date .big-day {
+  font-size: 48px;
+  line-height: 56px;
+}
+
+.date .week-day {
+  font-size: 24px;
+  line-height: 24px;
+}
+
+</style>
+
+<template>
+
+  <paper-card heading="[[localize('Upcoming Schedules')]]">
+    <paper-progress hidden$="[[hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
+      <template is="dom-if" if="[[entities.length]]">
+
+        <template is="dom-repeat" items="{{entities}}" as="group">
+          <div class="layout horizontal schedule-group">
+            <div class="layout vertical date">
+              <moment-element class="big-day" date-time="[[group.scheduleDate]]" format="DD"></moment-element>
+              <moment-element class="week-day" date-time="[[group.scheduleDate]]" format="MMM"></moment-element>
+            </div>
+            <div class="flex">
+              <template is="dom-repeat" items="{{group.schedules}}">
+                <paper-icon-item>
+                  <paper-item-body two-line on-tap="_openItem">
+                    <paper-ripple></paper-ripple>
+                    <div header>
+                      <moment-element date-time="[[item.ScheduleInfo.ScheduleAt]]"></moment-element>
+                      <span>[[localize('on')]]</span>
+                      <moment-element date-time="[[item.ScheduleInfo.ScheduleAt]]" format="lll z" timezone="[[item.ScheduleInfo.TimeZone]]"></moment-element>
+                    </div>
+                    <div secondary>
+                      <span class="strong">[[item.Title]]</span><span> ([[localize(item.EntityType)]]) [[localize("will be")]] [[localize(item.Command)]]</span>
+                    </div>
+                  </paper-item-body>
+
+                  <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+                    <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
+                  </div>
+
+                  <!-- <paper-icon-button icon="more-vert" >
+                  </paper-icon-button> -->
+                </paper-icon-item>
+              </template>
+            </div>
+          </div>
+        </template>
+
+      </template>
+
+
+      <template is="dom-if" if="[[!entities.length]]">
+        [[localize("wcm.noEntitiesScheduled")]]
+      </template>
+
+    </div>
+  </paper-card>
+</template>
+
+<script>
+(function() {
+  "use strict";
+  var apiUrl = "/deltatre.forge.wcm/api/scheduled/todo?limit=10";
+
+  Polymer({
+    is: 'forge-scheduled-upcoming-card',
+    behaviors: [ForgeWebComponents.Behaviors.ScheduledStatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    entities: [],
+    hideLoading: true,
+    ready: function(){
+      this.polling.register(apiUrl, this);
+    },
+    attached: function() {
+      this.polling.start();
+    },
+    detached: function() {
+      this.polling.unregister(apiUrl, this);
+    },
+    onPollingUpdate: function(result) {
+
+      result.forEach(function(e) {
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+        //e.Link = ForgeWebComponents.Helpers.EntityHelper.createLink(e.EntityType, null, e.Id, e.TranslationId);
+      });
+
+      this.entities = groupByScheduleDay(result);
+      this.hideLoading = true;
+    },
+    onPollingStart: function() {
+      this.hideLoading = false;
+    },
+    _openItem: function(e) {
+      var entity = e.model.item;
+      var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.EntityType, null, entity.EntityId, entity.TranslationId);
+      if (href) location.href = href;
+    }
+  });
+
+  function groupByScheduleDay(items){
+
+    var groups = {};
+
+    items.forEach(function(item){
+      var date = item.ScheduleInfo.ScheduleAt;
+      var scheduleDay = moment(item.ScheduleInfo.ScheduleAt).format("YYYYMMDD");
+
+      if(!groups[scheduleDay]) {
+        groups[scheduleDay] = {
+          scheduleDate: date,
+          schedules: []
+        }
+      }
+
+      groups[scheduleDay].schedules.push(item);
+
+    });
+
+    var ret = [];
+
+    for (var k in groups) {
+      ret.push(groups[k]);
+    }
+
+    return ret;
+  }
+
+})();
+</script>
+
+</dom-module>
