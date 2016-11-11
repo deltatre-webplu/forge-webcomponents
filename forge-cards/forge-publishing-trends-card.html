@@ -64,13 +64,11 @@ google-chart {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-      console.log(result);
       var _ = {};
       _.cols=[{"id": "ga:"+result[0][0],label:result[0][0],type:"datetime"},{"id": "ga:"+result[0][1],label:result[0][1],type:"number"}];
       _.rows=[];
       for (var i = 1; i < result.length; i++) {
         var c = [{v:new Date(result[i][0])},{v:result[i][1]}];
-        console.log(c[0]);
         _.rows.push({c:c});
       }
 
