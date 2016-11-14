@@ -31,7 +31,7 @@ google-chart {
 <!-- type="area" || type="line" || type="column" -->
   <paper-card heading="[[localize(heading)]]">
     <div>
-      <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none", "vAxis": {"minValue": 0}}'></google-chart>
+      <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none", "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
     </div>
   </paper-card>
 </template>
