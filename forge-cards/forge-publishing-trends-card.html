@@ -22,17 +22,16 @@ paper-card {
 }
 
 google-chart {
-      height: auto;
-      width:100%;
-    }
+  height: auto;
+  width:100%;
+}
 </style>
 
 <template>
 <!-- type="area" || type="line" || type="column" -->
-  <paper-card heading="[[localize('wcm.chartHeadingEntitiesByTime')]]">
+  <paper-card heading="[[localize(heading)]]">
     <div>
-      <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "top", "vAxis": {"minValue": 0}}'>
-      </google-chart>
+      <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none", "vAxis": {"minValue": 0}}'></google-chart>
     </div>
   </paper-card>
 </template>
@@ -45,6 +44,9 @@ google-chart {
     behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
+        type: String
+      },
+      heading: {
         type: String
       }
     },
@@ -62,17 +64,19 @@ google-chart {
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-      console.log(result);
-      var _ = {};
-      _.cols=[{"id": "ga:"+result[0][0],label:result[0][0],type:"datetime"},{"id": "ga:"+result[0][1],label:result[0][1],type:"number"}];
-      _.rows=[];
+
+      var data = {};
+
+      data.cols=[{"id": "ga:"+result[0][0],label:result[0][0],type:"datetime"},{"id": "ga:"+result[0][1],label:result[0][1],type:"number"}];
+      data.rows=[];
+
       for (var i = 1; i < result.length; i++) {
         var c = [{v:new Date(result[i][0])},{v:result[i][1]}];
-        console.log(c[0]);
-        _.rows.push({c:c});
+        data.rows.push({c:c});
       }
 
-      this.$.publishingTrendsChart.data = _;
+      this.$.publishingTrendsChart.data = data;
+
     },
     _onIronResize: function() {
       this.$.publishingTrendsChart.redraw();
