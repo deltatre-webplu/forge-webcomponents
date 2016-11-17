@@ -90,6 +90,10 @@ paper-icon-item {
   line-height: 24px;
 }
 
+.schedule-content{
+  overflow-y: hidden;
+}
+
 </style>
 
 <template>
@@ -106,7 +110,7 @@ paper-icon-item {
               <moment-element class="big-day" date-time="[[group.scheduleDate]]" format="DD"></moment-element>
               <moment-element class="week-day" date-time="[[group.scheduleDate]]" format="MMM"></moment-element>
             </div>
-            <div class="flex">
+            <div class="flex schedule-content">
               <template is="dom-repeat" items="{{group.schedules}}">
                 <paper-icon-item>
                   <paper-item-body two-line on-tap="_openItem">
@@ -117,7 +121,10 @@ paper-icon-item {
                       <moment-element date-time="[[item.ScheduleInfo.ScheduleAt]]" format="lll z" timezone="[[item.ScheduleInfo.TimeZone]]"></moment-element>
                     </div>
                     <div secondary>
-                      <span class="strong">[[item.Title]]</span><span> ([[localize(item.EntityType)]]) [[localize("will be")]] [[localize(item.Command)]]</span>
+                      <span class="strong">[[item.Title]]</span>
+                    </div>
+                    <div secondary>
+                      <span> ([[localize(item.EntityType)]]) [[localize("will be")]] [[localize(item.Command)]]</span>
                     </div>
                   </paper-item-body>
 
