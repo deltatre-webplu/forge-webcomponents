@@ -1,0 +1,205 @@
+[{
+	"command": "UnsetContextCommand",
+	"count": 1,
+	"avg": 7
+}, {
+	"command": "GenerateDiffCommand",
+	"count": 1,
+	"avg": 11
+}, {
+	"command": "CreatePageCommand",
+	"count": 5,
+	"avg": 15.8
+}, {
+	"command": "ApprovalWorkflowRejectCommand",
+	"count": 2,
+	"avg": 18.5
+}, {
+	"command": "CreateCheckpointCommand",
+	"count": 2,
+	"avg": 20
+}, {
+	"command": "DeleteCheckpointCommand",
+	"count": 2,
+	"avg": 20.5
+}, {
+	"command": "AddStoryPartCommand",
+	"count": 43,
+	"avg": 20.744186046511629
+}, {
+	"command": "CreateStoryCommand",
+	"count": 43,
+	"avg": 20.906976744186046
+}, {
+	"command": "AddEntityRelationCommand",
+	"count": 3,
+	"avg": 22.666666666666668
+}, {
+	"command": "SetContentDateCommand",
+	"count": 37,
+	"avg": 23.189189189189189
+}, {
+	"command": "ApprovalWorkflowSendForApprovalCommand",
+	"count": 5,
+	"avg": 23.6
+}, {
+	"command": "UnsetThumbnailCommand",
+	"count": 1,
+	"avg": 29
+}, {
+	"command": "SetStoryHeadlineCommand",
+	"count": 1,
+	"avg": 29
+}, {
+	"command": "SetStoryPartExtendedFieldsCommand",
+	"count": 3,
+	"avg": 29
+}, {
+	"command": "AddAlbumItemsCommand",
+	"count": 9,
+	"avg": 30
+}, {
+	"command": "SetThumbnailCommand",
+	"count": 4,
+	"avg": 30.75
+}, {
+	"command": "SetFeaturedCommand",
+	"count": 2,
+	"avg": 32
+}, {
+	"command": "UnsetPhotoCropAreaCommand",
+	"count": 1,
+	"avg": 32
+}, {
+	"command": "SetExtendedFieldsCommand",
+	"count": 76,
+	"avg": 32.315789473684212
+}, {
+	"command": "CreateAlbumCommand",
+	"count": 10,
+	"avg": 32.9
+}, {
+	"command": "CreateCustomEntityCommand",
+	"count": 12,
+	"avg": 32.916666666666664
+}, {
+	"command": "DeleteAlbumItemsCommand",
+	"count": 1,
+	"avg": 34
+}, {
+	"command": "SetTitleCommand",
+	"count": 66,
+	"avg": 35.18181818181818
+}, {
+	"command": "SetContextCommand",
+	"count": 1,
+	"avg": 36
+}, {
+	"command": "AddSelectionItemsCommand",
+	"count": 2,
+	"avg": 36
+}, {
+	"command": "RemoveSitePageCommand",
+	"count": 5,
+	"avg": 36.4
+}, {
+	"command": "ChangePageTemplateCommand",
+	"count": 4,
+	"avg": 36.5
+}, {
+	"command": "SetSlugCommand",
+	"count": 10,
+	"avg": 36.6
+}, {
+	"command": "CreateSelectionCommand",
+	"count": 4,
+	"avg": 37
+}, {
+	"command": "SetPhotoCropAreaCommand",
+	"count": 2,
+	"avg": 41
+}, {
+	"command": "SetDescriptionCommand",
+	"count": 2,
+	"avg": 44
+}, {
+	"command": "ArchiveCommand",
+	"count": 136,
+	"avg": 46.5735294117647
+}, {
+	"command": "MoveAlbumItemCommand",
+	"count": 1,
+	"avg": 48
+}, {
+	"command": "CreateTagCommand",
+	"count": 10,
+	"avg": 48.6
+}, {
+	"command": "AddTranslationCommand",
+	"count": 1,
+	"avg": 50
+}, {
+	"command": "ScheduleCommand",
+	"count": 1,
+	"avg": 51
+}, {
+	"command": "SetTranslationVisibilityCommand",
+	"count": 2,
+	"avg": 55.5
+}, {
+	"command": "RollbackCommand",
+	"count": 1,
+	"avg": 68
+}, {
+	"command": "AddSitePageCommand",
+	"count": 5,
+	"avg": 78.4
+}, {
+	"command": "PublishCommand",
+	"count": 92,
+	"avg": 93.065217391304344
+}, {
+	"command": "UnPublishCommand",
+	"count": 19,
+	"avg": 103.21052631578948
+}, {
+	"command": "BatchCommand",
+	"count": 5,
+	"avg": 110
+}, {
+	"command": "ImportFeedsCommand",
+	"count": 2,
+	"avg": 191.5
+}, {
+	"command": "RestoreCheckpointCommand",
+	"count": 1,
+	"avg": 251
+}, {
+	"command": "ExtractPhotoMetadataCommand",
+	"count": 46,
+	"avg": 276.21739130434781
+}, {
+	"command": "SetFileCommand",
+	"count": 6,
+	"avg": 376.66666666666669
+}, {
+	"command": "CreatePhotoCommand",
+	"count": 42,
+	"avg": 392.54761904761904
+}, {
+	"command": "CreateDocumentCommand",
+	"count": 13,
+	"avg": 400.23076923076923
+}, {
+	"command": "SetPhotoGravityCommand",
+	"count": 2,
+	"avg": 648
+}, {
+	"command": "UnsetPhotoGravityCommand",
+	"count": 1,
+	"avg": 705
+}, {
+	"command": "UploadPhotoCommand",
+	"count": 4,
+	"avg": 1039
+}]

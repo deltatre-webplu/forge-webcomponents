@@ -69,7 +69,7 @@ paper-card {
 
     <div class="card-content">
 
-      <div class="card-disclaimer">[[localize('wcm.dataEstimate')]]</div>
+      <div class="card-disclaimer">[[localize('wcm.cardCommandExecutionAverageDisclaimer')]]</div>
 
       <div class="card-panels-container">
         <div class="card-panel">
@@ -109,11 +109,11 @@ paper-card {
     properties: {
       url: {
         type: String,
-        value: "/api/metrics/commands/executiontime"
+        value: "/api/statistics/commands/executiontime"
       },
       interval: {
         type: Number,
-        value: 30000
+        value: 60000
       },
       _data: {
         type: Object,
@@ -136,11 +136,11 @@ paper-card {
         totalExec += (entry.avg * entry.count)
       });
 
-      var avg = Math.ceil(totalExec / totalCommands);
+      var avg = Math.round(totalExec / totalCommands);
 
       var slowest = result[result.length - 1];
 
-      this._data = new Data(avg, Math.ceil(slowest.avg), slowest.command);
+      this._data = new Data(avg, Math.round(slowest.avg), slowest.command);
 
     },
     _onPollingStart: function() {

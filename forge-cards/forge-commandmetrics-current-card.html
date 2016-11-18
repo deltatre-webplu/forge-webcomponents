@@ -39,7 +39,11 @@ paper-card {
 
 .card-panel {
   box-sizing: border-box;
-  width: 50%;
+  width: 33%;
+  padding: 0 4px;
+}
+
+.card-panel:first-child {
   padding: 0 4px 0 0;
 }
 
@@ -78,6 +82,10 @@ paper-card {
           <div class="card-panel-title">[[localize('remaining')]]</div>
           <div class="card-panel-content">[[_data.remaining]]</div>
         </div>
+        <div class="card-panel">
+          <div class="card-panel-title">[[localize('failed')]]</div>
+          <div class="card-panel-content">[[_data.failed]]</div>
+        </div>
       </div>
 
     </div>
@@ -90,10 +98,11 @@ paper-card {
 (function() {
   "use strict";
 
-  function Data(added, remaining) {
+  function Data(added, remaining, failed) {
     remaining = remaining || 0;
     this.added = added || 0;
     this.remaining = remaining >= 0 ? remaining : 0;
+    this.failed = failed || 0;
   }
 
   Polymer({
@@ -102,11 +111,11 @@ paper-card {
     properties: {
       url: {
         type: String,
-        value: "/api/metrics/commands/currentqueue"
+        value: "/api/statistics/commands/currentqueue"
       },
       interval: {
         type: Number,
-        value: 30000
+        value: 60000
       },
       _data: {
         type: Object,
@@ -119,10 +128,12 @@ paper-card {
         return;
       }
 
-      var added = result[0].count;
-      var handled = result[1].count;
-      var remaining = handled - added;
-      this._data = new Data(added, remaining);
+      var added = result.find(function(e) {return e.action === "sb:Send"}) || { count: 0 };
+      var handled = result.find(function(e) {return e.action === "sb:Handle"}) || { count: 0 };
+      var failed = result.find(function(e) {return e.action === "sb:HandleFail"}) || { count: 0 };
+
+      var remaining = handled.count - added.count;
+      this._data = new Data(added.count, remaining, failed.count);
 
     },
     _onPollingStart: function() {
