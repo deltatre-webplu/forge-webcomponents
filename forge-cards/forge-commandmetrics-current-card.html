@@ -1,0 +1,135 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-progress/paper-progress.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<link rel="import" href="../moment-element/moment-element.html">
+
+<dom-module id="forge-commandmetrics-current-card">
+
+<style>
+:host {
+  display: block;
+}
+
+paper-card {
+  display: block;
+}
+
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
+.card-disclaimer {
+
+}
+
+.card-panels-container {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+}
+
+.card-panel {
+  box-sizing: border-box;
+  width: 50%;
+  padding: 0 4px 0 0;
+}
+
+.card-panel:last-child {
+  padding: 0 0 0 4px;
+}
+
+.card-panel-title {
+  text-align: center;
+  font-size: 36px;
+}
+
+.card-panel-content {
+  text-align: center;
+  font-size: 72px;
+}
+
+</style>
+
+<template>
+
+  <paper-card heading="[[localize('Command Queue')]]">
+
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
+
+      <div class="card-disclaimer">[[localize('wcm.cardCurrentCommandQueueDisclaimer')]]</div>
+
+      <div class="card-panels-container">
+        <div class="card-panel">
+          <div class="card-panel-title">[[localize('new')]]</div>
+          <div class="card-panel-content">[[_data.added]]</div>
+        </div>
+        <div class="card-panel">
+          <div class="card-panel-title">[[localize('remaining')]]</div>
+          <div class="card-panel-content">[[_data.remaining]]</div>
+        </div>
+      </div>
+
+    </div>
+
+  </paper-card>
+
+</template>
+
+<script>
+(function() {
+  "use strict";
+
+  function Data(added, remaining) {
+    remaining = remaining || 0;
+    this.added = added || 0;
+    this.remaining = remaining >= 0 ? remaining : 0;
+  }
+
+  Polymer({
+    is: 'forge-commandmetrics-current-card',
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    properties: {
+      url: {
+        type: String,
+        value: "/api/metrics/commands/currentqueue"
+      },
+      interval: {
+        type: Number,
+        value: 30000
+      },
+      _data: {
+        type: Object,
+        value: new Data()
+      }
+    },
+    _onPollingUpdate: function(result) {
+
+      if (!(result && result.length)) {
+        return;
+      }
+
+      var added = result[0].count;
+      var handled = result[1].count;
+      var remaining = handled - added;
+      this._data = new Data(added, remaining);
+
+    },
+    _onPollingStart: function() {
+    }
+  });
+
+})();
+</script>
+
+</dom-module>

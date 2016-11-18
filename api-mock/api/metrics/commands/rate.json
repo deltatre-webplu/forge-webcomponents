@@ -1,0 +1,97 @@
+[{
+	"rangeStart": "2016-11-18T11:35:00Z",
+	"action": "sb:Send",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T11:35:00Z",
+	"action": "sb:Handle",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T11:35:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T11:36:00Z",
+	"action": "sb:Send",
+	"count": 4
+}, {
+	"rangeStart": "2016-11-18T11:36:00Z",
+	"action": "sb:Handle",
+	"count": 4
+}, {
+	"rangeStart": "2016-11-18T11:36:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 3
+}, {
+	"rangeStart": "2016-11-18T11:36:00Z",
+	"action": "sb:HandleFail",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T11:37:00Z",
+	"action": "sb:Send",
+	"count": 4
+}, {
+	"rangeStart": "2016-11-18T11:37:00Z",
+	"action": "sb:Handle",
+	"count": 4
+}, {
+	"rangeStart": "2016-11-18T11:37:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 3
+}, {
+	"rangeStart": "2016-11-18T11:37:00Z",
+	"action": "sb:HandleFail",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T12:05:00Z",
+	"action": "sb:Send",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T12:05:00Z",
+	"action": "sb:Handle",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T12:05:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T12:06:00Z",
+	"action": "sb:Send",
+	"count": 4
+}, {
+	"rangeStart": "2016-11-18T12:06:00Z",
+	"action": "sb:Handle",
+	"count": 4
+}, {
+	"rangeStart": "2016-11-18T12:06:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 3
+}, {
+	"rangeStart": "2016-11-18T12:06:00Z",
+	"action": "sb:HandleFail",
+	"count": 1
+}, {
+	"rangeStart": "2016-11-18T12:17:00Z",
+	"action": "sb:Send",
+	"count": 6
+}, {
+	"rangeStart": "2016-11-18T12:17:00Z",
+	"action": "sb:Handle",
+	"count": 6
+}, {
+	"rangeStart": "2016-11-18T12:17:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 6
+}, {
+	"rangeStart": "2016-11-18T12:18:00Z",
+	"action": "sb:Send",
+	"count": 3
+}, {
+	"rangeStart": "2016-11-18T12:18:00Z",
+	"action": "sb:Handle",
+	"count": 3
+}, {
+	"rangeStart": "2016-11-18T12:18:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 3
+}]

@@ -1,0 +1,25 @@
+[{
+	"command": "ComplexCommandSample",
+	"count": 3,
+	"avg": 437.33333333333331
+}, {
+	"command": "CommandSample",
+	"count": 8,
+	"avg": 1.5
+}, {
+	"command": "UnPublishCommand",
+	"count": 3,
+	"avg": 326
+}, {
+	"command": "PublishCommand",
+	"count": 4,
+	"avg": 64.25
+}, {
+	"command": "AddStoryPartCommand",
+	"count": 1,
+	"avg": 76
+}, {
+	"command": "AddAlbumItemsCommand",
+	"count": 1,
+	"avg": 44
+}]
