@@ -1,0 +1,41 @@
+<link rel="import" href="polling-engine.html">
+
+<script>
+(function() {
+
+  window.ForgeWebComponents = window.ForgeWebComponents || {};
+  ForgeWebComponents.Behaviors = ForgeWebComponents.Behaviors || {};
+
+  var engine = ForgeWebComponents.PollingEngine;
+
+  ForgeWebComponents.Behaviors.PollingBehavior = {
+
+    properties: {
+      url: String,
+      interval: Number
+    },
+
+    ready: function() {
+      engine.register(this, this.url, this.interval);
+    },
+    attached: function() {
+      engine.start();
+    },
+    detached: function() {
+      engine.unregister(this);
+    },
+
+    _hideLoading: true,
+
+    _onPollingUpdate: function() {
+      console.error("_onPollingUpdate not properly overridden");
+    },
+
+    _onPollingStart: function() {
+      //do nothing if not overwritten
+    }
+
+  };
+
+})();
+</script>

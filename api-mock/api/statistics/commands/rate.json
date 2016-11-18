@@ -1,0 +1,49 @@
+[{
+	"rangeStart": "2016-11-18T14:44:00Z",
+	"action": "sb:Send",
+	"count": 8
+}, {
+	"rangeStart": "2016-11-18T14:44:00Z",
+	"action": "sb:Handle",
+	"count": 8
+}, {
+	"rangeStart": "2016-11-18T14:44:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 8
+}, {
+	"rangeStart": "2016-11-18T14:45:00Z",
+	"action": "sb:Send",
+	"count": 152
+}, {
+	"rangeStart": "2016-11-18T14:45:00Z",
+	"action": "sb:Handle",
+	"count": 152
+}, {
+	"rangeStart": "2016-11-18T14:45:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 152
+}, {
+	"rangeStart": "2016-11-18T14:46:00Z",
+	"action": "sb:Send",
+	"count": 286
+}, {
+	"rangeStart": "2016-11-18T14:46:00Z",
+	"action": "sb:Handle",
+	"count": 286
+}, {
+	"rangeStart": "2016-11-18T14:46:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 285
+}, {
+	"rangeStart": "2016-11-18T14:47:00Z",
+	"action": "sb:HandleSuccess",
+	"count": 305
+}, {
+	"rangeStart": "2016-11-18T14:47:00Z",
+	"action": "sb:Send",
+	"count": 304
+}, {
+	"rangeStart": "2016-11-18T14:47:00Z",
+	"action": "sb:Handle",
+	"count": 304
+}]

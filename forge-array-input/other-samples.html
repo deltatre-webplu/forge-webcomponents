@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/download/polymer-cdn/1.5.0/lib/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script>
+      /*
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+      */
+    </script>
+
+    <link rel="import" href="../libraries/libraries.html">
+    <link rel="import" href="../custom-styles/forge-core-style.html">
+    <link rel="import" href="forge-array-input.html">
+  </head>
+  <body>
+
+    <h2>Simple String Array Input (Empty Value)</h2>
+    <forge-array-input
+      value=''
+      label="Array Input (Empty Value)"
+      field-name="MyFieldName1"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Array Input", "items" : { "type": "string" }}'>
+    </forge-array-input>
+
+    <h2>Simple String Array Input (Value Omitted)</h2>
+    <forge-array-input
+      label="Array Input (Value Omitted)"
+      field-name="MyFieldName2"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Array Input", "items" : { "type": "string" }}'>
+    </forge-array-input>
+
+    <h2>Simple String Array Input (Wrong Value)</h2>
+    <forge-array-input
+      value='ciao mamma'
+      label="Array Input (Wrong Value)"
+      field-name="MyFieldName3"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Array Input", "items" : { "type": "string" }}'>
+    </forge-array-input>
+
+    <h2>Enum Array Input</h2>
+    <forge-array-input
+      value='["Gino", "Pilotino"]'
+      label="Enum Array Input"
+      field-name="MyFieldName"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Enum Array Input", "items" : { "type": "string", "enum": ["Gino", "Pilotino", "Paolino", "Paperino", "Giacomino"] }}'>
+    </forge-array-input>
+
+    <h2>Simple String Array Input Disabled</h2>
+    <forge-array-input
+      value='["Homer", "Bart"]'
+      disabled="true"
+      label="Array Input"
+      field-name="MyFieldName"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Array Input", "items" : { "type": "string" }}'>
+    </forge-array-input>
+
+    <h2>Enum Array Input Disabled</h2>
+    <forge-array-input
+      value='["Gino", "Pilotino"]'
+      disabled="true"
+      label="Enum Array Input"
+      field-name="MyFieldName"
+      entity='{"entityId":"testEntityId","id":"testId","type":"testType"}'
+      schema='{"type":"array","title":"Enum Array Input", "items" : { "type": "string", "enum": ["Gino", "Pilotino", "Paolino", "Paperino", "Giacomino"] }}'>
+    </forge-array-input>
+
+    <script>
+
+      var elements = document.querySelectorAll('forge-array-input');
+
+      elements.forEach(function(element) {
+
+        element.addEventListener('sendCommand', function (e) {
+          console.log('on sendCommand:', e.detail);
+        });
+        element.addEventListener('valueChanged', function (e) {
+          console.log('on change:', e.detail);
+        });
+
+      });
+
+    </script>
+  </body>
+</html>

@@ -76,10 +76,13 @@
     },
 
     computeFormattedValue: function(value) {
+
       if (!value) {
         return null;
       }
+
       return moment(value).format('LL');
+
     },
 
     _evalDate: function(value) {

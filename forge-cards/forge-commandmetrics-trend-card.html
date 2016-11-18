@@ -1,0 +1,147 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-progress/paper-progress.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/google-chart/google-chart.html">
+
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<link rel="import" href="../moment-element/moment-element.html">
+
+<dom-module id="forge-commandmetrics-trend-card">
+
+<style>
+:host {
+  display: block;
+}
+
+paper-card {
+  display: block;
+}
+
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
+.card-disclaimer {
+
+}
+
+google-chart {
+  height: auto;
+  width:100%;
+}
+</style>
+
+<template>
+
+  <paper-card heading="[[localize('Incoming Commands Trend')]]">
+
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
+
+      <div class="card-disclaimer">[[localize('wcm.cardCommandTrendDisclaimer')]]</div>
+
+      <google-chart id="incomingCommandsTrend" type="line" options='{ "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
+
+    </div>
+
+  </paper-card>
+
+</template>
+
+<script>
+(function() {
+  "use strict";
+
+  function DataColumn(id, label, type) {
+    this.id = id;
+    this.label = label;
+    this.type = type;
+  }
+
+  function DataRow(dateTime, sent, handled) {
+    this.c = [{ v: dateTime }, { v: sent }, { v: handled }];
+  }
+
+  Polymer({
+    is: 'forge-commandmetrics-trend-card',
+    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    properties: {
+      url: {
+        type: String,
+        value: "/api/statistics/commands/rate"
+      },
+      interval: {
+        type: Number,
+        value: 60000
+      }
+    },
+    listeners: {
+      'iron-resize': '_onIronResize'
+    },
+    _onPollingUpdate: function(result) {
+
+      if (!(result && result.length)) {
+        return;
+      }
+
+      var data = {};
+
+      data.cols=[
+        new DataColumn("time", "Time", "datetime"),
+        new DataColumn("sent", "Sent", "number"),
+        new DataColumn("handled", "Handled", "number")
+      ];
+      data.rows=[];
+
+      var last = result[result.length - 1];
+      var lastDate = new Date(last.rangeStart);
+
+      var firstDate = new Date(last.rangeStart);
+      firstDate.setHours(firstDate.getHours() - 1);
+
+      var date = new Date(firstDate);
+
+      for (var i = 0; i < 60; i++) {
+
+        date.setMinutes(date.getMinutes() + 1);
+        var isoDate = date.toISOString().substring(0, 19) + "Z";
+
+        var sent = result.find(function(entry) {
+          return entry.rangeStart === isoDate && entry.action === "sb:Send";
+        }) || { count: 0 };
+
+        var handledSuccess = result.find(function(entry) {
+          return entry.rangeStart === isoDate && entry.action === "sb:HandleSuccess";
+        }) || { count: 0 };
+
+        var handledFail = result.find(function(entry) {
+          return entry.rangeStart === isoDate && entry.action === "sb:HandleFail";
+        }) || { count: 0 };
+
+        data.rows.push(
+          new DataRow(new Date(date), sent.count, handledSuccess.count + handledFail.count)
+        );
+
+      }
+
+      this.$.incomingCommandsTrend.data = data;
+
+    },
+    _onPollingStart: function() {
+    },
+    _onIronResize: function() {
+      this.$.incomingCommandsTrend.redraw();
+    }
+  });
+
+})();
+</script>
+
+</dom-module>

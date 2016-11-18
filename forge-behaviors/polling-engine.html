@@ -1,0 +1,128 @@
+<link rel="import" href="../forge-api/forge-api.html">
+
+<script>
+(function() {
+
+  function PollingEndpoint(url, interval) {
+
+    this.url = url;
+    this.interval = interval;
+    this.instances = [];
+
+    this.timeout = null;
+    this.active = false;
+
+  }
+
+  PollingEndpoint.prototype.poll = function() {
+
+    if (this.instances.length < 1) {
+      this.active = false;
+      return;
+    };
+
+    var self = this;
+    var start = +new Date();
+
+    self.instances.forEach(function(r) {
+      r._hideLoading = false;
+      r._onPollingStart();
+    });
+
+    console.log("polling", self.url);
+
+    ForgeWebComponents.Api
+      .raw(self.url)
+      .then(function(result) {
+
+        self.instances.forEach(function(r) {
+          r._onPollingUpdate(result);
+          r._hideLoading = true;
+        });
+
+        var end = +new Date();
+        var t = self.interval - (end - start);
+        self.timeout = setTimeout(self.poll.bind(self), Math.max(t, 0));
+
+      }, function() {
+        // handle error? or do nothing?
+      });
+
+  };
+
+
+
+  function PollingEngine() {
+    this.endpoints = {};
+    this.started = false;
+  }
+
+  PollingEngine.prototype.start = function() {
+
+    if (this.started) return;
+    this.started = true;
+
+    for (var endpoint in this.endpoints) {
+      var pe = this.endpoints[endpoint];
+      pe.active = true;
+      pe.poll();
+    }
+
+  };
+
+  PollingEngine.prototype.register = function(webComponent, url, interval) {
+
+    var pe = this.endpoints[url];
+
+    if (pe) {
+
+      if (pe.instances.indexOf(webComponent) < 0) {
+        pe.instances.push(webComponent);
+      }
+
+      if (pe.interval !== interval) {
+        console.warn('polling - multiple intervals detected for same url; first interval: ', pe.interval, ', current interval: ', interval, ', url:', url);
+        console.warn('current interval will be ignored');
+      }
+
+    }
+    else {
+
+      pe = new PollingEndpoint(url, interval);
+      pe.instances.push(webComponent);
+      this.endpoints[url] = pe;
+
+    }
+
+  };
+
+  PollingEngine.prototype.unregister = function(webComponent) {
+
+    for (var endpoint in this.endpoints) {
+
+      var pe = this.endpoints[endpoint];
+      var index = pe.instances.indexOf(webComponent);
+
+      // remove instance from endpoint config
+      if (index >= 0) {
+        pe.instances.splice(index, 1);
+      }
+
+      // if no more instances present, remove enpoint and clear timeout
+      if (pe.instances === 0) {
+
+        pe.active = false;
+        clearTimeout(pe.timeout);
+
+        delete this.endpoints[endpoint];
+
+      }
+
+    }
+
+  }
+
+  ForgeWebComponents.PollingEngine = new PollingEngine();
+
+})();
+</script>
