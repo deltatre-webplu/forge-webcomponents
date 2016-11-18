@@ -1,0 +1,86 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+
+<link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-shared/forge-icons.html">
+
+<dom-module id="forge-timetopublish-story-card">
+
+<style>
+:host {
+  display: block;
+}
+
+.ttp-card {
+  display: block;
+}
+
+.icon {
+  --iron-icon-height: 96px;
+  --iron-icon-width: 96px;
+  --iron-icon-fill-color: white;
+}
+
+.avg-time {
+  @apply(--paper-font-title);
+  text-align: right;
+  color: white;
+}
+
+</style>
+
+<template>
+
+  <paper-card class$="ttp-card story">
+    <div class="card-content">
+      <div class="icon-wrapper" style$="background:[[iconItem.color]]" item-icon>
+        <iron-icon class="entity-icon" icon="[[iconItem.icon]]"></iron-icon>
+      </div>
+      <div class="avg-time"></div>
+    </div>
+  </paper-card>
+
+</template>
+
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-timetopublish-story-card',
+    behaviors: [ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    properties: {
+      url: String
+    },
+    avgTime: String,
+    iconItem: {},
+    attached: function() {
+      this.polling.register(this.url, this);
+      this.polling.start();
+    },
+    detached: function() {
+      this.polling.unregister(this.url, this);
+    },
+    onPollingUpdate: function(result) {
+      console.log(result);
+      result.forEach(function(r) {
+      r.perType.forEach(function(e) {
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.Type];
+        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.Type);
+        });
+      });
+      this.avgTime = result;
+    }
+  }
+});
+
+})();
+</script>
+
+</dom-module>

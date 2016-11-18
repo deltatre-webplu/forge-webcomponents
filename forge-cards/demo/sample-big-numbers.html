@@ -18,6 +18,7 @@
     <link rel="import" href="../forge-published-overview-card.html">
     <link rel="import" href="../forge-published-chart-card.html">
     <link rel="import" href="../forge-publishing-trends-card.html">
+    <link rel="import" href="../forge-workflow-number-card.html">
 
   </head>
   <body>
@@ -27,8 +28,9 @@
       <button onclick="changeLanguage('it')">ITA</button>
     </div>
 
-    <forge-published-overview-card url="/api/extended-queries/query/dashboards-wcm-published-totals"></forge-published-overview-card>
-    <forge-published-chart-card url="/api/extended-queries/query/dashboards-wcm-published-totals-charts"></forge-published-chart-card>
+    <!-- <forge-published-overview-card url="/api/extended-queries/query/dashboards-wcm-published-totals"></forge-published-overview-card>
+    <forge-published-chart-card url="/api/extended-queries/query/dashboards-wcm-published-totals-charts"></forge-published-chart-card> -->
+    <forge-workflow-number-card url="http://localhost:1337/api/stages/"></forge-workflow-number-card>
     <!-- <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends"></forge-publishing-trends-card>
     <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends"></forge-publishing-trends-card>
     <forge-publishing-trends-card url="http://localhost:60191/api/extended-queries/query/dashboards-wcm-trends"></forge-publishing-trends-card> -->

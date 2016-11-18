@@ -1,0 +1,157 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-icon-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-collapse/iron-collapse.html">
+
+<link rel="import" href="../forge-behaviors/forge-wcm-published-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-shared/forge-icons.html">
+
+<dom-module id="forge-workflow-number-card">
+
+<style>
+:root {
+
+  --paper-item-focused-before: {
+    background-color: transparent;
+  }
+
+}
+
+:host {
+  display: block;
+}
+
+.nodes-status-card {
+  display: block;
+}
+
+.status {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--google-grey-300);
+}
+
+.group-title {
+  @apply(--paper-font-title);
+}
+
+.paper-item-group {
+  background: var(--google-grey-100);
+}
+
+.stageTotal {
+  font-size: 16px;
+  text-transform: capitalize;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.entity-icon-wrapper {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--google-grey-300);
+}
+
+.entity-icon {
+  margin: 8px;
+  width: 24px;
+  height: 24px;
+  --iron-icon-fill-color: white;
+}
+</style>
+
+<template>
+
+  <paper-card heading="[[localize('wcm.workflowNumbersHeader')]]">
+
+    <div class="card-content">
+
+      <template is="dom-repeat" items="{{stages}}" as="stage">
+        <paper-icon-item class="paper-item-group">
+          <paper-item-body class="group-title stageTotal">[[localize(stage.Stage)]]: [[stage.Total]]</paper-item-body>
+          <paper-icon-button icon="expand-more" alt="expand" on-tap="toggle"></paper-icon-button>
+        </paper-icon-item>
+        <iron-collapse id$="collapse-[[stage.Stage]]">
+          <template is="dom-repeat" items="{{stage.perType}}" as="type">
+            <paper-icon-item>
+              <div class="entity-icon-wrapper" style$="background:[[type.IconItem.color]]" item-icon>
+                <iron-icon class="entity-icon" icon="[[type.IconItem.icon]]"></iron-icon>
+              </div>
+              <paper-item-body class="capitalize">[[localize(type.PluralType)]]: [[type.Total]]</paper-item-body>
+            </paper-icon-item>
+          </template>
+        </iron-collapse>
+      </template>
+
+    </div>
+
+  </paper-card>
+
+</template>
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-workflow-number-card',
+    behaviors: [ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    properties: {
+      url: String
+    },
+    stages:[],
+    attached: function() {
+      this.polling.register(this.url, this);
+      this.polling.start();
+    },
+    detached: function() {
+      this.polling.unregister(this.url, this);
+    },
+    onPollingUpdate: function(result) {
+      result.forEach(function(r) {
+      r.perType.forEach(function(e) {
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.Type];
+        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.Type);
+      });
+    });
+      this.stages = result;
+
+    },
+    toggle: function(e) {
+      console.log(e.model.stage.Stage);
+      var collapse = this.$$("#collapse-" + e.model.stage.Stage);
+      console.log(collapse);
+      var opened = !collapse.opened;
+      collapse.toggle();
+      if (opened) {
+        e.target.setAttribute('icon', 'expand-less');
+        e.target.setAttribute('alt', 'collapse');
+      }
+      else {
+        e.target.setAttribute('icon', 'expand-more')
+        e.target.setAttribute('alt', 'expand');
+      }
+    },
+  });
+
+})();
+</script>
+
+</dom-module>
