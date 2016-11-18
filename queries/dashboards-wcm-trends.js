@@ -2,17 +2,30 @@ const EventStore = require("nestore-js-mongodb").EventStore;
 const Projection = require("nestore-js-mongodb").Projection;
 const MongoHelpers = require("nestore-js-mongodb").MongoHelpers;
 
-const eventToMatch = /^(Entity)?Published\<.+\>/;
+const EventPublishedRegEx = /^(Entity)?Published\<.+\>$/;
+
+function compareQueryOutput(a, b){
+	if (a[0] > b[0]) {
+		return 1;
+	}
+	if (a[0] < b[0]) {
+		return -1;
+	}
+
+	return 0;
+}
 
 class Query extends QueryBase {
 	constructor(config) {
 		super(config);
+
+		this._groupedByHours = new Map();
+		this._groupedByDays = new Map();
+		this._groupedByWeeks = new Map();
+		this._alreadyPublished = {};
 	}
 
 	init(){
-		this._groupedEvents = {};
-		this._eventsToExclude = {};
-
 		this._eventStore = new EventStore({
 			url: this._config.eventStoreConfiguration.ConnectionString
 		});
@@ -24,17 +37,14 @@ class Query extends QueryBase {
 
 			this._projection.on("commit", (c) => this._onCommit(c));
 
-			var timespan = 26;
-			var extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
-			var startingDate = new Date(Date.now() - (timespan * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
+			let fromDate = new Date();
+			fromDate.setUTCMonth(fromDate.getUTCMonth() - 6);
 
 			let filters = {
-				eventFilters : {
-					EventDateTime : { $gt : startingDate },
-					_t : eventToMatch
-				}
+				EventDateTime : { $gt : fromDate },
+				_t : EventPublishedRegEx
 			};
-			this._projection.start(filters);
+			this._projection.start({ eventFilters : filters });
 		});
 	}
 
@@ -45,36 +55,127 @@ class Query extends QueryBase {
 			() => this._eventStore.close());
 	}
 
-	_onCommit(commit) {
-		var events = commit.Events;
-		if(events){
-			events.forEach(function(e) {
-				if(eventToMatch.test(e._t) && !this._eventsToExclude[MongoHelpers.binaryUUIDToString(e.AggregateId)]){
-					this._eventsToExclude[MongoHelpers.binaryUUIDToString(e.AggregateId)] = true;
-
-					var ticks = e.EventDateTime.setMinutes(0,0,0);
-					this._groupedEvents[ticks] = this._groupedEvents[ticks] ? this._groupedEvents[ticks] + 1 : 1;
-				}
-			});
+	query(options) {
+		switch (options.span) {
+		case "day":
+			return this._queryLastDay();
+		case "month":
+			return this._queryLastMonth();
+		case "semester":
+			return this._queryLastSemester();
+		default:
+			return null;
 		}
 	}
 
-	query(options) {
-		return Promise.resolve(this._groupedEvents);
-		// var results = [];
-		// switch (options.span) {
-		// case "day":
-		// 	results = this._lastDay();
-		// 	break;
-		// case "month":
-		// 	results = this._lastMonth();
-		// 	break;
-		// case "semester":
-		// 	results = this._lastSemester();
-		// 	break;
-		// default:
-		// 	return null;
-		// }
+	_onCommit(commit) {
+		let publishedEvents = commit.Events.filter((e) => EventPublishedRegEx.test(e._t));
+
+		for (let e of publishedEvents) {
+			if (this._checkPublished(e))
+				continue;
+
+			this._groupByHour(e);
+			this._groupByDays(e);
+			this._groupByWeeks(e);
+		}
+	}
+
+	_groupByHour(e){
+		let eventHour = (new Date(e.EventDateTime)).setUTCMinutes(0,0,0);
+
+		let fromDate = new Date();
+		fromDate = fromDate.setUTCHours(fromDate.getUTCHours() - 24);
+
+		if (eventHour >= fromDate) {
+			let count = this._groupedByHours.get(eventHour)
+				? this._groupedByHours.get(eventHour) + 1
+				: 1;
+			this._groupedByHours.set(eventHour, count);
+		}
+	}
+
+	_groupByDays(e){
+		let eventDate = (new Date(e.EventDateTime)).setUTCHours(0,0,0,0);
+
+		let fromDate = new Date();
+		fromDate = fromDate.setUTCDate(fromDate.getUTCDate() - 30);
+
+		if (eventDate >= fromDate) {
+			let count = this._groupedByDays.get(eventDate)
+				? this._groupedByDays.get(eventDate) + 1
+				: 1;
+			this._groupedByDays.set(eventDate, count);
+		}
+	}
+
+	_groupByWeeks(e){
+
+	}
+
+	_checkPublished(e){
+		let aggregateId = MongoHelpers.binaryUUIDToString(e.AggregateId);
+		if (this._alreadyPublished[aggregateId])
+			return true;
+
+		this._alreadyPublished[aggregateId] = true;
+		return false;
+	}
+
+	_queryLastDay(){
+		let fromDate = new Date();
+		fromDate.setUTCHours(fromDate.getUTCHours() - 24);
+		let fromDateMs = fromDate.setUTCMinutes(0,0,0);
+
+		// fill holes
+		for (var i = 0; i <= 24; i++) {
+			let dateToFill = new Date(fromDateMs);
+			let dtSpan = dateToFill.setUTCHours(dateToFill.getUTCHours() + i);
+			if (!this._groupedByHours.has(dtSpan))
+				this._groupedByHours.set(dtSpan, 0);
+		}
+
+		let output = [];
+		output.push(["Hour", "published"]);
+
+		for (var entry of this._groupedByHours) {
+			if (entry[0] < fromDateMs)
+				continue;
+
+			output.push(entry);
+		}
+
+		return output.sort(compareQueryOutput);
+	}
+
+	_queryLastMonth(){
+		let fromDate = new Date();
+		fromDate.setUTCDate(fromDate.getUTCDate() - 30);
+		let fromDateMs = fromDate.setUTCHours(0,0,0,0);
+
+		// fill holes
+		for (var i = 0; i <= 30; i++) {
+			let dateToFill = new Date(fromDateMs);
+			let dtSpan = dateToFill.setUTCDate(dateToFill.getUTCDate() + i);
+			if (!this._groupedByDays.has(dtSpan))
+				this._groupedByDays.set(dtSpan, 0);
+		}
+
+		let output = [];
+		output.push(["Day", "published"]);
+
+		for (var entry of this._groupedByDays) {
+			if (entry[0] < fromDateMs)
+				continue;
+
+			output.push(entry);
+		}
+
+		return output.sort(compareQueryOutput);
+	}
+
+	_queryLastSemester(){
+		return null;
 	}
 
 	// _lastDay(col) {
