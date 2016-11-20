@@ -3,17 +3,6 @@ const MongoHelpers = require("nestore-js-mongodb").MongoHelpers;
 
 const EventPublishedRegEx = /^(Entity)?Published\<.+\>$/;
 
-function compareQueryOutput(a, b){
-	if (a[0] > b[0]) {
-		return 1;
-	}
-	if (a[0] < b[0]) {
-		return -1;
-	}
-
-	return 0;
-}
-
 class Query extends QueryBase {
 	constructor(config) {
 		super(config);
@@ -108,7 +97,6 @@ class Query extends QueryBase {
 	}
 
 	_groupByWeeks(e){
-
 	}
 
 	_checkPublished(e){
@@ -125,25 +113,21 @@ class Query extends QueryBase {
 		fromDate.setUTCHours(fromDate.getUTCHours() - 24);
 		let fromDateMs = fromDate.setUTCMinutes(0,0,0);
 
-		// fill holes
-		for (var i = 0; i <= 24; i++) {
-			let dateToFill = new Date(fromDateMs);
-			let dtSpan = dateToFill.setUTCHours(dateToFill.getUTCHours() + i);
-			if (!this._groupedByHours.has(dtSpan))
-				this._groupedByHours.set(dtSpan, 0);
-		}
-
 		let output = [];
 		output.push(["Hour", "published"]);
 
-		for (var entry of this._groupedByHours) {
-			if (entry[0] < fromDateMs)
-				continue;
+		// get output and fill holes
+		for (var i = 0; i <= 24; i++) {
+			let dateToFill = new Date(fromDateMs);
+			let dtSpan = dateToFill.setUTCHours(dateToFill.getUTCHours() + i);
 
-			output.push(entry);
+			if (this._groupedByHours.has(dtSpan))
+				output.push([ dtSpan, this._groupedByHours.get(dtSpan) ]);
+			else
+				output.push([ dtSpan, 0 ]);
 		}
 
-		return output.sort(compareQueryOutput);
+		return output;
 	}
 
 	_queryLastMonth(){
@@ -151,28 +135,27 @@ class Query extends QueryBase {
 		fromDate.setUTCDate(fromDate.getUTCDate() - 30);
 		let fromDateMs = fromDate.setUTCHours(0,0,0,0);
 
-		// fill holes
-		for (var i = 0; i <= 30; i++) {
-			let dateToFill = new Date(fromDateMs);
-			let dtSpan = dateToFill.setUTCDate(dateToFill.getUTCDate() + i);
-			if (!this._groupedByDays.has(dtSpan))
-				this._groupedByDays.set(dtSpan, 0);
-		}
-
 		let output = [];
 		output.push(["Day", "published"]);
 
-		for (var entry of this._groupedByDays) {
-			if (entry[0] < fromDateMs)
-				continue;
+		// get output and fill holes
+		for (var i = 0; i <= 30; i++) {
+			let dateToFill = new Date(fromDateMs);
+			let dtSpan = dateToFill.setUTCDate(dateToFill.getUTCDate() + i);
 
-			output.push(entry);
+			if (this._groupedByDays.has(dtSpan))
+				output.push([ dtSpan, this._groupedByDays.get(dtSpan) ]);
+			else
+				output.push([ dtSpan, 0 ]);
 		}
 
-		return output.sort(compareQueryOutput);
+		return output;
 	}
 
 	_queryLastSemester(){
-		return null;
+		let output = [];
+		output.push(["Week", "published"]);
+
+		return output;
 	}
 }
