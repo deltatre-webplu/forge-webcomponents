@@ -31,6 +31,10 @@ paper-card {
 
 }
 
+.card-last-updated {
+  text-align: right;
+}
+
 google-chart {
   height: auto;
   width:100%;
@@ -48,6 +52,11 @@ google-chart {
       <div class="card-disclaimer">[[localize('wcm.cardCommandTrendDisclaimer')]]</div>
 
       <google-chart id="incomingCommandsTrend" type="line" options='{ "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
+
+      <div class="card-last-updated">
+        <span>[[localize("Last Command Logged")]]: </span>
+        <moment-element date-time="[[lastCommandLogged]]"></moment-element>
+      </div>
 
     </div>
 
@@ -83,8 +92,10 @@ google-chart {
       }
     },
     listeners: {
-      'iron-resize': '_onIronResize'
+      'iron-resize': '_onIronResize',
+      'forge-language-changed': '_onLanguageChange'
     },
+    lastCommandLogged: null,
     _onPollingUpdate: function(result) {
 
       if (!(result && result.length)) {
@@ -94,14 +105,16 @@ google-chart {
       var data = {};
 
       data.cols=[
-        new DataColumn("time", "Time", "datetime"),
-        new DataColumn("sent", "Sent", "number"),
-        new DataColumn("handled", "Handled", "number")
+        new DataColumn("time", this.localize("Time"), "datetime"),
+        new DataColumn("sent", this.localize("Sent"), "number"),
+        new DataColumn("handled", this.localize("Handled"), "number")
       ];
+
       data.rows=[];
 
       var last = result[result.length - 1];
-      var lastDate = new Date(last.rangeStart);
+
+      this.lastCommandLogged = last.rangeStart;
 
       var firstDate = new Date(last.rangeStart);
       firstDate.setHours(firstDate.getHours() - 1);
@@ -138,6 +151,15 @@ google-chart {
     },
     _onIronResize: function() {
       this.$.incomingCommandsTrend.redraw();
+    },
+    _onLanguageChange: function() {
+      var data = _.cloneDeep(this.$.incomingCommandsTrend.data);
+      data.cols=[
+        new DataColumn("time", this.localize("Time"), "datetime"),
+        new DataColumn("sent", this.localize("Sent"), "number"),
+        new DataColumn("handled", this.localize("Handled"), "number")
+      ];
+      this.$.incomingCommandsTrend.data = data;
     }
   });
 

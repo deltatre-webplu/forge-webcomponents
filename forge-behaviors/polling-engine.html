@@ -3,11 +3,11 @@
 <script>
 (function() {
 
-  function PollingEndpoint(url, interval) {
+  function PollingEndpoint(webComponent, url, interval) {
 
     this.url = url;
     this.interval = interval;
-    this.instances = [];
+    this.instances = [webComponent];
 
     this.timeout = null;
     this.active = false;
@@ -50,22 +50,61 @@
 
   };
 
+  PollingEndpoint.prototype.stop = function() {
+    if (this.timeout) {
+      clearTimeout(this.timeout);
+    }
+    this.active = false;
+  }
+
+  PollingEndpoint.prototype.start = function() {
+    if (this.active) return;
+    this.active = true;
+    this.poll();
+  }
+
+  PollingEndpoint.prototype.add = function(webComponent, interval) {
+
+    if (this.instances.indexOf(webComponent) < 0) {
+      this.instances.push(webComponent);
+    }
+
+    if (this.interval !== interval) {
+      console.warn('polling - multiple intervals detected for same url; first interval: ', this.interval, ', current interval: ', interval, ', url:', this.url);
+      console.warn('current interval will be ignored');
+    }
+
+  }
+
+  PollingEndpoint.prototype.remove = function(webComponent) {
+
+    var index = this.instances.indexOf(webComponent);
+
+    // remove instance from endpoint config
+    if (index >= 0) {
+      this.instances.splice(index, 1);
+    }
+
+    // if no more instances present, stop
+    if (this.instances.length === 0) {
+      this.stop();
+    }
+
+  }
+
 
 
   function PollingEngine() {
     this.endpoints = {};
-    this.started = false;
   }
 
   PollingEngine.prototype.start = function() {
 
-    if (this.started) return;
-    this.started = true;
-
     for (var endpoint in this.endpoints) {
+
       var pe = this.endpoints[endpoint];
-      pe.active = true;
-      pe.poll();
+      pe.start();
+
     }
 
   };
@@ -75,23 +114,11 @@
     var pe = this.endpoints[url];
 
     if (pe) {
-
-      if (pe.instances.indexOf(webComponent) < 0) {
-        pe.instances.push(webComponent);
-      }
-
-      if (pe.interval !== interval) {
-        console.warn('polling - multiple intervals detected for same url; first interval: ', pe.interval, ', current interval: ', interval, ', url:', url);
-        console.warn('current interval will be ignored');
-      }
-
+      pe.add(webComponent, interval);
     }
     else {
-
-      pe = new PollingEndpoint(url, interval);
-      pe.instances.push(webComponent);
+      pe = new PollingEndpoint(webComponent, url, interval);
       this.endpoints[url] = pe;
-
     }
 
   };
@@ -101,24 +128,11 @@
     for (var endpoint in this.endpoints) {
 
       var pe = this.endpoints[endpoint];
-      var index = pe.instances.indexOf(webComponent);
+      pe.remove(webComponent);
 
-      // remove instance from endpoint config
-      if (index >= 0) {
-        pe.instances.splice(index, 1);
-      }
-
-      // if no more instances present, remove enpoint and clear timeout
-      if (pe.instances.length === 0) {
-
-        pe.active = false;
-        clearTimeout(pe.timeout);
+      // if not active any more, remove enpoint
+      if (!pe.active) {
         delete this.endpoints[endpoint];
-
-        if (Object.keys(this.endpoints).length < 1) {
-          this.started = false;
-        };
-
       }
 
     }
