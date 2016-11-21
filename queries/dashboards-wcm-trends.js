@@ -22,8 +22,9 @@ class Query extends QueryBase {
 		.then(() => {
 			let bucket = this._eventStore.bucket("wcm");
 
-			let fromDate = new Date();
-			fromDate.setUTCMonth(fromDate.getUTCMonth() - 6);
+			let weeks = 26;
+			let extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
+			let fromDate = new Date(Date.now() - (weeks * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
 
 			let filters = {
 				EventDateTime : { $gt : fromDate },
@@ -97,6 +98,17 @@ class Query extends QueryBase {
 	}
 
 	_groupByWeeks(e){
+		let eventDate = new Date(e.EventDateTime);
+
+		let weeks = 26;
+		let extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
+		let fromDate = new Date(Date.now() - (weeks * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
+
+		let count = this._groupedByWeeks.get(eventDate)
+			? this._groupedByWeeks.get(eventDate) + 1
+			: 1;
+		this._groupedByWeeks.set(eventDate, count);
+
 	}
 
 	_checkPublished(e){
