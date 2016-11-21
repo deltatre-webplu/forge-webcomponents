@@ -1,9 +1,8 @@
-const EventStore = require("nestore-js-mongodb").EventStore;
 const MongoHelpers = require("nestore-js-mongodb").MongoHelpers;
 
 const EventPublishedRegEx = /^(Entity)?Published\<.+\>$/;
 
-class Query extends QueryBase {
+class Query extends QueryProjectionBase {
 	constructor(config) {
 		super(config);
 
@@ -11,36 +10,18 @@ class Query extends QueryBase {
 		this._groupedByDays = new Map();
 		this._groupedByWeeks = new Map();
 		this._alreadyPublished = {};
-	}
 
-	init(){
-		this._eventStore = new EventStore({
-			url: this._config.eventStoreConfiguration.ConnectionString
-		});
+		let weeks = 26;
+		let extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
+		let fromDate = new Date(Date.now() - (weeks * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
 
-		return this._eventStore.connect()
-		.then(() => {
-			let bucket = this._eventStore.bucket("wcm");
+		let filters = {
+			EventDateTime : { $gt : fromDate },
+			_t : EventPublishedRegEx
+		};
 
-			let weeks = 26;
-			let extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
-			let fromDate = new Date(Date.now() - (weeks * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
-
-			let filters = {
-				EventDateTime : { $gt : fromDate },
-				_t : EventPublishedRegEx
-			};
-
-			this._projection = bucket.projectionStream({ eventFilters : filters });
-			this._projection.on("data", (c) => this._onCommit(c));
-		});
-	}
-
-	close(){
-		return this._projection.close()
-		.then(
-			() => this._eventStore.close(),
-			() => this._eventStore.close());
+		this._projectionFilters = { eventFilters : filters };
+		this._bucketName = "wcm";
 	}
 
 	query(options) {
@@ -56,7 +37,7 @@ class Query extends QueryBase {
 		}
 	}
 
-	_onCommit(commit) {
+	_onProjectionData(commit) {
 		let publishedEvents = commit.Events.filter((e) => EventPublishedRegEx.test(e._t));
 
 		for (let e of publishedEvents) {
