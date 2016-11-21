@@ -98,13 +98,13 @@ class Query extends QueryBase {
 	}
 
 	_groupByWeeks(e){
-		let eventDate = (new Date(e.EventDateTime)).setUTCHours(0,0,0,0);//1479340800000
+		let eventDate = (new Date(e.EventDateTime)).setUTCHours(0,0,0,0);
 
 		let diffFromStartOfWeek = (new Date(eventDate)).getDay();
 		let fromDate = new Date(eventDate);
 		let startOfWeekDate = fromDate.setUTCDate(fromDate.getUTCDate() - diffFromStartOfWeek);
 
-		let count = this._groupedByWeeks.get(startOfWeekDate) //1478995200000
+		let count = this._groupedByWeeks.get(startOfWeekDate)
 			? this._groupedByWeeks.get(startOfWeekDate) + 1
 			: 1;
 		this._groupedByWeeks.set(startOfWeekDate, count);
