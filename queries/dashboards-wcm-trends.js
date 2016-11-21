@@ -98,16 +98,16 @@ class Query extends QueryBase {
 	}
 
 	_groupByWeeks(e){
-		let eventDate = (new Date(e.EventDateTime)).setUTCHours(0,0,0,0);
+		let eventDate = (new Date(e.EventDateTime)).setUTCHours(0,0,0,0);//1479340800000
 
-		let diffFromStartOfWeek = eventDate.getDay();
-		eventDate = eventDate.setUTCDate(eventDate.getUTCDate() - diffFromStartOfWeek);
+		let diffFromStartOfWeek = (new Date(eventDate)).getDay();
+		let fromDate = new Date(eventDate);
+		let startOfWeekDate = fromDate.setUTCDate(fromDate.getUTCDate() - diffFromStartOfWeek);
 
-		let count = this._groupedByWeeks.get(eventDate)
-			? this._groupedByWeeks.get(eventDate) + 1
+		let count = this._groupedByWeeks.get(startOfWeekDate) //1478995200000
+			? this._groupedByWeeks.get(startOfWeekDate) + 1
 			: 1;
-		this._groupedByWeeks.set(eventDate, count);
-
+		this._groupedByWeeks.set(startOfWeekDate, count);
 	}
 
 	_checkPublished(e){
