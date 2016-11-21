@@ -49,11 +49,12 @@ paper-card {
 }
 
 .card-panel-title {
-  font-size: 36px;
+  font-size: 32px;
+  text-transform: uppercase;
 }
 
 .card-panel-content {
-  font-size: 72px;
+  font-size: 58px;
 }
 
 .card-panel-footer {
@@ -96,7 +97,7 @@ paper-card {
   function Data(glob, slow, slowName) {
     this.global = glob || 0;
     this.slowest = slow || 0;
-    this.slowestName = slowName;
+    this.slowestName = slowName || "-";
   }
 
   function compareAverages(a, b) {

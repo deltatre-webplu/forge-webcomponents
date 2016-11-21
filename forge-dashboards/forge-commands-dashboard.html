@@ -30,13 +30,19 @@
       }
     }
 
+    @media (max-width: 1300px) {
+      .dashboard-container > .dashboard-row {
+        display: block;
+      }
+    }
+
   </style>
 
   <template>
 
     <div class="dashboard-container">
       <forge-commandmetrics-trend-card class="padded-card"></forge-commandmetrics-trend-card>
-      <div class="layout horizontal">
+      <div class="layout horizontal dashboard-row">
         <forge-commandmetrics-current-card class="padded-card flex"></forge-commandmetrics-current-card>
         <forge-commandmetrics-execavg-card class="padded-card flex"></forge-commandmetrics-execavg-card>
       </div>

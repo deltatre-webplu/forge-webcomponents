@@ -25,19 +25,27 @@
     var start = +new Date();
 
     self.instances.forEach(function(r) {
-      r._hideLoading = false;
-      r._onPollingStart();
+      try {
+        r._hideLoading = false;
+        r._onPollingStart();
+      }
+      catch (e) {
+        console.error(e);
+      }
     });
-
-    console.log("polling", self.url);
 
     ForgeWebComponents.Api
       .raw(self.url)
       .then(function(result) {
 
         self.instances.forEach(function(r) {
-          r._onPollingUpdate(result);
-          r._hideLoading = true;
+          try {
+            r._onPollingUpdate(result);
+            r._hideLoading = true;
+          }
+          catch (e) {
+            console.error(e);
+          }
         });
 
         var end = +new Date();
