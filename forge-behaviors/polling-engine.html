@@ -109,12 +109,15 @@
       }
 
       // if no more instances present, remove enpoint and clear timeout
-      if (pe.instances === 0) {
+      if (pe.instances.length === 0) {
 
         pe.active = false;
         clearTimeout(pe.timeout);
-
         delete this.endpoints[endpoint];
+
+        if (Object.keys(this.endpoints).length < 1) {
+          this.started = false;
+        };
 
       }
 
