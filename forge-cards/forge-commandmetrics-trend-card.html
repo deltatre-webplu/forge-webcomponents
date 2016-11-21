@@ -51,7 +51,7 @@ google-chart {
 
       <div class="card-disclaimer">[[localize('wcm.cardCommandTrendDisclaimer')]]</div>
 
-      <google-chart id="incomingCommandsTrend" type="line" options='{ "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
+      <google-chart id="incomingCommandsTrend" type="line" options='{ "vAxis": { "viewWindow": { "min": 0 } }, "series": { "0": { "lineWidth": 2, "color": "black" }, "1": { "lineWidth": 4, "color": "green" } } }'></google-chart>
 
       <div class="card-last-updated">
         <span>[[localize("Last Command Logged")]]: </span>
