@@ -98,11 +98,10 @@ class Query extends QueryBase {
 	}
 
 	_groupByWeeks(e){
-		let eventDate = new Date(e.EventDateTime);
+		let eventDate = (new Date(e.EventDateTime)).setUTCHours(0,0,0,0);
 
-		let weeks = 26;
-		let extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
-		let fromDate = new Date(Date.now() - (weeks * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
+		let diffFromStartOfWeek = eventDate.getDay();
+		eventDate = eventDate.setUTCDate(eventDate.getUTCDate() - diffFromStartOfWeek);
 
 		let count = this._groupedByWeeks.get(eventDate)
 			? this._groupedByWeeks.get(eventDate) + 1
@@ -165,8 +164,25 @@ class Query extends QueryBase {
 	}
 
 	_queryLastSemester(){
+		let weeks = 26;
+		let extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
+		let fromDate = new Date(Date.now() - (weeks * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
+		let fromDateMs = fromDate.setUTCHours(0,0,0,0);
+
+
 		let output = [];
 		output.push(["Week", "published"]);
+
+		// get output and fill holes
+		for (var i = 0; i <= 26; i++) {
+			let dateToFill = new Date(fromDateMs);
+			let dtSpan = dateToFill.setUTCDate(dateToFill.getUTCDate() + (i * 7));
+
+			if (this._groupedByWeeks.has(dtSpan))
+				output.push([ dtSpan, this._groupedByWeeks.get(dtSpan) ]);
+			else
+				output.push([ dtSpan, 0 ]);
+		}
 
 		return output;
 	}
