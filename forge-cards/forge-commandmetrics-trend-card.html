@@ -121,7 +121,12 @@ google-chart {
       }
       else
       {
-        last = { rangeStart: Date.now() };
+        var now = new Date(Date.now());
+        now.setSeconds(0);
+        //Hide last minutes (AppInsight needs couples of minutes to expose data)
+        now.setMinutes(now.getMinutes() - 2);
+
+        last = { rangeStart: now };
       }
 
       var firstDate = new Date(last.rangeStart);
