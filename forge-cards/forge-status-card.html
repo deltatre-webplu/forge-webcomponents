@@ -2,16 +2,12 @@
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/color.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
-
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/social-icons.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/device-icons.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
-
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 
-<link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
-<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-shared/forge-icons.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <dom-module id="forge-status-card">
 
@@ -66,7 +62,7 @@
 
   Polymer({
     is: 'forge-status-card',
-    behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       role: {
         type: String,
@@ -81,9 +77,17 @@
         type: Number,
         value: 3,
         readOnly: true
+      },
+      url: {
+        type: String,
+        value: "/api/heartbeats/groupBy/RoleType"
+      },
+      interval: {
+        type: Number,
+        value: 10000
       }
     },
-    onHeartbeat: function(result) {
+    _onPollingUpdate: function(result) {
       var self = this;
       var current = result.find(function(r) {
         return r.Key === self.role;

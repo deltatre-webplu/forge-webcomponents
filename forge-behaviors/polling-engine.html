@@ -34,6 +34,8 @@
       }
     });
 
+    console.log('polling', self.url);
+
     ForgeWebComponents.Api
       .raw(self.url)
       .then(function(result) {

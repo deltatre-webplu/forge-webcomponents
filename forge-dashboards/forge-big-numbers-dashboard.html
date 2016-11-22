@@ -34,9 +34,10 @@
   <template>
 
     <div class="dashboard-container">
+      <forge-published-overview-card class="padded flex" url="/api/extended-queries/query/dashboards-wcm-published-totals"></forge-published-overview-card>
+      <forge-published-chart-card class="padded flex" url="/api/extended-queries/query/dashboards-wcm-published-totals?outputType=charts"></forge-published-chart-card>
+      <!-- 
       <div class="layout vertical flex">
-        <forge-published-overview-card class="padded" url="/api/extended-queries/query/dashboards-wcm-published-totals"></forge-published-overview-card>
-        <forge-published-chart-card class="padded" url="/api/extended-queries/query/dashboards-wcm-published-totals?outputType=charts"></forge-published-chart-card>
       </div>
       <div class="layout vertical flex">
         <forge-publishing-trends-card class="padded" url="/api/extended-queries/query/dashboards-wcm-trends?span=day" heading="wcm.chartHeadingEntitiesPerHour"></forge-publishing-trends-card>
@@ -44,6 +45,7 @@
         <forge-publishing-trends-card class="padded" url="/api/extended-queries/query/dashboards-wcm-trends?span=semester" heading="wcm.chartHeadingEntitiesPerWeek"></forge-publishing-trends-card>
       </div>
     </div>
+    -->
   </template>
 
   <script>

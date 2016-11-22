@@ -5,16 +5,15 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-icon-item.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
 
-<link rel="import" href="../forge-shared/forge-icons.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-progress/paper-progress.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
 
 <link rel="import" href="../forge-shared/forge-shared.html">
-<link rel="import" href="../forge-behaviors/forge-wcm-stats-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
 <link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
 <link rel="import" href="../moment-element/moment-element.html">
 <link rel="import" href="../forge-avatar-icon/forge-avatar-icon.html">
 
@@ -49,7 +48,7 @@ paper-card {
 
   <paper-card heading="[[localize('Last Active Editors')]]">
 
-    <paper-progress hidden$="[[hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
 
@@ -111,31 +110,23 @@ paper-card {
 
   Polymer({
     is: 'forge-active-editors-card',
-    behaviors: [ForgeWebComponents.Behaviors.WcmStatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
         type: String,
         value: "/api/history/items/context/wcm"
+      },
+      interval: {
+        type: Number,
+        value: 60000
       }
     },
-    hideLoading: true,
     entries: [],
-    attached: function() {
-      this.polling.register(this.url, this);
-      this.polling.start();
-    },
-    detached: function() {
-      this.polling.unregister(this.url, this);
-    },
-    onPollingUpdate: function(result) {
+    _onPollingUpdate: function(result) {
       result.forEach(function(e) {
         e.PastTenseVerb = toPastTense(e.Verb);
       });
       this.entries = result;
-      this.hideLoading = true;
-    },
-    onPollingStart: function() {
-      this.hideLoading = false;
     },
     _tellNewStory: function() {
       location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', null, 'new', 'new');

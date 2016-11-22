@@ -5,7 +5,6 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-icon-item.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
@@ -13,9 +12,8 @@
 
 <link rel="import" href="../forge-shared/forge-icons.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
-<link rel="import" href="../forge-api/forge-api.html">
 
-<link rel="import" href="../forge-behaviors/forge-wcm-stats-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
 <link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <link rel="import" href="../moment-element/moment-element.html">
@@ -71,7 +69,7 @@ paper-icon-item {
 
   <paper-card heading="[[localize('Last Active Entities')]]">
 
-    <paper-progress hidden$="[[hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
 
@@ -116,23 +114,20 @@ paper-icon-item {
 
   Polymer({
     is: 'forge-active-entities-card',
-    behaviors: [ForgeWebComponents.Behaviors.WcmStatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
         type: String,
         value: "deltatre.forge.wcm/api/realtime/active_entities"
+      },
+      interval: {
+        type: Number,
+        value: 60000
       }
     },
     entities: [],
     hideLoading: true,
-    attached: function() {
-      this.polling.register(this.url, this);
-      this.polling.start();
-    },
-    detached: function() {
-      this.polling.unregister(this.url, this);
-    },
-    onPollingUpdate: function(result) {
+    _onPollingUpdate: function(result) {
 
       result.forEach(function(e) {
         e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
@@ -140,10 +135,6 @@ paper-icon-item {
       });
 
       this.entities = result;
-      this.hideLoading = true;
-    },
-    onPollingStart: function() {
-      this.hideLoading = false;
     },
     _openItem: function(e) {
       var entity = e.model.item;

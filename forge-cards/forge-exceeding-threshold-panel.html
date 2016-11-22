@@ -5,7 +5,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/iron-icons.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-icons/image-icons.html">
 
-<link rel="import" href="../forge-behaviors/forge-metrics-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
 <link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <dom-module id="forge-exceeding-threshold-panel">
@@ -100,10 +100,14 @@
 
   Polymer({
     is: 'forge-exceeding-threshold-panel',
-    behaviors: [ForgeWebComponents.Behaviors.MetricsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
         type: String
+      },
+      interval: {
+        type: Number,
+        value: 10000
       },
       icon: {
         type: String
@@ -122,16 +126,7 @@
     },
     threshold: null,
     items: [],
-    ready: function() {
-      this.polling.register(this.url, this);
-    },
-    attached: function() {
-      this.polling.start();
-    },
-    detached: function() {
-      this.polling.unregister(this.url, this);
-    },
-    onPollingUpdate: function(result) {
+    _onPollingUpdate: function(result) {
 
       var items = result.map(function(r) {
         return new Entry(r.Name, r.Value);

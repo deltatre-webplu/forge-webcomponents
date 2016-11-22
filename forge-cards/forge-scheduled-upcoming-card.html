@@ -4,8 +4,6 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-icon-item.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-flex-layout/iron-flex-layout-classes.html">
 
@@ -15,9 +13,8 @@
 
 <link rel="import" href="../forge-shared/forge-icons.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
-<link rel="import" href="../forge-api/forge-api.html">
 
-<link rel="import" href="../forge-behaviors/forge-scheduled-stats-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
 <link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <link rel="import" href="../moment-element/moment-element.html">
@@ -99,7 +96,7 @@ paper-icon-item {
 <template>
 
   <paper-card heading="[[localize('Upcoming Schedules')]]">
-    <paper-progress hidden$="[[hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
       <template is="dom-if" if="[[entities.length]]">
@@ -132,8 +129,6 @@ paper-icon-item {
                     <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
                   </div>
 
-                  <!-- <paper-icon-button icon="more-vert" >
-                  </paper-icon-button> -->
                 </paper-icon-item>
               </template>
             </div>
@@ -141,7 +136,6 @@ paper-icon-item {
         </template>
 
       </template>
-
 
       <template is="dom-if" if="[[!entities.length]]">
         [[localize("wcm.noEntitiesScheduled")]]
@@ -154,23 +148,22 @@ paper-icon-item {
 <script>
 (function() {
   "use strict";
-  var apiUrl = "/deltatre.forge.wcm/api/scheduled/todo?limit=10";
 
   Polymer({
     is: 'forge-scheduled-upcoming-card',
-    behaviors: [ForgeWebComponents.Behaviors.ScheduledStatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    properties: {
+      url: {
+        type: String,
+        value: "/deltatre.forge.wcm/api/scheduled/todo?limit=10"
+      },
+      interval: {
+        type: Number,
+        value: 60000
+      }
+    },
     entities: [],
-    hideLoading: true,
-    ready: function(){
-      this.polling.register(apiUrl, this);
-    },
-    attached: function() {
-      this.polling.start();
-    },
-    detached: function() {
-      this.polling.unregister(apiUrl, this);
-    },
-    onPollingUpdate: function(result) {
+    _onPollingUpdate: function(result) {
 
       result.forEach(function(e) {
         e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
@@ -178,10 +171,6 @@ paper-icon-item {
       });
 
       this.entities = groupByScheduleDay(result);
-      this.hideLoading = true;
-    },
-    onPollingStart: function() {
-      this.hideLoading = false;
     },
     _openItem: function(e) {
       var entity = e.model.item;

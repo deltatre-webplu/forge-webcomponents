@@ -6,17 +6,15 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-item/paper-item-body.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-button/paper-button.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-icon-button/paper-icon-button.html">
-
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/iron-collapse/iron-collapse.html">
-
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-styles/typography.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-progress/paper-progress.html">
 
 <link rel="import" href="../forge-shared/forge-icons.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
 <link rel="import" href="../forge-api/forge-api.html">
-
-<link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
 <link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <dom-module id="forge-nodes-status-card">
@@ -36,6 +34,12 @@
 
 .nodes-status-card {
   display: block;
+}
+
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
 }
 
 .status {
@@ -85,6 +89,8 @@
 
   <paper-card class="nodes-status-card" heading="[[localize('Nodes')]]">
 
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
     <div class="card-content">
 
       <template is="dom-repeat" items="{{groups}}" as="group">
@@ -133,7 +139,7 @@
 
   Polymer({
     is: 'forge-nodes-status-card',
-    behaviors: [ForgeWebComponents.Behaviors.HeartbeatsPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       groups: {
         type: Array,
@@ -142,9 +148,17 @@
       },
       lastHeartbeatUpdate: {
         type: String
+      },
+      url: {
+        type: String,
+        value: "/api/heartbeats/groupBy/RoleType"
+      },
+      interval: {
+        type: Number,
+        value: 10000
       }
     },
-    onHeartbeat: function(result) {
+    _onPollingUpdate: function(result) {
 
       if(result) this.lastHeartbeatUpdate = new Date();
 
@@ -167,7 +181,7 @@
 
         // names must be equal
         return 0;
-        
+
       });
 
     },
