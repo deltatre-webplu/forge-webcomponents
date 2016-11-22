@@ -38,6 +38,8 @@
       .raw(self.url)
       .then(function(result) {
 
+        var error = false;
+
         self.instances.forEach(function(r) {
           try {
             r._onPollingUpdate(result);
@@ -45,11 +47,12 @@
           }
           catch (e) {
             console.error(e);
+            error = true;
           }
         });
 
         var end = +new Date();
-        var t = self.interval - (end - start);
+        var t = error ? 500 : self.interval - (end - start);
         self.timeout = setTimeout(self.poll.bind(self), Math.max(t, 0));
 
       }, function() {
