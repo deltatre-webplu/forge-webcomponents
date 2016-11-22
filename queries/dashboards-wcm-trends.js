@@ -1,21 +1,8 @@
-const EventStore = require("nestore-js-mongodb").EventStore;
-const Projection = require("nestore-js-mongodb").Projection;
 const MongoHelpers = require("nestore-js-mongodb").MongoHelpers;
 
 const EventPublishedRegEx = /^(Entity)?Published\<.+\>$/;
 
-function compareQueryOutput(a, b){
-	if (a[0] > b[0]) {
-		return 1;
-	}
-	if (a[0] < b[0]) {
-		return -1;
-	}
-
-	return 0;
-}
-
-class Query extends QueryBase {
+class Query extends QueryProjectionBase {
 	constructor(config) {
 		super(config);
 
@@ -23,36 +10,18 @@ class Query extends QueryBase {
 		this._groupedByDays = new Map();
 		this._groupedByWeeks = new Map();
 		this._alreadyPublished = {};
-	}
 
-	init(){
-		this._eventStore = new EventStore({
-			url: this._config.eventStoreConfiguration.ConnectionString
-		});
+		let weeks = 26;
+		let extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
+		let fromDate = new Date(Date.now() - (weeks * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
 
-		return this._eventStore.connect()
-		.then(() => {
-			let bucket = this._eventStore.bucket("wcm");
-			this._projection = new Projection(bucket);
+		let filters = {
+			EventDateTime : { $gt : fromDate },
+			_t : EventPublishedRegEx
+		};
 
-			this._projection.on("commit", (c) => this._onCommit(c));
-
-			let fromDate = new Date();
-			fromDate.setUTCMonth(fromDate.getUTCMonth() - 6);
-
-			let filters = {
-				EventDateTime : { $gt : fromDate },
-				_t : EventPublishedRegEx
-			};
-			this._projection.start({ eventFilters : filters });
-		});
-	}
-
-	close(){
-		return this._projection.stop()
-		.then(
-			() => this._eventStore.close(),
-			() => this._eventStore.close());
+		this._projectionFilters = { eventFilters : filters };
+		this._bucketName = "wcm";
 	}
 
 	query(options) {
@@ -68,7 +37,7 @@ class Query extends QueryBase {
 		}
 	}
 
-	_onCommit(commit) {
+	_onProjectionData(commit) {
 		let publishedEvents = commit.Events.filter((e) => EventPublishedRegEx.test(e._t));
 
 		for (let e of publishedEvents) {
@@ -110,7 +79,16 @@ class Query extends QueryBase {
 	}
 
 	_groupByWeeks(e){
+		let eventDate = (new Date(e.EventDateTime)).setUTCHours(0,0,0,0);
 
+		let diffFromStartOfWeek = (new Date(eventDate)).getDay();
+		let fromDate = new Date(eventDate);
+		let startOfWeekDate = fromDate.setUTCDate(fromDate.getUTCDate() - diffFromStartOfWeek);
+
+		let count = this._groupedByWeeks.get(startOfWeekDate)
+			? this._groupedByWeeks.get(startOfWeekDate) + 1
+			: 1;
+		this._groupedByWeeks.set(startOfWeekDate, count);
 	}
 
 	_checkPublished(e){
@@ -127,25 +105,21 @@ class Query extends QueryBase {
 		fromDate.setUTCHours(fromDate.getUTCHours() - 24);
 		let fromDateMs = fromDate.setUTCMinutes(0,0,0);
 
-		// fill holes
-		for (var i = 0; i <= 24; i++) {
-			let dateToFill = new Date(fromDateMs);
-			let dtSpan = dateToFill.setUTCHours(dateToFill.getUTCHours() + i);
-			if (!this._groupedByHours.has(dtSpan))
-				this._groupedByHours.set(dtSpan, 0);
-		}
-
 		let output = [];
 		output.push(["Hour", "published"]);
 
-		for (var entry of this._groupedByHours) {
-			if (entry[0] < fromDateMs)
-				continue;
+		// get output and fill holes
+		for (var i = 0; i <= 24; i++) {
+			let dateToFill = new Date(fromDateMs);
+			let dtSpan = dateToFill.setUTCHours(dateToFill.getUTCHours() + i);
 
-			output.push(entry);
+			if (this._groupedByHours.has(dtSpan))
+				output.push([ dtSpan, this._groupedByHours.get(dtSpan) ]);
+			else
+				output.push([ dtSpan, 0 ]);
 		}
 
-		return output.sort(compareQueryOutput);
+		return output;
 	}
 
 	_queryLastMonth(){
@@ -153,150 +127,44 @@ class Query extends QueryBase {
 		fromDate.setUTCDate(fromDate.getUTCDate() - 30);
 		let fromDateMs = fromDate.setUTCHours(0,0,0,0);
 
-		// fill holes
-		for (var i = 0; i <= 30; i++) {
-			let dateToFill = new Date(fromDateMs);
-			let dtSpan = dateToFill.setUTCDate(dateToFill.getUTCDate() + i);
-			if (!this._groupedByDays.has(dtSpan))
-				this._groupedByDays.set(dtSpan, 0);
-		}
-
 		let output = [];
 		output.push(["Day", "published"]);
 
-		for (var entry of this._groupedByDays) {
-			if (entry[0] < fromDateMs)
-				continue;
+		// get output and fill holes
+		for (var i = 0; i <= 30; i++) {
+			let dateToFill = new Date(fromDateMs);
+			let dtSpan = dateToFill.setUTCDate(dateToFill.getUTCDate() + i);
 
-			output.push(entry);
+			if (this._groupedByDays.has(dtSpan))
+				output.push([ dtSpan, this._groupedByDays.get(dtSpan) ]);
+			else
+				output.push([ dtSpan, 0 ]);
 		}
 
-		return output.sort(compareQueryOutput);
+		return output;
 	}
 
 	_queryLastSemester(){
-		return null;
-	}
+		let weeks = 26;
+		let extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
+		let fromDate = new Date(Date.now() - (weeks * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
+		let fromDateMs = fromDate.setUTCHours(0,0,0,0);
 
-	// _lastDay(col) {
-	// 	var timespan=24;
-	// 	var startingDate=new Date(Date.now() - (timespan * 60 * 60 * 1000));
-	//
-	//
-	// 	return promise.then(function(res) {
-	//
-	// 		var output = [
-	// 			["Hour", "published"]
-	// 		];
-	//
-	// 		for (var i = 0; i <= timespan; i++) {
-	// 			var d = new Date(startingDate.getTime() + (i * 60 * 60 * 1000));
-	// 			var dh = d.getUTCHours();
-	// 			var kv = [];
-	// 			var date;
-	// 			var t = 0;
-	//
-	// 			if(res && res.length>0 &&
-	// 				res[0]._id.Year <= d.getUTCFullYear() &&
-  //         res[0]._id.Month <= (d.getUTCMonth()+1) &&
-  //         res[0]._id.Day <= d.getUTCDate() &&
-  //         res[0]._id.Hour <= dh) {
-	// 				var e = res.shift();
-	// 				date = new Date(e._id.Year, e._id.Month-1, e._id.Day, e._id.Hour);
-	// 				t = e.Total;
-	// 			}
-	// 			else {
-	// 				date = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), dh);
-	// 			}
-	//
-	// 			kv.push(date.getTime());
-	// 			kv.push(t);
-	// 			output.push(kv);
-	// 		}
-	//
-	// 		return output;
-	//
-	// 	});
-	//
-	// }
-	//
-	// _lastMonth(col) {
-	// 	var timespan=30;
-	// 	var startingDate=new Date(Date.now() - (timespan * 24 * 60 * 60 * 1000));
-	//
-	//
-	//
-	// 	return promise.then(function(res) {
-	//
-	// 		var output = [
-	// 			["Day", "published"]
-	// 		];
-	//
-	// 		for (var i = 0; i <= timespan; i++) {
-	// 			let d = new Date(startingDate.getTime() + (i * 24 * 60 * 60 * 1000));
-	// 			let dd = d.getUTCDate();
-	// 			var kv = [];
-	// 			var date;
-	// 			var t = 0;
-	//
-	// 			if(res && res.length>0 &&
-	// 				res[0]._id.Year <= d.getUTCFullYear() &&
-  //         res[0]._id.Month <= (d.getUTCMonth()+1) &&
-  //         res[0]._id.Day <= dd) {
-	// 				var e = res.shift();
-	// 				date = new Date(e._id.Year, e._id.Month - 1, e._id.Day);
-	// 				t = e.Total;
-	// 			}
-	// 			else {
-	// 				date=new Date(d.getUTCFullYear(), d.getUTCMonth(),d.getUTCDate());
-	// 			}
-	//
-	// 			kv.push(date.getTime());
-	// 			kv.push(t);
-	// 			output.push(kv);
-	// 		}
-	//
-	// 		return output;
-	//
-	// 	});
-	//
-	// }
-	//
-	// _lastSemester(col) {
-	// 	var timespan = 26;
-	// 	var extraDaysSpan = new Date().getDay()*(24 * 60 * 60 * 1000);
-	// 	var startingDate = new Date(Date.now() - (timespan * 7 * 24 * 60 * 60 * 1000) - extraDaysSpan);
-	//
-	//
-	//
-	// 	return promise.then(function(res) {
-	//
-	// 		var output = [
-	// 			["Week start", "published"]
-	// 		];
-	//
-	// 		for (var i = 0; i <= timespan; i++) {
-	// 			let d = new Date(startingDate.getTime() + (i * 7 * 24 * 60 * 60 * 1000));
-	// 			let dd = d.getUTCDate();
-	// 			var kv = [];
-	// 			var date;
-	// 			var t = 0;
-	//
-	// 			if(res && res.length>0 &&
-	// 				new Date(Date.parse(res[0]._id.weekStart)).getUTCFullYear() == d.getUTCFullYear() &&
-	// 				new Date(Date.parse(res[0]._id.weekStart)).getUTCMonth() == d.getUTCMonth() &&
-	// 				new Date(Date.parse(res[0]._id.weekStart)).getUTCDate() == dd) {
-	//
-	// 				var e = res.shift();
-	// 				t = e.Total;
-	// 			}
-	//
-	// 			date=new Date(d.getUTCFullYear(), d.getUTCMonth(),dd);
-	// 			kv.push(date.getTime());
-	// 			kv.push(t);
-	// 			output.push(kv);
-	// 		}
-	// 		return output;
-	// 	});
-	// }
+
+		let output = [];
+		output.push(["Week", "published"]);
+
+		// get output and fill holes
+		for (var i = 0; i <= 26; i++) {
+			let dateToFill = new Date(fromDateMs);
+			let dtSpan = dateToFill.setUTCDate(dateToFill.getUTCDate() + (i * 7));
+
+			if (this._groupedByWeeks.has(dtSpan))
+				output.push([ dtSpan, this._groupedByWeeks.get(dtSpan) ]);
+			else
+				output.push([ dtSpan, 0 ]);
+		}
+
+		return output;
+	}
 }

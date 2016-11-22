@@ -29,7 +29,7 @@ google-chart {
 
 <template>
 <!-- type="area" || type="line" || type="column" -->
-  <paper-card heading="[[localize('wcm.publishingTrendsHeader')]]">
+  <paper-card heading="[[localize(heading)]]">
     <div>
       <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none", "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
     </div>
