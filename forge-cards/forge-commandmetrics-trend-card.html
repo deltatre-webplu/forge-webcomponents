@@ -56,11 +56,11 @@ google-chart {
       <div class="card-last-updated">
         <span>[[localize("Last Command Logged")]]: </span>
 
-        <template is="dom-if" if="[[lastCommandLogged !== undefined]]">
+        <template is="dom-if" if="[[_hasLastCommandLogged(lastCommandLogged)]]">
           <moment-element date-time="[[lastCommandLogged]]"></moment-element>
         </template>
 
-        <template is="dom-if" if="[[lastCommandLogged === undefined]]">
+        <template is="dom-if" if="[[!_hasLastCommandLogged(lastCommandLogged)]]">
           <span> [[localize('more than an hour ago')]]</span>
         </template>
       </div>
@@ -103,6 +103,12 @@ google-chart {
       'forge-language-changed': '_onLanguageChange'
     },
     lastCommandLogged: null,
+    _hasLastCommandLogged: function(lastCommandLogged){
+      console.log(lastCommandLogged);
+      return lastCommandLogged !== undefined &&
+              lastCommandLogged !== null &&
+               lastCommandLogged.length;
+    },
     _onPollingUpdate: function(result) {
       var data = {};
 
@@ -127,6 +133,7 @@ google-chart {
         now.setMinutes(now.getMinutes() - 2);
 
         last = { rangeStart: now };
+        this.lastCommandLogged = null;
       }
 
       var firstDate = new Date(last.rangeStart);
