@@ -58,7 +58,17 @@
         self.timeout = setTimeout(self.poll.bind(self), Math.max(t, 0));
 
       }, function() {
-        // handle error? or do nothing?
+
+        self.instances.forEach(function(r) {
+          try {
+            r._onPollingError();
+            r._hideLoading = true;
+          }
+          catch (e) {
+            console.error(e);
+          }
+        });
+
       });
 
   };
