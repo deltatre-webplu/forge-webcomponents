@@ -5,12 +5,13 @@
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.6.1/lib/paper-card/paper-card.html">
 
-<link rel="import" href="../forge-behaviors/forge-heartbeats-polling-behavior.html">
-<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
 <link rel="import" href="../forge-shared/forge-icons.html">
 
-<dom-module id="forge-timetopublish-story-card">
+<link rel="import" href="../forge-behaviors/forge-wcm-published-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<dom-module id="forge-timetopublish-card">
 
 <style>
 :host {
@@ -30,19 +31,18 @@
 .avg-time {
   @apply(--paper-font-title);
   text-align: right;
-  color: white;
 }
 
 </style>
 
 <template>
 
-  <paper-card class$="ttp-card story">
+  <paper-card class$="ttp-card story" heading = "[[localize(heading)]]">
     <div class="card-content">
       <div class="icon-wrapper" style$="background:[[iconItem.color]]" item-icon>
         <iron-icon class="entity-icon" icon="[[iconItem.icon]]"></iron-icon>
       </div>
-      <div class="avg-time"></div>
+      <div class="avg-time">[[entityType]]: [[avgTime]]</div>
     </div>
   </paper-card>
 
@@ -53,12 +53,20 @@
   "use strict";
 
   Polymer({
-    is: 'forge-timetopublish-story-card',
+    is: 'forge-timetopublish-card',
     behaviors: [ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
-      url: String
+      url: {
+        type: String
+      },
+      heading: {
+        type: String
+      },
+      entityType: {
+        type: String
+      }
     },
-    avgTime: String,
+    avgTime: Number,
     iconItem: {},
     attached: function() {
       this.polling.register(this.url, this);
@@ -68,17 +76,15 @@
       this.polling.unregister(this.url, this);
     },
     onPollingUpdate: function(result) {
-      console.log(result);
+      var entityType = this.entityType;
+      var avgTime;
       result.forEach(function(r) {
-      r.perType.forEach(function(e) {
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.Type];
-        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.Type);
-        });
+        if(r[0] == entityType) avgTime = r[1];
       });
-      this.avgTime = result;
+      this.avgTime = avgTime;
+      console.log(this.avgTime);
     }
-  }
-});
+  });
 
 })();
 </script>

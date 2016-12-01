@@ -17,7 +17,7 @@
 
     <link rel="import" href="../forge-active-entities-card.html">
     <link rel="import" href="../forge-active-editors-card.html">
-
+    <link rel="import" href="../forge-timetopublish-card.html">
   </head>
   <body>
 
@@ -28,7 +28,15 @@
 
     <forge-active-entities-card></forge-active-entities-card>
     <forge-active-editors-card></forge-active-editors-card>
-
+    <forge-timetopublish-card class="padded" url="/api/extended-queries/query/dashboards-wcm-timeToPublish"
+                              entity-type = "story"
+                              heading = "wcm.HeadingAvgTimeToPublishStories"></forge-timetopublish-card>
+    <forge-timetopublish-card class="padded" url="/api/extended-queries/query/dashboards-wcm-timeToPublish"
+                              entity-type = "tag"
+                              heading = "wcm.HeadingAvgTimeToPublishTags"></forge-timetopublish-card>
+    <forge-timetopublish-card class="padded" url="/api/extended-queries/query/dashboards-wcm-timeToPublish"
+                              entity-type = "photo"
+                              heading = "wcm.HeadingAvgTimeToPublishPhotos"></forge-timetopublish-card>
     <script>
     function changeLanguage(lang) {
       ForgeWebComponents.Helpers.EventHelper.changeLanguage(lang);

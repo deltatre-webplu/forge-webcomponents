@@ -16,7 +16,8 @@
         "node": true
     },
     "globals": {
-        "QueryBase": true
+        "QueryBase": true,
+        "QueryProjectionBase": true,
     },
     "extends": "eslint:recommended"
 }

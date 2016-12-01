@@ -43,6 +43,11 @@
         <forge-publishing-trends-card class="padded" url="/api/extended-queries/query/dashboards-wcm-trends?span=month" heading="wcm.chartHeadingEntitiesPerDay"></forge-publishing-trends-card>
         <forge-publishing-trends-card class="padded" url="/api/extended-queries/query/dashboards-wcm-trends?span=semester" heading="wcm.chartHeadingEntitiesPerWeek"></forge-publishing-trends-card>
       </div>
+      <div class="layout vertical flex">
+        <forge-timetopublish-card class="padded" url="/api/extended-queries/query/dashboards-wcm-timeToPublish" entityType="story" heading="wcm.HeadingAvgTimeToPublishStories"></forge-timetopublish-card>
+        <forge-timetopublish-card class="padded" url="/api/extended-queries/query/dashboards-wcm-timeToPublish" entityType="tag" heading="wcm.HeadingAvgTimeToPublishTags"></forge-timetopublish-card>
+        <forge-timetopublish-card class="padded" url="/api/extended-queries/query/dashboards-wcm-timeToPublish" entityType="photo" heading="wcm.HeadingAvgTimeToPublishPhotos"></forge-timetopublish-card>
+      </div>
     </div>
   </template>
 

@@ -92,11 +92,14 @@ class Query extends QueryProjectionBase {
 	}
 
 	_checkPublished(e){
-		let aggregateId = MongoHelpers.binaryUUIDToString(e.AggregateId);
-		if (this._alreadyPublished[aggregateId])
+		let id = MongoHelpers.binaryUUIDToString(e.AggregateId);
+		if(e._t == 'Published<Story>')
+			id = MongoHelpers.binaryUUIDToString(e.TranslationId);
+
+		if (this._alreadyPublished[id])
 			return true;
 
-		this._alreadyPublished[aggregateId] = true;
+		this._alreadyPublished[id] = true;
 		return false;
 	}
 
