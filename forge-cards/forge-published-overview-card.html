@@ -86,20 +86,20 @@ paper-card {
 
   Polymer({
     is: 'forge-published-overview-card',
-    behaviors: [ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
-      url: String
+      url: {
+        type: String,
+        value: "/api/extensions/query/dashboards-wcm-published-totals"
+      },
+      interval: {
+        type: Number,
+        value: 600000
+      }
     },
     entities:[],
     grandTotal:0,
-    attached: function() {
-      this.polling.register(this.url, this);
-      this.polling.start();
-    },
-    detached: function() {
-      this.polling.unregister(this.url, this);
-    },
-    onPollingUpdate: function(result) {
+    _onPollingUpdate: function(result) {
 
       result.TotalByEntities.forEach(function(e) {
         e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];

@@ -23,7 +23,7 @@ paper-card {
 }
 
 google-chart {
-  height: 400px;
+  height: 350px;
   width: 100%;
 }
 </style>
@@ -46,10 +46,15 @@ google-chart {
 
   Polymer({
     is: 'forge-published-chart-card',
-    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
-        type: String
+        type: String,
+        value: "/api/extensions/query/dashboards-wcm-published-totals?outputType=charts"
+      },
+      interval: {
+        type: Number,
+        value: 600000
       }
     },
     listeners: {
@@ -58,14 +63,7 @@ google-chart {
     },
     data: null,
     options: null,
-    attached: function() {
-      this.polling.register(this.url, this);
-      this.polling.start();
-    },
-    detached: function() {
-      this.polling.unregister(this.url, this);
-    },
-    onPollingUpdate: function(result) {
+    _onPollingUpdate: function(result) {
       this._result = result;
       this._parseResult();
     },

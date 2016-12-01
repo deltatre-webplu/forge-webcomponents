@@ -41,10 +41,14 @@ google-chart {
 
   Polymer({
     is: 'forge-publishing-trends-card',
-    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.WcmPublishedPollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
         type: String
+      },
+      interval: {
+        type: Number,
+        value: 600000
       },
       heading: {
         type: String
@@ -54,16 +58,7 @@ google-chart {
       'iron-resize': '_onIronResize'
     },
     data:null,
-    ready: function() {
-      this.polling.register(this.url, this);
-    },
-    attached: function() {
-      this.polling.start();
-    },
-    detached: function() {
-      this.polling.unregister(this.url, this);
-    },
-    onPollingUpdate: function(result) {
+    _onPollingUpdate: function(result) {
 
       var data = {};
 
