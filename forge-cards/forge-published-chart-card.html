@@ -18,6 +18,12 @@
   display: block;
 }
 
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
 paper-card {
   display: block;
 }
@@ -31,7 +37,10 @@ google-chart {
 <template>
 
   <paper-card heading="[[localize('wcm.chartHeadingEntitiesByType')]]">
-    <div>
+
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
       <google-chart id="publishedChart"
                     type="pie"
                     options="[[options]]"
