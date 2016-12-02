@@ -19,7 +19,7 @@
 
 <dom-module id="forge-nodes-status-card">
 
-<style>
+<style include="iron-flex iron-flex-alignment">
 :root {
 
   --paper-item-focused-before: {
@@ -107,7 +107,12 @@
               <div class$="status status-[[item.Status]]" item-icon>
                 <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
               </div>
-              <paper-item-body>[[item.NodeId]]</paper-item-body>
+              <paper-item-body>
+                <div class="layout horizontal">
+                  <span class="flex" title="[[item.MachineIP]]">[[item.NodeId]]</span>
+                  <span>[[item.ApplicationVersion]]</span>
+                </div>
+              </paper-item-body>
             </paper-icon-item>
           </template>
         </iron-collapse>
