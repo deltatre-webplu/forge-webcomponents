@@ -17,6 +17,12 @@
   display: block;
 }
 
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
 paper-card {
   display: block;
 }
@@ -30,7 +36,9 @@ google-chart {
 <template>
 <!-- type="area" || type="line" || type="column" -->
   <paper-card heading="[[localize(heading)]]">
-    <div>
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
       <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none", "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
     </div>
   </paper-card>
