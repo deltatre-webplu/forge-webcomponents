@@ -1,0 +1,56 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../forge-cards/forge-cards.html">
+
+<dom-module id="forge-workflow-dashboard">
+
+  <style include="iron-flex iron-flex-alignment">
+
+    .dashboard-container {
+      position: absolute;
+      top: -8px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: row;
+    }
+
+    @media (max-width: 1000px) {
+      .dashboard-container {
+        display: block;
+      }
+    }
+
+    .padded {
+      padding: 8px;
+    }
+
+  </style>
+
+  <template>
+
+    <div class="dashboard-container">
+      <div class="layout vertical flex">
+        <forge-timetopublish-card></forge-timetopublish-card>
+      </div>
+      <div class="layout vertical flex">
+      </div>
+    </div>
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    Polymer({
+      is: 'forge-workflow-dashboard'
+    });
+
+  })();
+  </script>
+
+</dom-module>

@@ -1,0 +1,7 @@
+[
+	{ "EntityType": "photo", "Average": 1582 },
+	{ "EntityType": "story", "Average": 8346 },
+	{ "EntityType": "tag", "Average": 245 },
+	{ "EntityType": "document", "Average": 788111 },
+	{ "EntityType": "customentity", "Average": 123158 }
+]

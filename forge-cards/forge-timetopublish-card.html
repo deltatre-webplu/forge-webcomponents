@@ -1,0 +1,102 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/typography.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-card/paper-card.html">
+
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-shared/forge-icons.html">
+
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<dom-module id="forge-timetopublish-card">
+
+<style>
+:host {
+  display: block;
+}
+
+paper-card {
+  display: block;
+}
+
+.entity-icon-wrapper {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--google-grey-300);
+}
+
+.entity-icon {
+  margin: 8px;
+  width: 24px;
+  height: 24px;
+  --iron-icon-fill-color: white;
+}
+</style>
+
+<template>
+
+  <paper-card heading="[[localize('Time to Publish')]]">
+
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
+
+      <template is="dom-repeat" items="{{entities}}">
+        <paper-icon-item>
+          <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+            <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
+          </div>
+          <paper-item-body>
+            <div class="entityTotal">[[localize(item.PluralType)]]: [[item.AverageHumanReadable]]</div>
+          </paper-item-body>
+        </paper-icon-item>
+
+      </template>
+
+    </div>
+
+  </paper-card>
+
+</template>
+
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-timetopublish-card',
+    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    properties: {
+      url: {
+        type: String,
+        value: "/api/extensions/query/dashboards-wcm-timeToPublish"
+      },
+      interval: {
+        type: Number,
+        value: 600000
+      }
+    },
+    entities: {},
+    _onPollingUpdate: function(result) {
+
+      result.forEach(function(e) {
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.EntityType);
+        e.AverageHumanReadable = moment.duration(e.Average).humanize();
+      });
+
+      this.entities = _.sortBy(result, ['Average']).reverse();
+
+    }
+  });
+
+})();
+</script>
+
+</dom-module>
