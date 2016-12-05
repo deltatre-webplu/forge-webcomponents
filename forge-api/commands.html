@@ -1,0 +1,45 @@
+<link rel="import" href="http.html">
+<link rel="import" href="api-core.html">
+
+<script>
+(function() {
+
+  var http = window.ForgeWebComponents.Http;
+  var api = window.ForgeWebComponents.Api;
+
+  var commands = window.ForgeWebComponents.Commands = window.ForgeWebComponents.Commands || {};
+
+  commands.CreateTagCommand = function(tagEntityId, tagTranslationId, title, slug) {
+    this.tagId = tagEntityId || uuid.v4();
+    this.translationId = tagTranslationId || uuid.v4();
+    this.title = title;
+    this.slug = slug;
+  };
+  commands.CreateTagCommand.prototype.getCommandName = function() { return "CreateTagCommand" };
+
+  commands.AddEntityRelationCommand = function(relatedItem, aggregateId, aggregateType) {
+    this.aggregateId = aggregateId;
+    this.aggregateType = aggregateType;
+    this.relatedItem = relatedItem;
+  };
+  commands.AddEntityRelationCommand.prototype.getCommandName = function() { return "AddEntityRelationCommand" };
+  commands.AddEntityRelationCommand.RelatedItem = function(entityType, entityId) {
+    this.entityType = entityType;
+    this.entityId = entityId;
+  };
+
+  api.sendCommand = function(command, commandName) {
+
+    commandName = commandName || command.getCommandName();
+
+    var cmd = {
+      name: commandName,
+      bodyObject: command
+    }
+
+    return http.post(api.addRootUrl('/api/command'), cmd);
+
+  };
+
+})();
+</script>

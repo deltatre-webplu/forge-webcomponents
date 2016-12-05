@@ -1,6 +1,11 @@
 <script>
 (function() {
 
+  function RejectObject(req) {
+    this.status = req.status;
+    this.response = req;
+  }
+
   function _get(url, response) {
 
     var request = new XMLHttpRequest();
@@ -12,7 +17,7 @@
           var result = JSON.parse(request.responseText);
           response.resolve(result);
         } else {
-          response.reject("HTTP " + request.status + " for " + url);
+          response.reject(new RejectObject(request));
         }
       }
     };
@@ -20,10 +25,11 @@
 
   }
 
-  function _post(url, response) {
+  function _post(url, response, data) {
 
     var request = new XMLHttpRequest();
     request.open("POST", url, true);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
     //request.timeout = something;
     request.onreadystatechange = function () {
       if (request.readyState === 4) {
@@ -31,11 +37,11 @@
           var result = JSON.parse(request.responseText);
           response.resolve(result);
         } else {
-          response.reject("HTTP " + request.status + " for " + url);
+          response.reject(new RejectObject(request));
         }
       }
     };
-    request.send(null);
+    request.send(data ? JSON.stringify(data) : null);
 
   }
 
@@ -52,7 +58,7 @@
     post: function(url, data, config) {
 
       var response = Q.defer();
-      _post(url, response);
+      _post(url, response, data);
       return response.promise;
 
     }

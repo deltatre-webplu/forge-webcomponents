@@ -1,0 +1,145 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/typography.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-icons/iron-icons.html">
+
+<link rel="import" href="../forge-api/forge-api.html">
+
+<dom-module id="forge-tags-suggestion">
+
+  <style>
+    :host {
+      display: block;
+      padding: 0 2px;
+    }
+
+    .suggested-tag {
+      display: inline-block;
+			background-color: var(--paper-grey-300);
+			height: 32px;
+			line-height: 32px!important;
+			padding: 0 4px 0 12px;
+			border-radius: 16px;
+			color: var(--primary-text-color);
+			font-size: 13px!important;
+    }
+
+    .icon-add {
+      --iron-icon-height: 20px;
+      --iron-icon-width: 20px;
+      color: red;
+      margin-bottom: 1px;
+    }
+
+  </style>
+
+  <template>
+
+    <template is="dom-if" if="{{suggestions.length}}">
+      <div>Suggested Tags</div>
+      <div class="suggestion-list">
+        <template is="dom-repeat" items="{{suggestions}}">
+          <div class="suggested-tag">
+            <span>[[item]]</span>
+            <iron-icon icon="icons:add" class="icon-add" on-tap="_addSuggestedTag"></iron-icon>
+          </div>
+        </template>
+      </div>
+    </template>
+
+  </template>
+
+  <script>
+  (function() {
+
+    var commands = ForgeWebComponents.Commands;
+    var api = ForgeWebComponents.Api;
+
+    function addTagToEntity(tag, entity) {
+
+      var fetchTagUrl = "deltatre.forge.wcm/api/tags/working/culture/nd-nd/slug/" + tag;
+
+      function found(result) {
+
+        var relatedItem = new commands.AddEntityRelationCommand.RelatedItem(result.EntityType, result.EntityId);
+
+        var cmd = new commands.AddEntityRelationCommand(relatedItem, entity.entityId, entity.type);
+
+        api.sendCommand(cmd);
+
+      }
+
+      function notFound() {
+        // create the tag
+        console.error('notFound to be implemented');
+      }
+
+      var fetchTag = api.raw(fetchTagUrl)
+        .then(found, notFound);
+
+    }
+
+    function getSuggestedTags(entity) {
+
+      var result = [];
+      var tags = entity.tags;
+      if (!tags) return result;
+
+      var alreadyInsertedTags = tags.map(function (t) {
+        return t.slug;
+      });
+
+      for (var i = 0; i < tags.length; i++) {
+
+        var tag = tags[i];
+
+        var suggested = ((tag.extraData || {}).suggestedTags || []);
+
+        result = _.difference(_.union(result, suggested), alreadyInsertedTags);
+
+      }
+
+      return result;
+
+    }
+
+    Polymer({
+      is: 'forge-tags-suggestion',
+      properties: {
+
+        value: {
+          type: String
+        },
+        label: {
+          type: String
+        },
+        fieldName: {
+          type: String
+        },
+        entity: {
+          type: Object,
+          observer: '_entityChanged'
+        },
+        schema: {
+          type: Object
+        },
+        disabled: {
+          type: Boolean,
+          value: false
+        }
+      },
+      suggestions: [],
+      _entityChanged: function(newEntity, oldEntity) {
+        this.suggestions = getSuggestedTags(newEntity);
+      },
+      _addSuggestedTag: function(e) {
+        var tag = e.model.item;
+        console.log('adding', tag);
+        addTagToEntity(tag, this.entity);
+      }
+    });
+
+  })();
+  </script>
+
+</dom-module>
