@@ -1,0 +1,30 @@
+[
+	{ "WorkflowStatus": "published", "Total": 123123, "ByEntity": [
+		{ "EntityType": "story", "Count": 8346 },
+		{ "EntityType": "tag", "Count": 245 },
+		{ "EntityType": "document", "Count": 7881 },
+		{ "EntityType": "customentity", "Count": 1158 }
+	]},
+	{ "WorkflowStatus": "unpublished", "Total": 3,  "ByEntity": [
+		{ "EntityType": "story", "Count": 346 },
+		{ "EntityType": "tag", "Count": 24 }
+	]},
+	{ "WorkflowStatus": "waiting", "Total": 23, "ByEntity": [
+		{ "EntityType": "story", "Count": 86 },
+		{ "EntityType": "document", "Count": 23 },
+		{ "EntityType": "customentity", "Count": 12 }
+	]},
+	{ "WorkflowStatus": "reviewed", "Total": 123, "ByEntity": [
+		{ "EntityType": "story", "Count": 346 },
+		{ "EntityType": "tag", "Count": 24 },
+		{ "EntityType": "document", "Count": 881 },
+		{ "EntityType": "customentity", "Count": 158 }
+	]},
+	{ "WorkflowStatus": "rejected", "Total": 3123, "ByEntity": [
+		{ "EntityType": "photo", "Count": 36 },
+		{ "EntityType": "selection", "Count": 124 }
+	]},
+	{ "WorkflowStatus": "archived", "Total": 23123, "ByEntity": [
+		{ "EntityType": "story", "Count": 346 }
+	]}
+]

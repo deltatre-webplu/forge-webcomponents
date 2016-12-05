@@ -86,16 +86,16 @@
 
       <template is="dom-repeat" items="{{stages}}" as="stage">
         <paper-icon-item class="paper-item-group">
-          <paper-item-body class="group-title stageTotal">[[localize(stage.Stage)]]: [[stage.Total]]</paper-item-body>
-          <paper-icon-button icon="expand-more" alt="expand" on-tap="toggle"></paper-icon-button>
+          <paper-item-body class="group-title stageTotal">[[localize(stage.WorkflowStatus)]]: [[stage.Total]]</paper-item-body>
+          <paper-icon-button icon="expand-more" alt="expand" on-tap="_toggle"></paper-icon-button>
         </paper-icon-item>
-        <iron-collapse id$="collapse-[[stage.Stage]]">
-          <template is="dom-repeat" items="{{stage.perType}}" as="type">
+        <iron-collapse id$="collapse-[[stage.WorkflowStatus]]">
+          <template is="dom-repeat" items="{{stage.ByEntity}}">
             <paper-icon-item>
-              <div class="entity-icon-wrapper" style$="background:[[type.IconItem.color]]" item-icon>
-                <iron-icon class="entity-icon" icon="[[type.IconItem.icon]]"></iron-icon>
+              <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+                <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
               </div>
-              <paper-item-body class="capitalize">[[localize(type.PluralType)]]: [[type.Total]]</paper-item-body>
+              <paper-item-body class="capitalize">[[localize(item.PluralType)]]: [[item.Count]]</paper-item-body>
             </paper-icon-item>
           </template>
         </iron-collapse>
@@ -114,27 +114,35 @@
     is: 'forge-workflow-number-card',
     behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
-      url: String,
+      url: {
+        type: String,
+        value: "/api/extensions/query/dashboards-wcm-stages-totals"
+      },
       interval: {
         type: Number,
         value: 600000
       }
     },
+
     stages:[],
+
     _onPollingUpdate: function(result) {
+
       result.forEach(function(r) {
-      r.perType.forEach(function(e) {
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.Type];
-        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.Type);
+
+        r.ByEntity.forEach(function(e) {
+          e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+          e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.EntityType);
+        });
+
       });
-    });
+
       this.stages = result;
 
     },
-    toggle: function(e) {
-      console.log(e.model.stage.Stage);
-      var collapse = this.$$("#collapse-" + e.model.stage.Stage);
-      console.log(collapse);
+
+    _toggle: function(e) {
+      var collapse = this.$$("#collapse-" + e.model.stage.WorkflowStatus);
       var opened = !collapse.opened;
       collapse.toggle();
       if (opened) {
@@ -145,7 +153,8 @@
         e.target.setAttribute('icon', 'expand-more')
         e.target.setAttribute('alt', 'expand');
       }
-    },
+    }
+
   });
 
 })();
