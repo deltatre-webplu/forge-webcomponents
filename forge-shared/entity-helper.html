@@ -7,7 +7,8 @@
   window.ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
   window.ForgeWebComponents.Helpers.EntityHelper = {
     pluralize: pluralize,
-    createLink: createLink
+    createLink: createLink,
+    createSearchLink: createSearchLink
   };
 
   function pluralize(entityType) {
@@ -29,6 +30,7 @@
         result = rootUrl + pluralize(entityType) + "/" + translationId
         break;
       case "customentity":
+      case null:
         result = null;
         break;
       default:
@@ -38,6 +40,38 @@
 
     return result;
 
+  }
+
+  function createSearchLink(entityType, entityCode, query){
+    var rootUrl = "#/wcm/";
+    var result;
+
+    switch (entityType) {
+      case "story":
+        result = rootUrl + pluralize(entityType);
+        break;
+      case "customentity":
+      case null:
+        result = null;
+        break;
+      default:
+        result = rootUrl + pluralize(entityType);
+        break;
+    }
+    if(result && query){
+      var queryString = "?search=";
+
+      for(var k in query){
+        queryString += (k.toLowerCase() + ":" + query[k] + " ");
+      }
+
+      //Remove whitespaces from both sides
+      queryString = queryString.replace(/^\s+|\s+$/gm,'');
+
+      result += encodeURI(queryString);
+    }
+
+    return result;
   }
 
 })();

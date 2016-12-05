@@ -31,17 +31,8 @@
   display: block;
 }
 
-.nodes-status-card {
+paper-card {
   display: block;
-}
-
-.status {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--google-grey-300);
 }
 
 .group-title {
@@ -50,6 +41,11 @@
 
 .paper-item-group {
   background: var(--google-grey-100);
+}
+
+.paper-item-detail {
+  cursor: pointer;
+  cursor: hand;
 }
 
 .stageTotal {
@@ -91,7 +87,7 @@
         </paper-icon-item>
         <iron-collapse id$="collapse-[[stage.WorkflowStatus]]">
           <template is="dom-repeat" items="{{stage.ByEntity}}">
-            <paper-icon-item>
+            <paper-icon-item class="paper-item-detail" on-tap="_openItem">
               <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
                 <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
               </div>
@@ -133,11 +129,16 @@
         r.ByEntity.forEach(function(e) {
           e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
           e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.EntityType);
+
+          //Needed to build ForgeUrl
+          e.WorkflowStatus = r.WorkflowStatus;
         });
 
       });
 
-      this.stages = result;
+      this.stages = result.sort(function(a,b){
+        return a.WorkflowStatus.localeCompare(b.WorkflowStatus);
+      });
 
     },
 
@@ -153,8 +154,29 @@
         e.target.setAttribute('icon', 'expand-more')
         e.target.setAttribute('alt', 'expand');
       }
-    }
+    },
+    _openItem: function(e) {
+      var item = e.model.item;
+      var query = this._workflowStatusQueryString(item.WorkflowStatus);
 
+      var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(item.EntityType, null, query);
+      if (href) location.href = href;
+    },
+    _workflowStatusQueryString(workflowStatus){
+      var result = {};
+      var forgeStages =["published", "unpublished", "reviewed"];
+      var forgeStatuses = ["archived"];
+
+      if(forgeStages.indexOf(workflowStatus) > -1) {
+        result.stage = workflowStatus;
+      } else if(forgeStatuses.indexOf(workflowStatus) > -1){
+        result.status = workflowStatus;
+      }else if(workflowStatus){
+        result["WorkflowFields.approvalStatus"] = workflowStatus;
+      }
+
+      return result;
+    }
   });
 
 })();
