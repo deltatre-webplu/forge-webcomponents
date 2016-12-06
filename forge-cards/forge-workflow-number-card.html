@@ -8,7 +8,8 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-item/paper-item-body.html">
 
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-collapse/iron-collapse.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/google-chart/google-chart.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-resizable-behavior/iron-resizable-behavior.html">
 
 <link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
 <link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
@@ -19,86 +20,37 @@
 <dom-module id="forge-workflow-number-card">
 
 <style>
-:root {
-
-  --paper-item-focused-before: {
-    background-color: transparent;
-  }
-
-}
-
 :host {
   display: block;
+}
+
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
 }
 
 paper-card {
   display: block;
 }
 
-.group-title {
-  @apply(--paper-font-title);
-}
-
-.paper-item-group {
-  background: var(--google-grey-100);
-}
-
-.paper-item-detail {
-  cursor: pointer;
-  cursor: hand;
-}
-
-.stageTotal {
-  font-size: 16px;
-  text-transform: capitalize;
-}
-
-.capitalize {
-  text-transform: capitalize;
-}
-
-.entity-icon-wrapper {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--google-grey-300);
-}
-
-.entity-icon {
-  margin: 8px;
-  width: 24px;
-  height: 24px;
-  --iron-icon-fill-color: white;
+google-chart {
+  height: 400;
+  width:100%;
 }
 </style>
 
 <template>
 
-  <paper-card heading="[[localize('wcm.workflowNumbersHeader')]]">
+  <paper-card heading="[[localize('Entities by workflow stage')]]">
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
-
-      <template is="dom-repeat" items="{{stages}}" as="stage">
-        <paper-icon-item class="paper-item-group">
-          <paper-item-body class="group-title stageTotal">[[localize(stage.WorkflowStatus)]]: [[stage.Total]]</paper-item-body>
-          <paper-icon-button icon="expand-more" alt="expand" on-tap="_toggle"></paper-icon-button>
-        </paper-icon-item>
-        <iron-collapse id$="collapse-[[stage.WorkflowStatus]]">
-          <template is="dom-repeat" items="{{stage.ByEntity}}">
-            <paper-icon-item class="paper-item-detail" on-tap="_openItem">
-              <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
-                <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
-              </div>
-              <paper-item-body class="capitalize">[[localize(item.PluralType)]]: [[item.Count]]</paper-item-body>
-            </paper-icon-item>
-          </template>
-        </iron-collapse>
-      </template>
-
+      <div id="workflowNumberDashboard">
+        <div id="workflowNumberFilter"></div>
+         <google-chart id="workflowNumberChart"></google-chart>
+       </div>
     </div>
-
   </paper-card>
 
 </template>
@@ -108,7 +60,7 @@ paper-card {
 
   Polymer({
     is: 'forge-workflow-number-card',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     properties: {
       url: {
         type: String,
@@ -119,47 +71,122 @@ paper-card {
         value: 600000
       }
     },
-
-    stages:[],
-
+    listeners: {
+      'iron-resize': '_onIronResize'
+    },
+    _dashboard: null,
     _onPollingUpdate: function(result) {
+      var chartsData = this._getChartData(result);
+      this._data = chartsData.data;
+      var _this = this;
 
-      result.forEach(function(r) {
+      google.charts.load('current', {'packages':['corechart', 'controls']});
+      google.charts.setOnLoadCallback(function() {
+        _this._createChart(chartsData.colors);
+      });
+    },
+    _getChartData: function(data){
+      var maxColIndex = 1;
+      var cols = ["EntityStatus"];
+      var rows = [];
+      var colors = [];
 
-        r.ByEntity.forEach(function(e) {
-          e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
-          e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.EntityType);
+      //Cycle over WorkflowStatuses
+      data.forEach(function(ws) {
+        var row = rows.find(r => r[0] === ws.WorkflowStatus);
+        if(!row){
+          row = [ws.WorkflowStatus];
+          rows.push(row);
+        }
 
-          //Needed to build ForgeUrl
-          e.WorkflowStatus = r.WorkflowStatus;
+        ws.ByEntity.forEach(function(e) {
+          var colIndex = cols.indexOf(e.EntityType);
+          if(colIndex == -1){
+            cols.push(e.EntityType);
+            colIndex = cols.indexOf(e.EntityType);
+            maxColIndex+= 1;
+
+            var color = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+            if(color)
+              colors[colIndex - 1] = color.color;
+          }
+          row[colIndex] = e.Count;
         });
-
       });
 
-      this.stages = result.sort(function(a,b){
-        return a.WorkflowStatus.localeCompare(b.WorkflowStatus);
+      rows.forEach(function(r){
+        for (var i = 1; i < maxColIndex; i++) {
+          r[i] = r[i] || 0;
+        }
+      });
+      var res = [cols];
+      rows.forEach(function(r){
+        res.push(r);
       });
 
+      return {data: res, colors: colors}
     },
-
-    _toggle: function(e) {
-      var collapse = this.$$("#collapse-" + e.model.stage.WorkflowStatus);
-      var opened = !collapse.opened;
-      collapse.toggle();
-      if (opened) {
-        e.target.setAttribute('icon', 'expand-less');
-        e.target.setAttribute('alt', 'collapse');
-      }
-      else {
-        e.target.setAttribute('icon', 'expand-more')
-        e.target.setAttribute('alt', 'expand');
+    _onIronResize: function() {
+      if(this._dashboard && this._data){
+        var _this = this;
+        this.debounce( '_redrawChart', _this._redrawChart , 1000);
       }
     },
-    _openItem: function(e) {
-      var item = e.model.item;
-      var query = this._workflowStatusQueryString(item.WorkflowStatus);
+    _createChart: function(chartColors){
+      var chartOptions = { "isStacked" : true, "bar" : {"groupWidth" : "70%"}, "legend": {"position" : "bottom"}, "vAxis": {"viewWindow": {"min": 0}}, "colors": chartColors };
 
-      var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(item.EntityType, null, query);
+      this._columnFilter = new google.visualization.ControlWrapper({
+          controlType: 'CategoryFilter',
+          containerId: 'workflowNumberFilter',
+          options: {
+              filterColumnLabel: 'EntityStatus',
+              ui: {
+                label: 'Stages',
+                  allowTyping: false,
+                  allowMultiple: true
+              }
+          }
+      });
+
+      this._chart = new google.visualization.ChartWrapper({
+        'chartType': 'ColumnChart',
+        'containerId': 'workflowNumberChart',
+        'options': chartOptions
+      });
+
+      this._drawChart();
+    },
+    _drawChart: function(){
+      google.charts.load('current', {'packages':['corechart', 'controls']});
+      var _this = this;
+
+      google.charts.setOnLoadCallback(function() {
+          _this._dashboard = new google.visualization.Dashboard(_this.$.workflowNumberDashboard);
+          _this._dashboard.bind(_this._columnFilter, _this._chart);
+          _this._dashboard.draw(_this._data);
+
+          google.visualization.events.addListener(_this._chart, 'select', function(){ _this._chartSelect()});
+      });
+    },
+    _redrawChart: function(){
+      this._dashboard.dispose();
+      this._drawChart();
+    },
+    _chartSelect: function(){
+      if(this._dashboard){
+        var selectedItem = this._dashboard.getSelection()[0];
+        if (selectedItem && selectedItem.row != null && selectedItem.column != null) {
+          var workflowStatus = this._data[selectedItem.row + 1][0];
+          var entityType = this._data[0][selectedItem.column];
+          if(workflowStatus && entityType)
+          this._openItem(entityType, workflowStatus);
+        }
+      }
+    },
+    _openItem: function(entityType, workflowStatus) {
+      var query = this._workflowStatusQueryString(workflowStatus);
+
+      var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(entityType, null, query);
       if (href) location.href = href;
     },
     _workflowStatusQueryString(workflowStatus){

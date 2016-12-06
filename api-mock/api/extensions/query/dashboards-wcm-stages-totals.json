@@ -1,5 +1,5 @@
 [
-	{ "WorkflowStatus": "published", "Total": 123123, "ByEntity": [
+	{ "WorkflowStatus": "published", "Total": 23123, "ByEntity": [
 		{ "EntityType": "story", "Count": 8346 },
 		{ "EntityType": "tag", "Count": 245 },
 		{ "EntityType": "document", "Count": 7881 },
@@ -14,7 +14,7 @@
 		{ "EntityType": "document", "Count": 23 },
 		{ "EntityType": "customentity", "Count": 12 }
 	]},
-	{ "WorkflowStatus": "reviewed", "Total": 123, "ByEntity": [
+	{ "WorkflowStatus": "reviewed", "Total": 5123, "ByEntity": [
 		{ "EntityType": "story", "Count": 346 },
 		{ "EntityType": "tag", "Count": 24 },
 		{ "EntityType": "document", "Count": 881 },
@@ -24,7 +24,7 @@
 		{ "EntityType": "photo", "Count": 36 },
 		{ "EntityType": "selection", "Count": 124 }
 	]},
-	{ "WorkflowStatus": "archived", "Total": 23123, "ByEntity": [
+	{ "WorkflowStatus": "archived", "Total": 1231, "ByEntity": [
 		{ "EntityType": "story", "Count": 346 }
 	]}
 ]

@@ -1,0 +1,106 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/typography.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-item/paper-icon-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-item/paper-item-body.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/google-chart/google-chart.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-resizable-behavior/iron-resizable-behavior.html">
+
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-shared/forge-icons.html">
+
+<dom-module id="forge-workflow-number-piechart-card">
+
+<style>
+:host {
+  display: block;
+}
+
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
+paper-card {
+  display: block;
+}
+
+google-chart {
+  height: 400;
+  width:100%;
+}
+</style>
+
+<template>
+
+  <paper-card heading="[[localize('Stage distribution')]]">
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
+      <google-chart id="workflowNumberPieChart" type="pie" options='{ "pieHole": 0.4, "legend": {"position" : "right"}, "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
+    </div>
+  </paper-card>
+
+</template>
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-workflow-number-piechart-card',
+    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    properties: {
+      url: {
+        type: String,
+        value: "/api/extensions/query/dashboards-wcm-stages-totals"
+      },
+      interval: {
+        type: Number,
+        value: 600000
+      }
+    },
+    listeners: {
+      'iron-resize': '_onIronResize'
+    },
+    stages:[],
+
+    _onPollingUpdate: function(result) {
+      var cols = ["EntityType", "Total"];
+      var rows = [];
+      //Cycle over WorkflowStatuses
+      result.forEach(function(ws) {
+        var row = rows.find(r => r[0] === ws.WorkflowStatus);
+        if(!row){
+          row = [ws.WorkflowStatus, ws.Total];
+          rows.push(row);
+        }
+      });
+
+      var data = [cols];
+      rows.forEach(function(r){
+        data.push(r);
+      });
+      var _this = this;
+      google.charts.setOnLoadCallback(function() {
+        _this.$.workflowNumberPieChart.data = google.visualization.arrayToDataTable(data);
+      });
+
+    },
+    _onIronResize: function() {
+      this.$.workflowNumberPieChart.redraw();
+    }
+  });
+
+})();
+</script>
+
+</dom-module>

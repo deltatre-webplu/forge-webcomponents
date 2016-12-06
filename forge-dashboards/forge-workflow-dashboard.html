@@ -19,13 +19,22 @@
       flex-direction: row;
     }
 
+    .group-container{
+      flex-direction: row;
+    }
+
     @media (max-width: 1000px) {
       .dashboard-container {
         display: block;
       }
+
+      .group-container{
+        flex-direction: column;
+      }
     }
 
-    .padded {
+    .padded
+    {
       padding: 8px;
     }
 
@@ -34,8 +43,14 @@
   <template>
 
     <div class="dashboard-container">
-        <forge-timetopublish-card class="padded flex"></forge-timetopublish-card>
-        <forge-workflow-number-card class="padded flex"></forge-workflow-number-card>
+      <div class="layout vertical flex">
+        <forge-workflow-number-card class="padded"></forge-workflow-number-card>
+
+        <div class="layout group-container">
+          <forge-workflow-number-piechart-card class="padded flex"></forge-workflow-number-piechart-card>
+          <forge-timetopublish-card class="padded flex"></forge-timetopublish-card>
+        </div>
+      </div>
     </div>
   </template>
 
