@@ -20,7 +20,7 @@
 
   }
 
-  function createLink(entityType, entityCode, entityId, translationId) {
+  function createLink(entityType, entityId, translationId) {
 
     var rootUrl = "#/wcm/";
     var result;
@@ -29,12 +29,15 @@
       case "story":
         result = rootUrl + pluralize(entityType) + "/" + translationId
         break;
-      case "customentity":
-      case null:
-        result = null;
+      case "photo":
+      case "document":
+      case "tag":
+      case "selection":
+      case "album":
+        result = rootUrl + pluralize(entityType) + "/" + entityId
         break;
       default:
-        result = rootUrl + pluralize(entityType) + "/" + entityId;
+        result = rootUrl + "custom/" + entityType + "/" + entityId;
         break;
     }
 

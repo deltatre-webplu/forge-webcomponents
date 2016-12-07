@@ -167,14 +167,13 @@ paper-icon-item {
 
       result.forEach(function(e) {
         e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
-        //e.Link = ForgeWebComponents.Helpers.EntityHelper.createLink(e.EntityType, null, e.Id, e.TranslationId);
       });
 
       this.entities = groupByScheduleDay(result);
     },
     _openItem: function(e) {
       var entity = e.model.item;
-      var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.EntityType, null, entity.EntityId, entity.TranslationId);
+      var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.EntityType, entity.EntityId, entity.TranslationId);
       if (href) location.href = href;
     }
   });
