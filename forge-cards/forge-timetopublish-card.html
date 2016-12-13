@@ -46,16 +46,20 @@ paper-card {
 .capitalize {
   text-transform: capitalize;
 }
+
+.card-disclaimer {
+  padding-bottom: 5px;
+}
 </style>
 
 <template>
 
-  <paper-card heading="[[localize('Time to Publish')]]">
+  <paper-card heading="[[localize('Time to first publish')]]">
 
     <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
-
+      <div class="card-disclaimer">[[localize('wcm.cardTimeToPublishDisclaimer')]]</div>
       <template is="dom-repeat" items="{{entities}}">
         <paper-icon-item>
           <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
