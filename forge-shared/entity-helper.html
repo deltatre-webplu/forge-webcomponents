@@ -16,6 +16,12 @@
     if (entityType.endsWith("y")) {
       return entityType.substring(0, entityType.length - 1) + "ies";
     }
+    if (entityType.endsWith("s") ||
+        entityType.endsWith("x") ||
+        entityType.endsWith("sh") ||
+        entityType.endsWith("ch")) {
+      return entityType + "es";
+    }
     return entityType + "s";
 
   }
@@ -45,20 +51,21 @@
 
   }
 
-  function createSearchLink(entityType, entityCode, query){
+  function createSearchLink(entityType, query){
     var rootUrl = "#/wcm/";
     var result;
 
     switch (entityType) {
       case "story":
+      case "photo":
+      case "document":
+      case "tag":
+      case "selection":
+      case "album":
         result = rootUrl + pluralize(entityType);
-        break;
-      case "customentity":
-      case null:
-        result = null;
         break;
       default:
-        result = rootUrl + pluralize(entityType);
+        result =  rootUrl + "custom/" + entityType;
         break;
     }
     if(result && query){
@@ -68,8 +75,7 @@
         queryString += (k.toLowerCase() + ":" + query[k] + " ");
       }
 
-      //Remove whitespaces from both sides
-      queryString = queryString.replace(/^\s+|\s+$/gm,'');
+      queryString = queryString.trim();
 
       result += encodeURI(queryString);
     }

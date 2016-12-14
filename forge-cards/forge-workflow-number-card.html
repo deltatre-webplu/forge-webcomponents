@@ -106,9 +106,11 @@ google-chart {
             colIndex = cols.indexOf(e.EntityType);
             maxColIndex+= 1;
 
-            var color = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
-            if(color)
-              colors[colIndex - 1] = color.color;
+            var entityIcon = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+
+            if(!entityIcon) entityIcon = {icon: "icons:extension", color: "#bbb"}
+
+            colors[colIndex - 1] = entityIcon.color;
           }
           row[colIndex] = e.Count;
         });
@@ -133,7 +135,21 @@ google-chart {
       }
     },
     _createChart: function(chartColors){
-      var chartOptions = { "isStacked" : true, "bar" : {"groupWidth" : "70%"}, "legend": {"position" : "bottom"}, "vAxis": {"viewWindow": {"min": 0}}, "colors": chartColors };
+      var chartOptions = {
+        "isStacked" : true,
+        "bar" : {
+          "groupWidth" : "70%"
+        },
+        "legend": {
+          "position" : "bottom"
+        },
+        "vAxis": {
+          "viewWindow": {
+            "min": 0
+          }
+        },
+        "colors": chartColors
+      };
 
       this._columnFilter = new google.visualization.ControlWrapper({
           controlType: 'CategoryFilter',
@@ -186,7 +202,7 @@ google-chart {
     _openItem: function(entityType, workflowStatus) {
       var query = this._workflowStatusQueryString(workflowStatus);
 
-      var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(entityType, null, query);
+      var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(entityType, query);
       if (href) location.href = href;
     },
     _workflowStatusQueryString(workflowStatus){
