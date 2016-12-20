@@ -100,10 +100,13 @@ google-chart {
         }
 
         ws.ByEntity.forEach(function(e) {
-          var colIndex = cols.indexOf(e.EntityType);
+
+          var entityName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
+
+          var colIndex = cols.indexOf(entityName);
           if(colIndex == -1){
-            cols.push(e.EntityType);
-            colIndex = cols.indexOf(e.EntityType);
+            cols.push(entityName);
+            colIndex = cols.indexOf(entityName);
             maxColIndex+= 1;
 
             var entityIcon = ForgeWebComponents.Settings.EntityIcons[e.EntityType];

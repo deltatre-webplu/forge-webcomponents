@@ -99,9 +99,14 @@ paper-card {
     _onPollingUpdate: function(result) {
 
       result.forEach(function(e) {
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
-        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.EntityType);
+
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType] || ForgeWebComponents.Settings.EntityIcons["customentity"];
+
+        var entityName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
+        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(entityName);
+
         e.AverageHumanReadable = moment.duration(e.Average).humanize();
+
       });
 
       this.entities = _.sortBy(result, ['Average']).reverse();
