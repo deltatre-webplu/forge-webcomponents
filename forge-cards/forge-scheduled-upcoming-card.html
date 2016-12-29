@@ -166,7 +166,7 @@ paper-icon-item {
     _onPollingUpdate: function(result) {
 
       result.forEach(function(e) {
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
       });
 
       this.entities = groupByScheduleDay(result);

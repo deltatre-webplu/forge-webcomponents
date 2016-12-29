@@ -106,7 +106,7 @@ google-chart {
             colIndex = cols.indexOf(e.EntityType);
             maxColIndex+= 1;
 
-            var color = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+            var color = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
             if(color)
               colors[colIndex - 1] = color.color;
           }

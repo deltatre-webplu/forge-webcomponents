@@ -99,7 +99,8 @@ paper-card {
     _onPollingUpdate: function(result) {
 
       result.forEach(function(e) {
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+        e.IconItem = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+
         e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.EntityType);
         e.AverageHumanReadable = moment.duration(e.Average).humanize();
       });
