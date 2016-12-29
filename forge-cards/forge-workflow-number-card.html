@@ -109,7 +109,7 @@ google-chart {
             colIndex = cols.indexOf(entityName);
             maxColIndex+= 1;
 
-            var entityIcon = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
+	          var entityIcon = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
 
             if(!entityIcon) entityIcon = {icon: "icons:extension", color: "#bbb"}
 

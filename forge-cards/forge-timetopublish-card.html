@@ -100,7 +100,8 @@ paper-card {
 
       result.forEach(function(e) {
 
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons[e.EntityType] || ForgeWebComponents.Settings.EntityIcons["customentity"];
+        e.IconItem =  ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+
 
         var entityName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
         e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(entityName);
