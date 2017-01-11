@@ -59,17 +59,25 @@ paper-card {
     <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
-      <div class="card-disclaimer">[[localize('wcm.cardTimeToPublishDisclaimer')]]</div>
-      <template is="dom-repeat" items="{{entities}}">
-        <paper-icon-item>
-          <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
-            <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
-          </div>
-          <paper-item-body>
-            <div class="entityTotal"><span class="capitalize">[[localize(item.PluralType)]]:</span> [[item.AverageHumanReadable]]</div>
-          </paper-item-body>
-        </paper-icon-item>
 
+      <template is="dom-if" if="[[entities.length]]">
+        <div class="card-disclaimer">[[localize('wcm.cardTimeToPublishDisclaimer')]]</div>
+        <template is="dom-repeat" items="{{entities}}">
+          <paper-icon-item>
+            <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+              <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
+            </div>
+            <paper-item-body>
+              <div class="entityTotal"><span class="capitalize">[[localize(item.PluralType)]]:</span> [[item.AverageHumanReadable]]</div>
+            </paper-item-body>
+          </paper-icon-item>
+
+        </template>
+      </template>
+
+      <template is="dom-if" if="[[!entities.length]]">
+          [[localize('wcm.cardTimeToPublishEmptyState')]]
+          <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
       </template>
 
     </div>
@@ -112,6 +120,9 @@ paper-card {
 
       this.entities = _.sortBy(result, ['Average']).reverse();
 
+    },
+    _tellNewStory: function() {
+      location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');
     }
   });
 
