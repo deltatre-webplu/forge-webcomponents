@@ -3,13 +3,37 @@
 
   "use strict";
 
-  window.ForgeWebComponents = window.ForgeWebComponents || {};
-  window.ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
-  window.ForgeWebComponents.Helpers.EntityHelper = {
+  ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
+  ForgeWebComponents.Helpers.EntityHelper = {
     pluralize: pluralize,
     createLink: createLink,
-    createSearchLink: createSearchLink
+    createSearchLink: createSearchLink,
+    getFriendlyName: getFriendlyName
   };
+
+  var customEntityDefinitions = ForgeWebComponents.Config["deltatre.forge.wcm"].CustomEntitiesConfiguration.Definitions;
+
+  var CUSTOM_ENTITY_PREFIX = "customentity.";
+  var customEntities = customEntityDefinitions.reduce(function(o, v) {
+    o[v.Code.toLowerCase()] = v;
+    return o;
+  }, {});
+
+  function sanitizeEntityType(entityType) {
+    entityType = entityType.toLowerCase();
+    if (entityType.startsWith(CUSTOM_ENTITY_PREFIX))
+      return entityType.substring(CUSTOM_ENTITY_PREFIX.length);
+    return entityType;
+  }
+
+  function getFriendlyName(entityType) {
+
+    entityType = sanitizeEntityType(entityType);
+    if (customEntities[entityType])
+      return customEntities[entityType].Name;
+    return entityType.charAt(0).toUpperCase() + entityType.slice(1);
+
+  }
 
   function pluralize(entityType) {
 

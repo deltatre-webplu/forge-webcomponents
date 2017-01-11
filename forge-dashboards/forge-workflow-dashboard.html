@@ -6,63 +6,67 @@
 
 <dom-module id="forge-workflow-dashboard">
 
-  <style include="iron-flex iron-flex-alignment">
+<style include="iron-flex iron-flex-alignment">
+.dashboard-container {
+  position: absolute;
+  top: -8px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
 
-    .dashboard-container {
-      position: absolute;
-      top: -8px;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: row;
-    }
+.padded {
+  padding: 8px;
+}
 
-    .group-container{
-      flex-direction: row;
-    }
+.halfsize {
+  width: 50%;
+}
 
-    @media (max-width: 1000px) {
-      .dashboard-container {
-        display: block;
-      }
+@media (max-width: 1000px) {
 
-      .group-container{
-        flex-direction: column;
-      }
-    }
+  .dashboard-container {
+    display: block;
+  }
 
-    .padded
-    {
-      padding: 8px;
-    }
+  .layout.horizontal {
+    flex-direction: column;
+  }
 
-  </style>
+  .halfsize {
+    width: 100%;
+  }
 
-  <template>
+}
+</style>
 
-    <div class="dashboard-container">
-      <div class="layout vertical flex">
-        <forge-workflow-number-card class="padded"></forge-workflow-number-card>
+<template>
 
-        <div class="layout group-container">
-          <forge-workflow-number-piechart-card class="padded flex"></forge-workflow-number-piechart-card>
-          <forge-timetopublish-card class="padded flex"></forge-timetopublish-card>
-        </div>
-      </div>
+  <div class="dashboard-container">
+
+    <forge-workflow-number-card class="padded"></forge-workflow-number-card>
+
+    <div class="layout horizontal">
+      <forge-workflow-number-piechart-card class="padded halfsize"></forge-workflow-number-piechart-card>
+      <forge-timetopublish-card class="padded halfsize"></forge-timetopublish-card>
     </div>
-  </template>
 
-  <script>
-  (function() {
-    "use strict";
+  </div>
 
-    Polymer({
-      is: 'forge-workflow-dashboard'
-    });
+</template>
 
-  })();
-  </script>
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-workflow-dashboard'
+  });
+
+})();
+</script>
 
 </dom-module>
