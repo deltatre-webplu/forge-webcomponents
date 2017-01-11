@@ -106,11 +106,9 @@ google-chart {
             colIndex = cols.indexOf(e.EntityType);
             maxColIndex+= 1;
 
-            var entityIcon = ForgeWebComponents.Settings.EntityIcons[e.EntityType];
-
-            if(!entityIcon) entityIcon = {icon: "icons:extension", color: "#bbb"}
-
-            colors[colIndex - 1] = entityIcon.color;
+            var color = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+            if(color)
+              colors[colIndex - 1] = color.color;
           }
           row[colIndex] = e.Count;
         });
