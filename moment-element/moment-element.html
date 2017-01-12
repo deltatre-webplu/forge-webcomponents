@@ -86,16 +86,18 @@
 
       var moment_date = moment(datetime);
       var output;
-
+      
       if (this.format === "from-now") {
         output = moment_date.fromNow();
       }
-      else {
+      else if(this.format === "humanize"){
+        output = moment.duration(datetime).humanize();
+      }else
+      {
         output = timezone
           ? moment_date.tz(timezone).format(this.format)
           : moment_date.format(this.format);
       }
-
       return output;
 
     }

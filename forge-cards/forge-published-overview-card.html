@@ -24,6 +24,11 @@
   display: block;
 }
 
+paper-icon-item {
+  cursor: pointer;
+  cursor: hand;
+}
+
 .loading-bar {
   --paper-progress-active-color: var(--paper-light-blue-500);
   width: 100%;
@@ -69,14 +74,15 @@ paper-card {
     <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
-   
+
 			<template is="dom-if" if="[[!entities.length]]">
           [[localize('wcm.cardPublihedOverviewEmptyState')]]
           <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
       </template>
-			      
+
       <template is="dom-repeat" items="{{entities}}">
-        <paper-icon-item>
+        <paper-icon-item on-tap="_openItem">
+          <paper-ripple></paper-ripple>
           <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
             <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
           </div>
@@ -121,6 +127,15 @@ paper-card {
       this.grandTotal = result.Total;
       this.entities = _.sortBy(result.TotalByEntities, ['Total']).reverse();
 
+    },
+    _openItem: function(e) {
+      var entity = e.model.item;
+
+      let query = {
+        stage: "published"
+      }
+      var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(entity.EntityType, query);
+      if (href) location.href = href;
     },
     _tellNewStory: function() {
       location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');

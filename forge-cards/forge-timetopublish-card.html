@@ -10,6 +10,7 @@
 
 <link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
 <link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+<link rel="import" href="../moment-element/moment-element.html">
 
 <dom-module id="forge-timetopublish-card">
 
@@ -68,7 +69,8 @@ paper-card {
               <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
             </div>
             <paper-item-body>
-              <div class="entityTotal"><span class="capitalize">[[localize(item.PluralType)]]:</span> [[item.AverageHumanReadable]]</div>
+              <div class="entityTotal"><span class="capitalize">[[localize(item.PluralType)]]:</span>
+                <moment-element format="humanize" date-time="[[item.Average]]"></moment-element></div>
             </paper-item-body>
           </paper-icon-item>
 
@@ -110,7 +112,7 @@ paper-card {
 
         e.IconItem =  ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
         e.PluralType = ForgeWebComponents.Helpers.EntityHelper.getPluralFriendlyName(e.EntityType);
-        e.AverageHumanReadable = moment.duration(e.Average).humanize();
+        //e.AverageHumanReadable = moment.duration(e.Average).humanize();
 
       });
 

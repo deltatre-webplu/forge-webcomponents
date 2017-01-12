@@ -81,15 +81,17 @@
 
     switch (entityType) {
       case "story":
+      case "selection":
         result = rootUrl + pluralize(entityType) + "/" + translationId
         break;
       case "photo":
       case "document":
       case "tag":
-      case "selection":
       case "album":
         result = rootUrl + pluralize(entityType) + "/" + entityId
         break;
+      case "customentity":
+      break;
       default:
         result = rootUrl + "custom/" + entityType + "/" + entityId;
         break;
