@@ -95,8 +95,7 @@ google-chart {
           ?  ForgeWebComponents.Settings.EntityIcons.entityIcon(entityType).color
           : '#e0e0e0';
 
-        //translate
-        working[i][0] = this.localize(entityType);
+        working[i][0] = this.localize(ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(entityType));
 
         colors.push(color);
 

@@ -109,8 +109,8 @@ paper-card {
     _onPollingUpdate: function(result) {
 
       result.TotalByEntities.forEach(function(e) {
+        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.getPluralFriendlyName(e.EntityType);
         e.IconItem = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
-        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.pluralize(e.EntityType);
       });
 
       this.grandTotal = result.Total;
