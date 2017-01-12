@@ -8,7 +8,9 @@
     pluralize: pluralize,
     createLink: createLink,
     createSearchLink: createSearchLink,
-    getFriendlyName: getFriendlyName
+    getFriendlyName: getFriendlyName,
+    canPluralize: canPluralize,
+    getPluralFriendlyName : getPluralFriendlyName
   };
 
   var customEntityDefinitions = ForgeWebComponents.Config["deltatre.forge.wcm"].CustomEntitiesConfiguration.Definitions;
@@ -35,6 +37,10 @@
 
   }
 
+  function getPluralFriendlyName(entityType) {
+    return canPluralize(entityType) ? pluralize(entityType) : getFriendlyName(entityType);
+  }
+
   function pluralize(entityType) {
 
     if (entityType.endsWith("y")) {
@@ -48,6 +54,24 @@
     }
     return entityType + "s";
 
+  }
+
+  function canPluralize(entityType) {
+
+    switch (entityType) {
+      case "story":
+      case "photo":
+      case "document":
+      case "tag":
+      case "selection":
+      case "album":
+        return true;
+      break;
+
+      default:
+        return false;
+      break;
+    }
   }
 
   function createLink(entityType, entityId, translationId) {

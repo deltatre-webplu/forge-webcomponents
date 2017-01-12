@@ -83,7 +83,7 @@ paper-icon-item {
               <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
             </div>
             <paper-item-body two-line>
-              <div class="header">[[item.Title]] ([[localize(item.EntityType)]])</div>
+              <div class="header">[[item.Title]] ([[localize(item.Name)]])</div>
               <div secondary>
                 <span>[[localize('wcm.wasEditedBy')]]</span> <span class="strong">[[item.LastUpdateUser]]</span> <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
               </div>
@@ -131,6 +131,7 @@ paper-icon-item {
 
       result.forEach(function(e) {
         e.IconItem = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+        e.Name = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
       });
 
       this.entities = result;
