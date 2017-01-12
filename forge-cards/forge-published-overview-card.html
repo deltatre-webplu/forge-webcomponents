@@ -68,6 +68,11 @@ paper-card {
 
     <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
+    <template is="dom-if" if="[[!entities.length]]">
+        [[localize('wcm.cardPublihedOverviewEmptyState')]]
+        <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
+    </template>
+
     <div class="card-content">
 
       <template is="dom-repeat" items="{{entities}}">
@@ -116,8 +121,10 @@ paper-card {
       this.grandTotal = result.Total;
       this.entities = _.sortBy(result.TotalByEntities, ['Total']).reverse();
 
+    },
+    _tellNewStory: function() {
+      location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');
     }
-
   });
 
 })();
