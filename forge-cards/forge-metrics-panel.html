@@ -80,7 +80,7 @@
     <span class="header">[[localize(title)]]</span>
     <div class="metrics-values">
       <div class="metrics-text">
-        [[localize("avg")]]	<span class="strong">[[average]]</span>	[[localize("peak")]] <span class="strong">[[max]]</span>
+        [[localize("Average")]]	<span class="strong">[[average]]</span>	[[localize("Peak")]] <span class="strong">[[max]]</span>
       </div>
       <iron-icon class="icon" icon="[[icon]]"></iron-icon>
     </div>
@@ -122,11 +122,10 @@
     max: 0,
     threshold: null,
     _onPollingUpdate: function(result) {
-      var current = result[0];
-      if (current) {
+      if (result) {
 
-        this.average = (current.Average.isInfinite || current.Average.isNaN) ? 0 : Math.round(current.Average);
-        this.max = (current.Max.isInfinite || current.Max.isNaN) ? 0 : Math.round(current.Max);
+        this.average = (result.average.isInfinite || result.average.isNaN) ? 0 : Math.round(result.average);
+        this.max = (result.peak.isInfinite || result.peak.isNaN) ? 0 : Math.round(result.peak);
 
         if (this.thresholdDanger && this.average >= this.thresholdDanger) {
           this.threshold = 'threshold-danger';

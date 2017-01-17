@@ -128,12 +128,8 @@
     items: [],
     _onPollingUpdate: function(result) {
 
-      var items = result.map(function(r) {
-        return new Entry(r.Name, r.Value);
-      });
-
-      this.items = items;
-      this._calculateThreshold(items);
+      this.items = result.items;
+      this._calculateThreshold(result.items);
 
     },
     _calculateThreshold: function(items) {

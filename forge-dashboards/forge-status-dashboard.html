@@ -51,11 +51,11 @@
                               heading="DistributionApi"
                               icon="icons:cloud-circle"
                               more-info-url="#/performance">
-            <forge-metrics-panel url="/api/statistics/computed?queryId=distReqSec&refreshMs=5000"
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distReqSec"
                                  icon="icons:assessment"
                                  title="Distribution Requests/sec">
             </forge-metrics-panel>
-            <forge-metrics-panel url="/api/statistics/computed?queryId=distExecTime&refreshMs=5000"
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distExecTime"
                                  icon="image:timer"
                                  title="Distribution Execution Time (ms)"
                                  threshold-warning="500"
@@ -67,21 +67,21 @@
                               heading="FrontEnd"
                               icon="social:public"
                               more-info-url="#/performance">
-            <forge-metrics-panel url="/api/statistics/computed?queryId=reqSec&refreshMs=5000"
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=reqSec"
                                  icon="icons:assessment"
                                  title="Requests/sec">
             </forge-metrics-panel>
-            <forge-metrics-panel url="/api/statistics/computed?queryId=execTime&refreshMs=5000"
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=execTime"
                                  icon="image:timer"
                                  title="Execution Time (ms)"
                                  threshold-warning="1000"
                                  threshold-danger="3000">
             </forge-metrics-panel>
-            <forge-metrics-panel url="/api/statistics/computed?queryId=dataReqSec&refreshMs=5000"
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=dataReqSec"
                                  icon="icons:dns"
                                  title="Data queries/sec">
             </forge-metrics-panel>
-            <forge-exceeding-threshold-panel url="/api/statistics/counted?queryId=itemsExceeding&refreshMs=5000"
+            <forge-exceeding-threshold-panel url="/api/extensions/query/statistics?queryId=itemsExceeding"
                                  icon="icons:alarm"
                                  title="Items exceeding threshold"
                                  threshold-danger="1">
