@@ -1,0 +1,151 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/typography.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-item/paper-icon-item.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-item/paper-item-body.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/google-chart/google-chart.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-resizable-behavior/iron-resizable-behavior.html">
+
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<dom-module id="forge-statistics-chart-card">
+
+<style>
+:host {
+  display: block;
+}
+
+.loading-bar {
+  --paper-progress-active-color: var(--paper-light-blue-500);
+  width: 100%;
+  position: absolute;
+}
+
+paper-card {
+  display: block;
+}
+
+google-chart {
+  height: 400;
+  width:100%;
+}
+</style>
+
+<template>
+
+  <paper-card heading="[[localize(heading)]]">
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+    <div class="card-content">
+       <google-chart id="statisticsChart" type="line" options=[[_chartOptions]]></google-chart>
+    </div>
+  </paper-card>
+
+</template>
+<script>
+(function() {
+  "use strict";
+
+  Polymer({
+    is: 'forge-statistics-chart-card',
+    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+    properties: {
+      url: {
+        type: String,
+        value: ""
+      },
+      interval: {
+        type: Number,
+        value: 600000
+      },
+      heading: {
+        type: String
+      }
+    },
+    listeners: {
+      'iron-resize': '_onIronResize',
+      'forge-language-changed': '_onLanguageChange'
+    },
+    _chartOptions: null,
+    _result: null,
+    _onPollingUpdate: function(result) {
+      this._result = result;
+      this._drawChart();
+    },
+    _drawChart: function(){
+      var data = this._result.data;
+      var chartData = {
+        cols: [{
+          id: "time",
+          label: this.localize("Time"),
+          type: "datetime"
+        }],
+        rows: []
+      };
+
+      for(var obj of data){
+        var col = {
+          id: obj.target,
+          label: obj.target.replace("DataProvider","").replace("Provider", ""),
+          type: "number"
+        }
+        chartData.cols.push(col);
+      }
+      for(var i = 0; i <  this._result.dataPointsCount; i++){
+        var row = [];
+        row.push({v: new Date(data[0].dataPoints[i][1])});
+
+        for(var obj of data){
+          var value = obj.dataPoints[i][0] ? obj.dataPoints[i][0] : 0;
+          row.push({v: value});
+        }
+        chartData.rows.push({c: row});
+      }
+
+      this._chartOptions = this._getChartOptions(chartData.cols.length);
+
+      this.$.statisticsChart.data = chartData;
+    },
+    _onIronResize: function() {
+      this.$.statisticsChart.redraw();
+    },
+    _onLanguageChange: function() {
+      var data = _.cloneDeep(this.$.incomingCommandsTrend.data);
+      data.cols[0] = {
+        id: "time",
+        label: this.localize("Time"),
+        type: "datetime"
+      };
+      this.$.incomingCommandsTrend.data = data;
+    },
+    _getChartOptions(columnsLength, minDate, maxDate){
+      var ret = {
+        legend: {
+          position: "top",
+          alignment: "center",
+          maxLines: 3
+        },
+        vAxis: {
+          format: "short",
+          viewWindow: {
+             min: 0
+           }
+        }
+      }
+      if(columnsLength <= 2)
+        ret.legend = { position : "none" };
+
+      return ret;
+    }
+  });
+})();
+</script>
+
+</dom-module>

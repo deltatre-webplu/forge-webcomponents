@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script>
+      /*
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+      */
+    </script>
+    <link rel="import" href="../../libraries/libraries.html">
+    <link rel="import" href="../../custom-styles/forge-core-style.html">
+
+    <link rel="import" href="../forge-statistics-chart-card.html">
+
+
+  </head>
+  <body>
+
+    <div>
+      <button onclick="changeLanguage('en')">ENG</button>
+      <button onclick="changeLanguage('it')">ITA</button>
+    </div>
+
+    <forge-statistics-chart-card class="padded flex" heading="Requests/sec" url="api/statistics/chart_reqSec"></forge-statistics-chart-card>
+    <forge-statistics-chart-card class="padded flex" heading="Execution Time (ms)" url="api/statistics/chart_execTime"></forge-statistics-chart-card>
+    <forge-statistics-chart-card class="padded flex" heading="Data queries/sec" url="api/statistics/chart_dataReqSec"></forge-statistics-chart-card>
+
+    <forge-statistics-chart-card class="padded flex" heading="Distribution Requests/sec" url="api/statistics/chart_distReqSec"></forge-statistics-chart-card>
+    <forge-statistics-chart-card class="padded flex" heading="Distribution Execution Time (ms)" url="api/statistics/chart_distExecTime"></forge-statistics-chart-card>
+    <script>
+      function changeLanguage(lang) {
+        ForgeWebComponents.Helpers.EventHelper.changeLanguage(lang);
+      }
+    </script>
+
+  </body>
+</html>
