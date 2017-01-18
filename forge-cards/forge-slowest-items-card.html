@@ -1,0 +1,231 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/color.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/typography.html">
+
+<link rel="import" href="../forge-shared/forge-icons.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<link rel="import" href="../custom-styles/forge-table-styles.html">
+
+<dom-module id="forge-slowest-items-card">
+
+  <style include="forge-table-styles"></style>
+
+  <style>
+  :host {
+    display: block;
+  }
+
+  paper-card {
+    display: block;
+  }
+
+  paper-icon-item {
+    cursor: pointer;
+    cursor: hand;
+  }
+
+  .loading-bar {
+    --paper-progress-active-color: var(--paper-light-blue-500);
+    width: 100%;
+    position: absolute;
+  }
+
+  .card-header {
+    padding: 16px;
+    font-size: 24px;
+    font-weight: 400;
+    color: #000;
+    line-height: 32px;
+  }
+
+  .card-header .icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+  }
+
+  .table-disclaimer {
+    padding: 16px 8px;
+    font-size: 14px;
+  }
+
+  .status-danger {
+    color: var(--status-red-color);
+    font-weight: 600;
+  }
+  .status-warning {
+    color: var(--status-yellow-color);
+    font-weight: 600;
+  }
+  </style>
+
+  <template>
+
+    <paper-card>
+
+      <div class="card-header">
+        <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+        <span class="title">[[localize(heading)]]</span>
+      </div>
+
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+      <div class="card-content">
+
+        <template is="dom-if" if="[[items.length]]">
+
+          <template is="dom-if" if="[[isMode('page')]]">
+
+            <table class="forge-table">
+
+              <thead>
+                <tr>
+                  <th>[[localize("Page")]]</th>
+                  <th>[[localize("Status")]]</th>
+                  <th>[[localize("Avg. (ms)")]]</th>
+                <tr>
+              </thead>
+
+              <tbody>
+                <template is="dom-repeat" items="{{items}}">
+                  <tr>
+                    <td>
+                      <a href="[[item.url]]">[[item.path]]</a>
+                    </td>
+                    <td>[[item.status]]</td>
+                    <td class$="status-[[item.class]]">[[item.average]]</td>
+                  </tr>
+                </template>
+              </tbody>
+
+            </table>
+
+          </template>
+
+          <template is="dom-if" if="[[isMode('query')]]">
+
+            <table class="forge-table">
+
+              <thead>
+                <tr>
+                  <th>[[localize("Page")]]</th>
+                  <th>[[localize("Avg. (ms)")]]</th>
+                <tr>
+              </thead>
+
+              <tbody>
+                <template is="dom-repeat" items="{{items}}">
+                  <tr>
+                    <td>
+                      <a href="[[item.url]]">[[item.path]]</a>
+                    </td>
+                    <td class$="status-[[item.class]]">[[item.average]]</td>
+                  </tr>
+                </template>
+              </tbody>
+
+            </table>
+
+          </template>
+
+          <div class="table-disclaimer">
+            <div>[[localize("Thresholds:")]]</div>
+            <ul>
+              <li><span>[[localize("valuesHigherThanmsAreConsideredA", "from", thresholdWarning)]] <span><span class="status-warning">[[localize("warning")]]</span></li>
+              <li><span>[[localize("valuesHigherThanmsAreConsideredA", "from", thresholdDanger)]] <span><span class="status-danger">[[localize("danger")]]</span></li>
+            </ul>
+          </div>
+
+        </template>
+
+        <template is="dom-if" if="[[!items.length]]">
+
+          [[localize("wcm.noItemsToBeDisplayed")]]
+
+        </template>
+
+      </div>
+
+
+    </paper-card>
+
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    Polymer({
+      is: 'forge-slowest-items-card',
+      behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+      properties: {
+        url: {
+          type: String
+        },
+        interval: {
+          type: Number,
+          value: 60000
+        },
+        heading: {
+          type: String,
+          value: "Slowest items"
+        },
+        icon:{
+          type: String,
+          value: "icons:hourglass-empty"
+        },
+        mode: {
+          type: String,
+          value: "page" // or "query"
+        },
+        thresholdWarning: {
+          type: Number,
+          value: 1000
+        },
+        thresholdDanger: {
+          type: Number,
+          value: 3000
+        }
+      },
+      items: [],
+      hideLoading: true,
+      isMode: function(mode) {
+        return this.mode === mode;
+      },
+      _onPollingUpdate: function(result) {
+        var _this = this;
+        result.forEach(function(r) {
+
+          if (_this.mode === "page") {
+            r.url = ForgeWebComponents.Helpers.VsmHelper.createPageUrl(r.path);
+          }
+          else if (_this.mode === "query") {
+            r.url = ForgeWebComponents.Helpers.VsmHelper.createQueryUrl(r.path);
+          }
+
+          r.average = Math.round(r.average);
+
+          r.class = "normal";
+          if (r.average >= _this.thresholdDanger) {
+            r.class = "danger";
+          }
+          else if (r.average >= _this.thresholdWarning) {
+            r.class = "warning";
+          }
+
+        });
+        this.items = result;
+      }
+    });
+
+  })();
+  </script>
+
+</dom-module>

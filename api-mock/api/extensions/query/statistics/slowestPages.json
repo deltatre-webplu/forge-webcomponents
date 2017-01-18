@@ -1,0 +1,27 @@
+[
+{
+"path": "/index",
+"status": "200",
+"average": 4358.7673534215887
+},
+{
+"path": "/stories/slug/{slug}/index",
+"status": "200",
+"average": 2176.63888888888889
+},
+{
+"path": "/performance-tests/stories543a7209-f4f1-4e97-bd5b-98a01fe87a7c",
+"status": "200",
+"average": 65.80507246376811
+},
+{
+"path": "/performance-tests/stories91652623-fa0b-4830-906f-6b72aecfa363",
+"status": "200",
+"average": 51.09196801346801
+},
+{
+"path": "/performance-tests/stories0ae3fa8b-65e5-4220-9a39-5a3c91aa166e",
+"status": "200",
+"average": 36.63953305681247
+}
+]

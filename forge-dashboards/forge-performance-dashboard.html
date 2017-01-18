@@ -1,0 +1,61 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-flex-layout/iron-flex-layout-classes.html">
+
+<link rel="import" href="../forge-cards/forge-cards.html">
+
+<dom-module id="forge-performance-dashboard">
+
+  <style include="iron-flex iron-flex-alignment">
+
+    .dashboard-container {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: row;
+    }
+
+    .padded-card {
+      box-sizing: border-box;
+      padding: 8px;
+      width: 33%;
+    }
+
+    @media (max-width: 1000px) {
+      .dashboard-container {
+        display: block;
+      }
+
+      .padded-card {
+        width: 100%;
+      }
+    }
+
+  </style>
+
+  <template>
+
+    <div class="dashboard-container">
+      <forge-page-statistics-card class="padded-card" url="/api/extensions/query/statistics?queryId=topRequestedPages"></forge-page-statistics-card>
+      <forge-slowest-items-card class="padded-card" url="/api/extensions/query/statistics?queryId=slowestPages" mode="page" heading="Slowest pages"></forge-slowest-items-card>
+      <forge-slowest-items-card class="padded-card" url="/api/extensions/query/statistics?queryId=slowestQueries" mode="query" heading="Slowest queries"></forge-slowest-items-card>
+    </div>
+
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    Polymer({
+      is: 'forge-performance-dashboard'
+    });
+
+  })();
+  </script>
+
+</dom-module>

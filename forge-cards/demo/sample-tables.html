@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+  <head>
+    <script src="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script>
+      /*
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+      */
+    </script>
+
+    <link rel="import" href="../../libraries/libraries.html">
+    <link rel="import" href="../../custom-styles/forge-core-style.html">
+
+    <link rel="import" href="../forge-page-statistics-card.html">
+    <link rel="import" href="../forge-slowest-items-card.html">
+
+    <script>
+    window.ForgeWebComponents.Settings.DefaultLocale = "it";
+    </script>
+
+  </head>
+  <body>
+
+    <div>
+      <button onclick="changeLanguage('en')">ENG</button>
+      <button onclick="changeLanguage('it')">ITA</button>
+    </div>
+
+    <forge-page-statistics-card url="/api/extensions/query/statistics/topRequestedPages"></forge-page-statistics-card>
+
+    <forge-slowest-items-card url="/api/extensions/query/statistics/slowestPages" mode="page" heading="Slowest pages"></forge-slowest-items-card>
+    <forge-slowest-items-card url="/api/extensions/query/statistics/slowestQueries" mode="query" heading="Slowest queries"></forge-slowest-items-card>
+
+    <script>
+    function changeLanguage(lang) {
+      ForgeWebComponents.Helpers.EventHelper.changeLanguage(lang);
+    }
+    </script>
+
+  </body>
+</html>
