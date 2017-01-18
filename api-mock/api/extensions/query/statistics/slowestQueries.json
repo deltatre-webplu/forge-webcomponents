@@ -1,0 +1,27 @@
+[
+{
+"path": "/wcm/stories",
+"status": null,
+"average": 4015.219359742428821
+},
+{
+"path": "/wcm/stories/{slug}",
+"status": null,
+"average": 2022.777777777777775
+},
+{
+"path": "/test/empty",
+"status": null,
+"average": 3
+},
+{
+"path": "/wcm/documents/{slug}",
+"status": null,
+"average": 2
+},
+{
+"path": "/wcm/custom/{distributionCode}/{slug}",
+"status": null,
+"average": 1
+}
+]

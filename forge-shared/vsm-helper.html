@@ -1,0 +1,33 @@
+<script>
+(function() {
+
+  "use strict";
+
+  ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
+  ForgeWebComponents.Helpers.VsmHelper = {
+    createPageUrl: createPageUrl,
+    createQueryUrl: createQueryUrl
+  };
+
+  function createPageUrl(pageUrl) {
+
+    var rootUrl = "#/vsm/siteexplorer/content/";
+
+    if (!pageUrl.startsWith("~")) pageUrl = "~" + pageUrl;
+
+    return rootUrl + pageUrl;
+
+  }
+
+  function createQueryUrl(queryUrl) {
+
+    var rootUrl = "#/vsm/dataexplorer/search/";
+
+    if (!queryUrl.startsWith("~")) queryUrl = "~" + queryUrl;
+
+    return rootUrl + queryUrl;
+
+  }
+
+})();
+</script>

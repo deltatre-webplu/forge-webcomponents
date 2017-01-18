@@ -1,0 +1,41 @@
+[{
+	"path": "/performance-tests/stories7962be71-e007-488d-b959-bf7f9da6cba5",
+	"status": "200",
+	"count": 1001
+}, {
+	"path": "/performance-tests/stories8af9f1ce-7fd8-4e2b-9890-4553145fe778",
+	"status": "200",
+	"count": 1001
+}, {
+	"path": "/performance-tests/stories96baa246-68e3-46d7-b830-910a054a9c2d",
+	"status": "200",
+	"count": 1001
+}, {
+	"path": "/performance-tests/storiesf364033c-281f-4691-adef-524555786a49",
+	"status": "200",
+	"count": 1001
+}, {
+	"path": "/performance-tests/storiesf14ec4e6-9460-4fbe-b5ca-113c617214aa",
+	"status": "200",
+	"count": 1000
+}, {
+	"path": "/performance-tests/storiese3e516f1-90a3-4968-8346-0241c29e9e26",
+	"status": "200",
+	"count": 1001
+}, {
+	"path": "/performance-tests/stories625dc7c4-fc12-4299-af95-4dda76ffdeae",
+	"status": "200",
+	"count": 1001
+}, {
+	"path": "/performance-tests/stories91652623-fa0b-4830-906f-6b72aecfa363",
+	"status": "200",
+	"count": 1001
+}, {
+	"path": "/index",
+	"status": "200",
+	"count": 596
+}, {
+	"path": "/stories/slug/{slug}/index",
+	"status": "200",
+	"count": 11
+}]

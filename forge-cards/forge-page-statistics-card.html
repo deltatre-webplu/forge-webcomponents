@@ -1,0 +1,155 @@
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/color.html">
+
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-card/paper-card.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/typography.html">
+
+<link rel="import" href="../forge-shared/forge-icons.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+
+<link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
+
+<link rel="import" href="../custom-styles/forge-table-styles.html">
+
+<dom-module id="forge-page-statistics-card">
+
+  <style include="forge-table-styles"></style>
+
+  <style>
+  :host {
+    display: block;
+  }
+
+  paper-card {
+    display: block;
+  }
+
+  paper-icon-item {
+    cursor: pointer;
+    cursor: hand;
+  }
+
+  .loading-bar {
+    --paper-progress-active-color: var(--paper-light-blue-500);
+    width: 100%;
+    position: absolute;
+  }
+
+  .card-header {
+    padding: 16px;
+    font-size: 24px;
+    font-weight: 400;
+    color: #000;
+  }
+
+  .card-header .icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+  }
+
+  .table-disclaimer {
+    padding: 16px 8px;
+    font-size: 14px;
+  }
+  </style>
+
+  <template>
+
+    <paper-card>
+
+      <div class="card-header">
+        <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+        <span class="title">[[localize(heading)]]</span>
+      </div>
+
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+      <div class="card-content">
+
+        <template is="dom-if" if="[[pages.length]]">
+
+          <table class="forge-table">
+
+            <thead>
+              <tr>
+                <th>[[localize("Page")]]</th>
+                <th>[[localize("Status")]]</th>
+                <th>[[localize("Count")]]*</th>
+              <tr>
+            </thead>
+
+            <tbody>
+              <template is="dom-repeat" items="{{pages}}">
+                <tr>
+                  <td>
+                    <a href="[[item.url]]">[[item.path]]</a>
+                  </td>
+                  <td>[[item.status]]</td>
+                  <td>[[item.count]]</td>
+                </tr>
+              </template>
+            </tbody>
+
+          </table>
+
+          <div class="table-disclaimer">
+            * [[localize("countDescription")]]
+          </div>
+
+        </template>
+
+        <template is="dom-if" if="[[!pages.length]]">
+
+          [[localize("wcm.noItemsToBeDisplayed")]]
+
+        </template>
+
+      </div>
+
+
+    </paper-card>
+
+  </template>
+
+  <script>
+  (function() {
+    "use strict";
+
+    Polymer({
+      is: 'forge-page-statistics-card',
+      behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+      properties: {
+        url: {
+          type: String,
+          value: "/api/extensions/query/statistics?queryId=topRequestedPages"
+        },
+        interval: {
+          type: Number,
+          value: 60000
+        },
+        heading: {
+          type: String,
+          value: "Top requested pages"
+        },
+        icon:{
+          type: String,
+          value: "icons:star"
+        }
+      },
+      pages: [],
+      hideLoading: true,
+      _onPollingUpdate: function(result) {
+        result.forEach(function(r) {
+          r.url = ForgeWebComponents.Helpers.VsmHelper.createPageUrl(r.path);
+        });
+        this.pages = result;
+      }
+    });
+
+  })();
+  </script>
+
+</dom-module>
