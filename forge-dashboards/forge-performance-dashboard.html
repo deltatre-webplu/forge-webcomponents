@@ -34,6 +34,9 @@
       .padded-card {
         width: 100%;
       }
+      .dashboard-container > .dashboard-row {
+        display: block;
+      }
     }
 
   </style>
@@ -41,19 +44,19 @@
   <template>
 
     <div class="dashboard-container">
-      <div class="layout horizontal">
-        <forge-statistics-chart-card class="padded-card padded-card-33" heading="Requests/sec" url="/api/extensions/query/statistics?queryId=reqSec&queryType=chart"></forge-statistics-chart-card>
-        <forge-statistics-chart-card class="padded-card padded-card-33" heading="Execution Time (ms)" url="/api/extensions/query/statistics?queryId=execTime&queryType=chart"></forge-statistics-chart-card>
-        <forge-statistics-chart-card class="padded-card padded-card-33" heading="Data queries/sec" url="/api/extensions/query/statistics?queryId=dataReqSec&queryType=chart"></forge-statistics-chart-card>
+      <div class="layout horizontal dashboard-row">
+        <forge-statistics-chart-card icon="image:timer" class="padded-card padded-card-33" heading="Requests" url="/api/extensions/query/statistics?queryId=reqSec&queryType=chart"></forge-statistics-chart-card>
+        <forge-statistics-chart-card icon="image:timer" class="padded-card padded-card-33" heading="Execution Time (ms)" url="/api/extensions/query/statistics?queryId=execTime&queryType=chart"></forge-statistics-chart-card>
+        <forge-statistics-chart-card icon="device:storage" class="padded-card padded-card-33" heading="Data queries" url="/api/extensions/query/statistics?queryId=dataReqSec&queryType=chart"></forge-statistics-chart-card>
       </div>
-      <div class="layout horizontal">
+      <div class="layout horizontal dashboard-row">
         <forge-page-statistics-card class="padded-card padded-card-33" url="/api/extensions/query/statistics?queryId=topRequestedPages"></forge-page-statistics-card>
         <forge-slowest-items-card class="padded-card padded-card-33" url="/api/extensions/query/statistics?queryId=slowestPages" mode="page" heading="Slowest pages"></forge-slowest-items-card>
         <forge-slowest-items-card class="padded-card padded-card-33" url="/api/extensions/query/statistics?queryId=slowestQueries" mode="query" heading="Slowest queries"></forge-slowest-items-card>
       </div>
-      <div class="layout horizontal">
-        <forge-statistics-chart-card class="padded-card padded-card-50" heading="Distribution Requests/sec" url="/api/extensions/query/statistics?queryId=chart_distReqSec"></forge-statistics-chart-card>
-        <forge-statistics-chart-card class="padded-card padded-card-50" heading="Distribution Execution Time (ms)" url="/api/extensions/query/statistics?queryId=chart_distExecTime"></forge-statistics-chart-card>
+      <div class="layout horizontal dashboard-row">
+        <forge-statistics-chart-card icon="image:timer" class="padded-card padded-card-50" heading="Distribution Requests" url="/api/extensions/query/statistics?queryId=distReqSec&queryType=chart"></forge-statistics-chart-card>
+        <forge-statistics-chart-card icon="image:timer" class="padded-card padded-card-50" heading="Distribution Execution Time (ms)" url="/api/extensions/query/statistics?queryId=distExecTime&queryType=chart"></forge-statistics-chart-card>
       </div>
 
     </div>

@@ -11,6 +11,8 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/google-chart/google-chart.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-resizable-behavior/iron-resizable-behavior.html">
 
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-icons/iron-icons.html">
+
 <link rel="import" href="../forge-shared/forge-shared.html">
 <link rel="import" href="../forge-behaviors/forge-polling-behavior.html">
 <link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
@@ -33,18 +35,52 @@ paper-card {
 }
 
 google-chart {
-  height: 400;
+  height: 450;
   width:100%;
 }
+
+.card-header {
+  padding: 16px;
+  font-size: 24px;
+  color: #000;
+}
+
+.icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+}
+
+.title {
+  @apply(--paper-font-headline);
+  vertical-align: middle;
+}
+
+.card-content{
+  height: 360px;
+  text-align: center;
+}
+
 </style>
 
 <template>
 
-  <paper-card heading="[[localize(heading)]]">
+  <paper-card>
+    <div class="card-header">
+      <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+      <span class="title">[[localize(heading)]]</span>
+    </div>
+
     <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
-       <google-chart id="statisticsChart" type="line" options=[[_chartOptions]]></google-chart>
+      <template is="dom-if" if="[[_missingResults]]">
+          [[localize('wcm.cardStatisticsEmptyState')]]
+      </template>
+      <google-chart id="statisticsChart" type="line" options=[[_chartOptions]]></google-chart>
+      <template is="dom-if" if="[[!_missingResults]]">
+          [[localize(_result.disclaimer)]]
+      </template>
     </div>
   </paper-card>
 
@@ -67,6 +103,9 @@ google-chart {
       },
       heading: {
         type: String
+      },
+      icon: {
+        type: String
       }
     },
     listeners: {
@@ -75,12 +114,45 @@ google-chart {
     },
     _chartOptions: null,
     _result: null,
+    _missingResults: false,
+    _colors: [],
+    ready: function() {
+      this._colors = [{
+        target: "200",
+        color : "#4CAF50"
+      },{
+        target: "301",
+        color : "#00E5FF"
+      },{
+        target: "400",
+        color : "#7B1FA2"
+      },{
+        target: "404",
+        color : "#512DA8"
+      },{
+        target: "500",
+        color : "#D50000"
+      }];
+    },
     _onPollingUpdate: function(result) {
       this._result = result;
       this._drawChart();
     },
+    _onPollingError: function() {
+      this._missingResults = false;
+    },
     _drawChart: function(){
+      if(!this._result || !this._result.dataPointsCount){
+        this._missingResults = true;
+        return;
+      }
+      this._missingResults = false;
+
       var data = this._result.data;
+      var createColors = this._colors.some(function(c){
+        return data.some(function(d){return d.target === c.target})
+      });
+
       var chartData = {
         cols: [{
           id: "time",
@@ -90,31 +162,56 @@ google-chart {
         rows: []
       };
 
-      for(var obj of data){
+      for(var i = 0; i < data.length; i++){
+        var obj = data[i];
+
         var col = {
           id: obj.target,
           label: obj.target.replace("DataProvider","").replace("Provider", ""),
           type: "number"
         }
+        if(obj.target && createColors)
+        {
+          var color = this._colors.find(function(o){
+            return o.target === obj.target;
+          });
+          if(color){
+            color.index = i;
+          }else{
+            this._colors.push({
+              target: obj.target,
+              index: i,
+              color: obj.color || ForgeWebComponents.Settings.randomColors()
+            });
+          }
+        }
         chartData.cols.push(col);
       }
+
       for(var i = 0; i <  this._result.dataPointsCount; i++){
         var row = [];
-        row.push({v: new Date(data[0].dataPoints[i][1])});
+        row.push({v: new Date(data[0].dataPoints[i].timestamp)});
 
         for(var obj of data){
-          var value = obj.dataPoints[i][0] ? obj.dataPoints[i][0] : 0;
+          var value = obj.dataPoints[i].value || 0;
           row.push({v: value});
         }
         chartData.rows.push({c: row});
       }
 
-      this._chartOptions = this._getChartOptions(chartData.cols.length);
+      var seriesColors = createColors ? {} : null;
+      if(createColors){
+        for(var color of this._colors.sort(function(a, b){return a.index - b.index})){
+          seriesColors[color.index] = {color: color.color};
+        }
+      }
+      this._chartOptions = this._getChartOptions(chartData.cols[1].label !== "", seriesColors);
 
       this.$.statisticsChart.data = chartData;
     },
     _onIronResize: function() {
-      this.$.statisticsChart.redraw();
+      if(this.$.statisticsChart)
+        this.$.statisticsChart.redraw();
     },
     _onLanguageChange: function() {
       var data = _.cloneDeep(this.$.incomingCommandsTrend.data);
@@ -125,7 +222,7 @@ google-chart {
       };
       this.$.incomingCommandsTrend.data = data;
     },
-    _getChartOptions(columnsLength, minDate, maxDate){
+    _getChartOptions(showLegend, seriesColors){
       var ret = {
         legend: {
           position: "top",
@@ -139,11 +236,14 @@ google-chart {
            }
         },
         chartArea: {
-          width: "90%"
+          width: "85%"
         }
       }
-      if(columnsLength <= 2)
+      if(!showLegend)
         ret.legend = { position : "none" };
+
+      if(seriesColors)
+        ret.series = seriesColors;
 
       return ret;
     }
