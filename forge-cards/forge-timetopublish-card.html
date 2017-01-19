@@ -69,8 +69,10 @@ paper-card {
               <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
             </div>
             <paper-item-body>
-              <div class="entityTotal"><span class="capitalize">[[localize(item.PluralType)]]:</span>
-                <moment-element format="humanize" date-time="[[item.Average]]"></moment-element></div>
+              <div class="entityTotal">
+                <span class="capitalize">[[localize(item.FriendlyName)]]:</span>
+                <moment-element format="humanize" date-time="[[item.Average]]"></moment-element>
+              </div>
             </paper-item-body>
           </paper-icon-item>
 
@@ -111,7 +113,7 @@ paper-card {
       result.forEach(function(e) {
 
         e.IconItem =  ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
-        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.getPluralFriendlyName(e.EntityType);
+        e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
         //e.AverageHumanReadable = moment.duration(e.Average).humanize();
 
       });

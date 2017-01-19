@@ -9,8 +9,7 @@
     createLink: createLink,
     createSearchLink: createSearchLink,
     getFriendlyName: getFriendlyName,
-    canPluralize: canPluralize,
-    getPluralFriendlyName : getPluralFriendlyName
+    canPluralize: canPluralize
   };
 
   var customEntityDefinitions = ForgeWebComponents.Config["deltatre.forge.wcm"].CustomEntitiesConfiguration.Definitions;
@@ -31,14 +30,9 @@
   function getFriendlyName(entityType) {
 
     entityType = sanitizeEntityType(entityType);
-    if (customEntities[entityType])
-      return customEntities[entityType].Name;
-    return entityType.charAt(0).toUpperCase() + entityType.slice(1);
+    var result = customEntities[entityType] ? customEntities[entityType].Name : entityType;
+    return entityType.toLowerCase();
 
-  }
-
-  function getPluralFriendlyName(entityType) {
-    return canPluralize(entityType) ? pluralize(entityType) : getFriendlyName(entityType);
   }
 
   function pluralize(entityType) {

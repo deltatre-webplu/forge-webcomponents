@@ -63,7 +63,7 @@ paper-card {
             <paper-item-body two-line>
               <div class="header">[[item.ActorName]]</div>
               <div secondary>
-                <span>[[localize(item.PastTenseVerb)]]</span> <span class="strong">[[localize(item.Properties.ObjectType)]]</span> <moment-element date-time="[[item.Date]]"></moment-element>
+                <span>[[localize(item.PastTenseVerb)]]</span> <span class="strong">[[localize(item.EntityType)]]</span> <moment-element date-time="[[item.Date]]"></moment-element>
               </div>
             </paper-item-body>
           </paper-icon-item>
@@ -125,6 +125,7 @@ paper-card {
     _onPollingUpdate: function(result) {
       result.forEach(function(e) {
         e.PastTenseVerb = toPastTense(e.Verb);
+        e.EntityType = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.Properties.ObjectType);
       });
       this.entries = result;
     },

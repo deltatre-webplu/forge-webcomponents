@@ -87,7 +87,7 @@ paper-card {
             <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
           </div>
           <paper-item-body>
-            <div class="entityTotal">[[localize(item.PluralType)]]: [[item.Total]]</div>
+            <div class="entityTotal">[[localize(item.FriendlyName)]]: [[item.Total]]</div>
           </paper-item-body>
         </paper-icon-item>
 
@@ -120,7 +120,7 @@ paper-card {
     _onPollingUpdate: function(result) {
 
       result.TotalByEntities.forEach(function(e) {
-        e.PluralType = ForgeWebComponents.Helpers.EntityHelper.getPluralFriendlyName(e.EntityType);
+        e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
         e.IconItem = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
       });
 

@@ -121,7 +121,7 @@ paper-icon-item {
                       <span class="strong">[[item.Title]]</span>
                     </div>
                     <div secondary>
-                      <span> ([[localize(item.EntityType)]]) [[localize("will be")]] [[localize(item.Command)]]</span>
+                      <span> ([[localize(item.FriendlyName)]]) [[localize("will be")]] [[localize(item.Command)]]</span>
                     </div>
                   </paper-item-body>
 
@@ -167,6 +167,7 @@ paper-icon-item {
 
       result.forEach(function(e) {
         e.IconItem = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+        e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
       });
 
       this.entities = groupByScheduleDay(result);

@@ -116,7 +116,8 @@ google-chart {
         }
 
         ws.ByEntity.forEach(function(e) {
-          var entityType = _this.localize(ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType));
+          var friendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
+          var entityType = _this.localize(friendlyName);
           var colIndex = cols.indexOf(entityType);
 
           if(colIndex == -1){
