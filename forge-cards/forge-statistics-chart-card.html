@@ -139,7 +139,7 @@ google-chart {
       this._drawChart();
     },
     _onPollingError: function() {
-      this._missingResults = false;
+      this._missingResults = true;
     },
     _drawChart: function(){
       if(!this._result || !this._result.dataPointsCount){
