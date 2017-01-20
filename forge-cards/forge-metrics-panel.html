@@ -124,8 +124,8 @@
     _onPollingUpdate: function(result) {
       if (result) {
 
-        this.average = (result.average.isInfinite || result.average.isNaN) ? 0 : Math.round(result.average);
-        this.max = (result.peak.isInfinite || result.peak.isNaN) ? 0 : Math.round(result.peak);
+        this.average = (!result.average || result.average.isInfinite || result.average.isNaN) ? 0 : Math.round(result.average);
+        this.max = (!result.peak || result.peak.isInfinite || result.peak.isNaN) ? 0 : Math.round(result.peak);
 
         if (this.thresholdDanger && this.average >= this.thresholdDanger) {
           this.threshold = 'threshold-danger';
