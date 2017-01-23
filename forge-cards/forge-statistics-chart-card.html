@@ -57,7 +57,7 @@ google-chart {
 }
 
 .card-content{
-  height: 360px;
+  height: 340px;
   text-align: center;
 }
 
@@ -78,9 +78,6 @@ google-chart {
           [[localize('wcm.cardStatisticsEmptyState')]]
       </template>
       <google-chart id="statisticsChart" type="line" options=[[_chartOptions]]></google-chart>
-      <template is="dom-if" if="[[!_missingResults]]">
-          [[localize(_result.disclaimer)]]
-      </template>
     </div>
   </paper-card>
 
