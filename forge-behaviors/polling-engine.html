@@ -69,6 +69,10 @@
           }
         });
 
+        var end = +new Date();
+        var t = self.interval - (end - start);
+        self.timeout = setTimeout(self.poll.bind(self), t);
+
       });
 
   };
