@@ -61,6 +61,14 @@ google-chart {
   text-align: center;
 }
 
+.card-content span {
+  line-height: 340px;
+}
+
+.hidden{
+  display: none !important;
+}
+
 </style>
 
 <template>
@@ -75,9 +83,9 @@ google-chart {
 
     <div class="card-content">
       <template is="dom-if" if="[[_missingResults]]">
-          [[localize('wcm.cardStatisticsEmptyState')]]
+          <span>[[localize('wcm.cardStatisticsEmptyState')]]</span>
       </template>
-      <google-chart id="statisticsChart" type="line" options=[[_chartOptions]]></google-chart>
+      <google-chart class$="{{_getChartClasses(_missingResults)}}" id="statisticsChart" type="line" options=[[_chartOptions]]></google-chart>
     </div>
   </paper-card>
 
@@ -244,6 +252,9 @@ google-chart {
         ret.series = seriesColors;
 
       return ret;
+    },
+    _getChartClasses: function(missing){
+      return missing ? "hidden" : "";
     }
   });
 })();
