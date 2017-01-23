@@ -64,6 +64,10 @@
     color: var(--status-yellow-color);
     font-weight: 600;
   }
+
+  .missingResults{
+    text-align: center;
+  }
   </style>
 
   <template>
@@ -79,7 +83,7 @@
 
       <div class="card-content">
 
-        <template is="dom-if" if="[[items.length]]">
+        <template is="dom-if" if="[[!_missingResults]]">
 
           <template is="dom-if" if="[[isMode('page')]]">
 
@@ -145,9 +149,9 @@
 
         </template>
 
-        <template is="dom-if" if="[[!items.length]]">
+        <template is="dom-if" if="[[_missingResults]]">
 
-          [[localize("wcm.noItemsToBeDisplayed")]]
+          <div class="missingResults">[[localize("wcm.cardStatisticsEmptyState")]]</div>
 
         </template>
 
@@ -165,6 +169,7 @@
     Polymer({
       is: 'forge-slowest-items-card',
       behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+      _missingResults: true,
       properties: {
         url: {
           type: String
@@ -199,6 +204,9 @@
       isMode: function(mode) {
         return this.mode === mode;
       },
+      _onPollingError: function() {
+        this._missingResults = true;
+      },
       _onPollingUpdate: function(result) {
         var _this = this;
         result.forEach(function(r) {
@@ -221,6 +229,7 @@
           }
 
         });
+        this._missingResults = !result.length;
         this.items = result;
       }
     });
