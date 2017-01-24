@@ -128,7 +128,7 @@ google-chart {
             _this._hrefData[colIndex] = e.EntityType;
             maxColIndex+= 1;
 
-            var color = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+            var color = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
             if(color)
               colors[colIndex - 1] = color.color;
           }

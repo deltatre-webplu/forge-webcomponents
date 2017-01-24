@@ -91,9 +91,7 @@ google-chart {
       for (var i = 0; i < working.length; i++) {
 
         var entityType = working[i][0];
-        var color = ForgeWebComponents.Settings.EntityIcons.entityIcon(entityType)
-          ?  ForgeWebComponents.Settings.EntityIcons.entityIcon(entityType).color
-          : '#e0e0e0';
+        var color = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(entityType).color;
 
         working[i][0] = this.localize(ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(entityType));
 

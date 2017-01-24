@@ -186,7 +186,7 @@ google-chart {
             this._colors.push({
               target: obj.target,
               index: i,
-              color: obj.color || ForgeWebComponents.Settings.randomColors()
+              color: obj.color || ForgeWebComponents.Helpers.ColorHelper.generateRandomColor()
             });
           }
         }

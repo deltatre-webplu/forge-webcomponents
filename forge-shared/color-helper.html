@@ -71,10 +71,13 @@
   	},
     colorFromGuid: function(guid) {
       return colorHelper.colorFromString(guid + guid);
+    },
+    generateRandomColor: function() {
+      return '#'+Math.random().toString(16).substr(-6);
     }
 
   };
-  
+
   window.ForgeWebComponents = window.ForgeWebComponents || {};
   window.ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
   window.ForgeWebComponents.Helpers.ColorHelper = colorHelper;

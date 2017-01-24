@@ -112,7 +112,7 @@ paper-card {
 
       result.forEach(function(e) {
 
-        e.IconItem =  ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+        e.IconItem =  ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
         e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
         //e.AverageHumanReadable = moment.duration(e.Average).humanize();
 

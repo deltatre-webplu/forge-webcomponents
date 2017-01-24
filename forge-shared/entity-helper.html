@@ -9,7 +9,8 @@
     createLink: createLink,
     createSearchLink: createSearchLink,
     getFriendlyName: getFriendlyName,
-    canPluralize: canPluralize
+    canPluralize: canPluralize,
+    getEntityIcon: getEntityIcon
   };
 
   var customEntityDefinitions = ForgeWebComponents.Config["deltatre.forge.wcm"].CustomEntitiesConfiguration.Definitions;
@@ -27,11 +28,24 @@
     return entityType;
   }
 
+  function getEntityIcon(entityType) {
+
+    entityType = sanitizeEntityType(entityType);
+
+    var result = ForgeWebComponents.Settings.EntityIcons[entityType]
+      ? ForgeWebComponents.Settings.EntityIcons[entityType]
+      : ForgeWebComponents.Settings.EntityIcons.unknown;
+
+    return result;
+
+  }
+
+
   function getFriendlyName(entityType) {
 
     entityType = sanitizeEntityType(entityType);
     var result = customEntities[entityType] ? customEntities[entityType].Name : entityType;
-    return entityType.toLowerCase();
+    return result.toLowerCase();
 
   }
 

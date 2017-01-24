@@ -121,7 +121,7 @@ paper-card {
 
       result.TotalByEntities.forEach(function(e) {
         e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+        e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
       });
 
       this.grandTotal = result.Total;

@@ -130,7 +130,7 @@ paper-icon-item {
     _onPollingUpdate: function(result) {
 
       result.forEach(function(e) {
-        e.IconItem = ForgeWebComponents.Settings.EntityIcons.entityIcon(e.EntityType);
+        e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
       });
 
       this.entities = result;
