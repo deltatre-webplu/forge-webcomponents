@@ -54,6 +54,10 @@
     padding: 16px 8px;
     font-size: 14px;
   }
+
+  .missingResults{
+    text-align: center;
+  }
   </style>
 
   <template>
@@ -69,7 +73,7 @@
 
       <div class="card-content">
 
-        <template is="dom-if" if="[[pages.length]]">
+        <template is="dom-if" if="[[!_missingResults]]">
 
           <table class="forge-table">
 
@@ -101,9 +105,9 @@
 
         </template>
 
-        <template is="dom-if" if="[[!pages.length]]">
+        <template is="dom-if" if="[[_missingResults]]">
 
-          [[localize("wcm.noItemsToBeDisplayed")]]
+          <div class="missingResults">[[localize("wcm.cardStatisticsEmptyState")]]</div>
 
         </template>
 
@@ -121,6 +125,7 @@
     Polymer({
       is: 'forge-page-statistics-card',
       behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+      _missingResults: true,
       properties: {
         url: {
           type: String,
@@ -141,10 +146,14 @@
       },
       pages: [],
       hideLoading: true,
+      _onPollingError: function() {
+        this._missingResults = true;
+      },
       _onPollingUpdate: function(result) {
         result.forEach(function(r) {
           r.url = ForgeWebComponents.Helpers.VsmHelper.createPageUrl(r.path);
         });
+        this._missingResults = !result.length;
         this.pages = result;
       }
     });
