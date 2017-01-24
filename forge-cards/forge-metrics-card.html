@@ -1,6 +1,9 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
 
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/typography.html">
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-card/paper-card.html">
+
 <link rel="import" href="../paper-link-button/paper-link-button.html">
 
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-icons/iron-icons.html">
@@ -49,6 +52,16 @@
   vertical-align: middle;
 }
 
+.card-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.timeRange {
+  @apply(--paper-font-body-1);
+  vertical-align: middle;
+  margin-top: 8px;
+}
 </style>
 
 <template>
@@ -66,6 +79,7 @@
 
     <div class="card-actions">
       <paper-link-button href="[[moreInfoUrl]]">[[localize("More Info")]]</paper-link-button>
+      <span class="timeRange">[[localize('TimeRange')]]: [[localize('pastHour')]]</span>
     </div>
 
   </paper-card>

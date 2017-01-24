@@ -1,8 +1,12 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/polymer/polymer.html">
 
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/color.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/paper-styles/typography.html">
+
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.7.0.2/lib/iron-flex-layout/iron-flex-layout-classes.html">
 
 <link rel="import" href="../forge-cards/forge-cards.html">
+<link rel="import" href="../forge-behaviors/forge-localize-behavior.html">
 
 <dom-module id="forge-performance-dashboard">
 
@@ -39,11 +43,40 @@
       }
     }
 
+    .icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+
+    .role {
+      @apply(--paper-font-title);
+      font-size: 20px;
+      font-weight: 400;
+      vertical-align: middle;
+    }
+
+    .grey {
+      color: var(--paper-grey-600);
+    }
+
+    .timeRange {
+      @apply(--paper-font-body-1);
+      vertical-align: middle;
+      float: right;
+      margin-top: 8px;
+    }
   </style>
 
   <template>
 
     <div class="dashboard-container">
+      <div class="padded-card">
+        <iron-icon class="icon grey" icon="social:public"></iron-icon>
+        <span class="role grey">[[localize('FrontEnd')]]</span>
+        <span class="timeRange">[[localize('TimeRange')]]: [[localize('pastHour')]]</span>
+      </div>
       <div class="layout horizontal dashboard-row">
         <forge-statistics-chart-card icon="image:timer" class="padded-card padded-card-33" heading="Requests/sec" url="/api/extensions/query/statistics?queryId=reqSec&queryType=chart"></forge-statistics-chart-card>
         <forge-statistics-chart-card icon="image:timer" class="padded-card padded-card-33" heading="Execution Time (ms)" url="/api/extensions/query/statistics?queryId=execTime&queryType=chart"></forge-statistics-chart-card>
@@ -53,6 +86,11 @@
         <forge-page-statistics-card class="padded-card padded-card-33" url="/api/extensions/query/statistics?queryId=topRequestedPages"></forge-page-statistics-card>
         <forge-slowest-items-card class="padded-card padded-card-33" url="/api/extensions/query/statistics?queryId=slowestPages" mode="page" heading="Slowest pages"></forge-slowest-items-card>
         <forge-slowest-items-card class="padded-card padded-card-33" url="/api/extensions/query/statistics?queryId=slowestQueries" mode="query" heading="Slowest queries"></forge-slowest-items-card>
+      </div>
+      <div class="padded-card">
+        <iron-icon class="icon grey" icon="icons:cloud-circle"></iron-icon>
+        <span class="role grey">[[localize('DistributionApi')]]</span>
+        <span class="timeRange">[[localize('TimeRange')]]: [[localize('pastHour')]]</span>
       </div>
       <div class="layout horizontal dashboard-row">
         <forge-statistics-chart-card icon="image:timer" class="padded-card padded-card-50" heading="Distribution Requests/sec" url="/api/extensions/query/statistics?queryId=distReqSec&queryType=chart"></forge-statistics-chart-card>
@@ -68,7 +106,8 @@
     "use strict";
 
     Polymer({
-      is: 'forge-performance-dashboard'
+      is: 'forge-performance-dashboard',
+      behaviors: [ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
     });
 
   })();
