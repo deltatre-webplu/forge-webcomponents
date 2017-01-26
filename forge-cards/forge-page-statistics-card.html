@@ -58,6 +58,17 @@
   .missingResults{
     text-align: center;
   }
+
+  .forge-table td, .forge-table th {
+    width: 80px;
+  }
+
+  .table-main-col {
+    width:auto !important;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+
   </style>
 
   <template>
@@ -79,7 +90,7 @@
 
             <thead>
               <tr>
-                <th>[[localize("Page")]]</th>
+                <th class="table-main-col">[[localize("Page")]]</th>
                 <th>[[localize("Status")]]</th>
                 <th>[[localize("Count")]]*</th>
               <tr>
@@ -88,7 +99,7 @@
             <tbody>
               <template is="dom-repeat" items="{{pages}}">
                 <tr>
-                  <td>
+                  <td class="table-main-col">
                     <a href="[[item.url]]">[[item.path]]</a>
                   </td>
                   <td>[[item.status]]</td>

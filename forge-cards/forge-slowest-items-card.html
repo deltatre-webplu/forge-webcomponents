@@ -68,6 +68,17 @@
   .missingResults{
     text-align: center;
   }
+
+  .forge-table td, .forge-table th {
+    width: 80px;
+  }
+
+  .table-main-col {
+    width:auto !important;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+
   </style>
 
   <template>
@@ -91,7 +102,7 @@
 
               <thead>
                 <tr>
-                  <th>[[localize("Page")]]</th>
+                  <th class="table-main-col">[[localize("Page")]]</th>
                   <th>[[localize("Status")]]</th>
                   <th>[[localize("Avg. (ms)")]]</th>
                 <tr>
@@ -100,7 +111,7 @@
               <tbody>
                 <template is="dom-repeat" items="{{items}}">
                   <tr>
-                    <td>
+                    <td class="table-main-col">
                       <a href="[[item.url]]">[[item.path]]</a>
                     </td>
                     <td>[[item.status]]</td>
@@ -119,7 +130,7 @@
 
               <thead>
                 <tr>
-                  <th>[[localize("Page")]]</th>
+                  <th class="table-main-col">[[localize("Page")]]</th>
                   <th>[[localize("Avg. (ms)")]]</th>
                 <tr>
               </thead>
@@ -127,7 +138,7 @@
               <tbody>
                 <template is="dom-repeat" items="{{items}}">
                   <tr>
-                    <td>
+                    <td class="table-main-col">
                       <a href="[[item.url]]">[[item.path]]</a>
                     </td>
                     <td class$="status-[[item.class]]">[[item.average]]</td>
