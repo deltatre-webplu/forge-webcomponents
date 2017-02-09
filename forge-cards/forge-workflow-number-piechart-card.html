@@ -98,6 +98,7 @@ google-chart {
         data.push(r);
       });
       var _this = this;
+      google.charts.load('current', {'packages':['corechart', 'controls']});
       google.charts.setOnLoadCallback(function() {
         _this.$.workflowNumberPieChart.data = google.visualization.arrayToDataTable(data);
       });

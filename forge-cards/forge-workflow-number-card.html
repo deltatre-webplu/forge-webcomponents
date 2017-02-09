@@ -38,6 +38,20 @@ google-chart {
   height: 400;
   width:100%;
 }
+
+.card-content{
+  height: 360px;
+  text-align: center;
+}
+
+.card-content span {
+  line-height: 300px;
+}
+
+.hidden{
+  display: none !important;
+}
+
 </style>
 
 <template>
@@ -46,6 +60,9 @@ google-chart {
     <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
     <div class="card-content">
+      <template is="dom-if" if="[[_missingResults]]">
+          <span>[[localize('wcm.cardWorkflowNumberEmptyState')]]</span>
+      </template>
       <div id="workflowNumberDashboard">
         <div id="workflowNumberFilter"></div>
          <google-chart id="workflowNumberChart"></google-chart>
@@ -79,11 +96,16 @@ google-chart {
     _hrefStatuses: [],
     _hrefData: [],
     _result: null,
+    _missingResults: false,
     _onPollingUpdate: function(result) {
       this._result = result;
       this._drawFromEntites();
     },
     _drawFromEntites :function(){
+      if(!this._result || !this._result.length){
+        this._missingResults = true;
+        return;
+      }
       var chartsData = this._getChartData(this._result);
 
       this._data = chartsData.data;
