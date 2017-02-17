@@ -18,10 +18,16 @@
       display: flex;
       flex-direction: row;
     }
+    forge-nodes-status-card{
+      max-width: 40%;
+    }
 
     @media (max-width: 1500px) {
       .dashboard-container {
         display: block;
+      }
+      forge-nodes-status-card{
+        max-width: 100%;
       }
     }
 
@@ -34,14 +40,16 @@
   <template>
 
     <div class="dashboard-container">
+
       <div class="layout vertical flex">
 
         <div class="layout horizontal">
 
-          <forge-status-card class="padded flex" role="ApplicationService"></forge-status-card>
-          <forge-status-card class="padded flex" role="BackEnd"></forge-status-card>
-          <forge-status-card class="padded flex" role="DistributionApi"></forge-status-card>
-          <forge-status-card class="padded flex" role="FrontEnd"></forge-status-card>
+          <forge-status-card class="padded flex-20" role="ApplicationService"></forge-status-card>
+          <forge-status-card class="padded flex-20" role="BackEnd"></forge-status-card>
+          <forge-status-card class="padded flex-20" role="DistributionService"></forge-status-card>
+          <forge-status-card class="padded flex-20" role="DistributionApi"></forge-status-card>
+          <forge-status-card class="padded flex-20" role="FrontEnd"></forge-status-card>
 
         </div>
 
