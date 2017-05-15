@@ -37,6 +37,10 @@
 
     _onPollingError: function() {
       //do nothing if not overwritten
+    },
+
+    _triggerPolling: function() {
+      engine.trigger(this);
     }
 
   };
