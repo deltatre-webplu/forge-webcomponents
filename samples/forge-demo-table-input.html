@@ -47,18 +47,13 @@
   </template>
 
   <script>
-    var emptyValue = {
-      columns: [],
-      rows: []
-    }
-
     Polymer({
       is: 'forge-demo-table-input',
       properties: {
         value: {
           type: Object,
           observer: '_valueChanged',
-          value: emptyValue
+          value: { columns: [], rows: [] }
         },
         label: {
           type: String
@@ -78,7 +73,7 @@
         }
       },
       _valueChanged: function (newValue, oldValue) {
-        if (!newValue) this.value = emptyValue;
+        if (!newValue) this.value = { columns: [], rows: [] };
       },
       triggerOnValueChanged: function () {
         if (this.disabled) return;
