@@ -1,0 +1,127 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<dom-module id="forge-demo-table-input">
+
+  <template>
+
+    <style is="custom-style">
+
+    </style>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <template is="dom-repeat" items="{{value.columns}}" as="column">
+            <th>
+              <paper-input value="{{column.content}}" on-input="onInput" on-change="onChange" disabled="[[disabled]]" no-label-float="true"></paper-input>
+            </th>
+          </template>
+          <th>
+            <paper-icon-button icon="icons:add-box" on-click="addColumn"></paper-icon-button>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <template is="dom-repeat" items="{{value.rows}}" as="row">
+          <tr>
+            <template is="dom-repeat" items="{{value.columns}}" as="column">
+              <td>
+                <paper-input value="[[arrayItem(row, index)]]" on-input="onItemChange" on-change="onItemChange" disabled="[[disabled]]" no-label-float="true"></paper-input>
+              </td>
+            </template>
+            <td>
+              <paper-icon-button icon="icons:delete" on-click="deleteRow"></paper-icon-button>
+            </td>
+          </tr>
+        </template>
+        <tr>
+          <td>
+            <paper-button on-click="addRow">
+              <iron-icon icon="icons:add-circle"></iron-icon> Add Row
+            </paper-button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+  </template>
+
+  <script>
+    var emptyValue = {
+      columns: [],
+      rows: []
+    }
+
+    Polymer({
+      is: 'forge-demo-table-input',
+      properties: {
+        value: {
+          type: Object,
+          observer: '_valueChanged',
+          value: emptyValue
+        },
+        label: {
+          type: String
+        },
+        fieldName: {
+          type: String
+        },
+        entity: {
+          type: Object
+        },
+        schema: {
+          type: Object
+        },
+        disabled: {
+          type: Boolean,
+          value: false
+        }
+      },
+      _valueChanged: function (newValue, oldValue) {
+        if (!newValue) this.value = emptyValue;
+      },
+      triggerOnValueChanged: function () {
+        if (this.disabled) return;
+        this.fire('valueChanged', this.value);
+      },
+      onInput: function (e) {
+        this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+      },
+      onChange: function (e) {
+        this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+      },
+      onItemChange: function (e) {
+
+        const index = e.model.get('index');
+        e.model.set('row.content.' + index, e.target.value);
+
+        if (e.type === "change")
+          this.onChange();
+        else
+          this.onInput();
+
+      },
+      arrayItem: function (row, index) {
+        return row.content[index];
+      },
+      addRow: function (e) {
+        var content = [];
+        for (var i = 0; i < this.value.columns.length; i++) {
+          content.push("");
+        }
+        this.push('value.rows', { "content": content });
+        this.onChange();
+      },
+      deleteRow: function (e) {
+        const index = e.model.get('index');
+        this.splice('value.rows', index, 1);
+        this.onChange();
+      },
+      addColumn: function () {
+        this.push('value.columns', { "content": "" });
+        this.onChange();
+      }
+    });
+  </script>
+
+</dom-module>
