@@ -128,6 +128,7 @@
       suggestions: [],
       _entityChanged: function(newEntity, oldEntity) {
         this.suggestions = getSuggestedTags(newEntity);
+        this.fire('newsuggestion', this.suggestions.length);
       },
       _addSuggestedTag: function(e) {
         var tag = e.model.item;
