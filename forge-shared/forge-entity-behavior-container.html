@@ -1,0 +1,90 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<link rel="import" href="../forge-api/forge-api.html">
+
+<dom-module id="forge-entity-behavior-container">
+
+  <style>
+    .header {
+      display: flex;
+      flex-direction: row;
+      cursor: pointer;
+      height: 44px;
+      padding: 4px 0;
+      background: #eee;
+      position: relative;
+    }
+
+    .behavior-icon {
+      display: block;
+      margin: 6px 16px;
+    }
+
+    .behavior-text {
+      padding: 8px;
+      flex: 1;
+    }
+
+    .behavior-notification {
+      position: absolute;
+      top: 6px;
+      left: 32px;
+      height: 12px;
+      width: 12px;
+      background: red;
+      border-radius: 50%;
+      display: none;
+    }
+
+    .behavior-notification.visible-true {
+      display: block;
+    }
+
+    .content {
+
+    }
+
+  </style>
+
+  <template>
+
+    <div class="header" on-tap="handleTap">
+
+      <iron-icon class="behavior-icon" icon="[[icon]]"></iron-icon>
+      <span class$="behavior-notification visible-[[notification]]"></span>
+      <div class="behavior-text">[[text]]</div>
+
+    </div>
+
+    <template is="dom-if" if="[[open]]">
+      <div class="content">
+        <content></content>
+      </div>
+    </template>
+
+  </template>
+
+  <script>
+    (function () {
+
+      Polymer({
+        is: 'forge-entity-behavior-container',
+        properties: {
+          icon: {
+            type: String,
+            value: 'image:assistant'
+          },
+          text: String,
+          notification:Boolean
+        },
+        open: false,
+        handleTap: function() {
+          this.open = !this.open;
+          this.fire('behaviorToggle', this.open);
+        }
+      });
+
+    })();
+  </script>
+
+</dom-module>

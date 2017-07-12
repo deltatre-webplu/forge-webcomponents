@@ -1,0 +1,65 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<link rel="import" href="../forge-api/forge-api.html">
+
+<dom-module id="forge-story-behavior-sample">
+
+  <style>
+    .word-count {
+      padding: 8px;
+      font-size: 20px;
+    }
+  </style>
+
+  <template>
+
+    <forge-entity-behavior-container text="[[text]]" notification="[[notification]]">
+      <div class="word-count"><strong>Word Count</strong>: [[wordCount]]</div>
+      <forge-tags-suggestion field-name="suggestedTags" label="Suggested Tags" entity="[[entity]]" on-newsuggestion="onNewSuggestion"></forge-tags-suggestion>
+    </forge-entity-behavior-container>
+
+  </template>
+
+  <script>
+    (function () {
+
+      Polymer({
+        is: 'forge-story-behavior-sample',
+        properties: {
+          entity: {
+            type: Object,
+            observer: '_entityChanged'
+          }
+        },
+        text: '(no suggestions)',
+        wordCount: 0,
+        notification: false,
+        _entityChanged: function (newEntity, oldEntity) {
+          if (typeof newEntity === 'string') return;
+          this.onEntityChanged(newEntity);
+        },
+        onEntityChanged: function (entity) {
+          var wordCount = 0;
+          for (var i = 0; i < entity.parts.length; i++) {
+            var part = entity.parts[i];
+            if (part.type === 'markdown') {
+              wordCount += part.body.contentMarkdown.split(' ').length;
+            }
+          }
+          this.wordCount = wordCount;
+        },
+        onNewSuggestion: function (e) {
+          this.notification = e.detail > 0;
+          if (this.notification) {
+            this.text = e.detail + ' suggested tag(s)';
+          }
+          else {
+            this.text = '(no suggestions)';
+          }
+        }
+      });
+
+    })();
+  </script>
+
+</dom-module>
