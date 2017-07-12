@@ -1,6 +1,6 @@
 <link rel="import" href="../forge-shared/polymer.html">
 
-<dom-module id="forge-demo-table-input">
+<dom-module id="forge-table-input">
 
   <template>
 
@@ -17,7 +17,9 @@
             </th>
           </template>
           <th>
-            <paper-icon-button icon="icons:add-box" on-click="addColumn"></paper-icon-button>
+            <paper-button on-click="addColumn">
+              <iron-icon icon="icons:add-circle"></iron-icon> Add Column
+            </paper-button>
           </th>
         </tr>
       </thead>
@@ -48,7 +50,7 @@
 
   <script>
     Polymer({
-      is: 'forge-demo-table-input',
+      is: 'forge-table-input',
       properties: {
         value: {
           type: Object,
