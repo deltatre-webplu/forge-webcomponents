@@ -39,15 +39,13 @@
           this.onEntityChanged(newEntity);
         },
         onEntityChanged: function (entity) {
-          var wordCount = entity.title.length;
-          /*
+          var wordCount = 0;
           for (var i = 0; i < entity.parts.length; i++) {
             var part = entity.parts[i];
             if (part.type === 'markdown') {
               wordCount += part.body.contentMarkdown.split(' ').length;
             }
           }
-          */
           this.wordCount = wordCount;
         },
         onNewSuggestion: function (e) {
