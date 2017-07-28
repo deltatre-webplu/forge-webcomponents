@@ -1,0 +1,41 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<link rel="import" href="../forge-api/forge-api.html">
+
+<dom-module id="forge-entity-behavior-sample">
+
+  <template>
+
+    <forge-entity-behavior-container text="[[text]]" notification="[[notification]]">
+      <forge-tags-suggestion field-name="suggestedTags" label="Suggested Tags" entity="[[entity]]" on-newsuggestion="onNewSuggestion"></forge-tags-suggestion>
+    </forge-entity-behavior-container>
+
+  </template>
+
+  <script>
+    (function () {
+
+      Polymer({
+        is: 'forge-entity-behavior-sample',
+        properties: {
+          entity: {
+            type: Object
+          }
+        },
+        text: '(no suggestions)',
+        notification: false,
+        onNewSuggestion: function (e) {
+          this.notification = e.detail > 0;
+          if (this.notification) {
+            this.text = e.detail + ' suggested tag(s)';
+          }
+          else {
+            this.text = '(no suggestions)';
+          }
+        }
+      });
+
+    })();
+  </script>
+
+</dom-module>
