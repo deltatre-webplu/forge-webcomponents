@@ -1,4 +1,4 @@
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/1.8.0/lib/app-localize-behavior/app-localize-behavior.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/2.0.1/lib/app-localize-behavior/app-localize-behavior.html">
 
 <script>
 (function() {
@@ -30,7 +30,7 @@
 
     },
 
-    attached: function() {
+    connectedCallback: function() {
 
       this.language = ForgeWebComponents.Settings.DefaultLocale;
       this._boundNotifyLanguageChange = this.notifyLanguageChange.bind(this);
@@ -39,7 +39,7 @@
 
     },
 
-    detached: function() {
+    disconnectedCallback: function() {
 
       document.removeEventListener('ForgeLanguageChanged', this._boundNotifyLanguageChange);
 

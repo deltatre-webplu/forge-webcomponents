@@ -18,10 +18,10 @@
     ready: function() {
       engine.register(this, this.url, this.interval);
     },
-    attached: function() {
+    connectedCallback: function() {
       engine.start();
     },
-    detached: function() {
+    disconnectedCallback: function() {
       engine.unregister(this);
     },
 
