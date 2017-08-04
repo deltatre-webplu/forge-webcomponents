@@ -1,0 +1,31 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<dom-module id="test-video-input">
+
+  <style>
+    :host {
+      display: block;
+      padding: 0 2px;
+    }
+  </style>
+
+  <template>
+
+  <paper-input value="{{value}}" label="[[label]]" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+
+  </template>
+
+  <script>
+  Polymer({
+    is: 'test-video-input',
+    behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
+    onInput: function() {
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+    },
+    onChange: function() {
+      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+    }
+  });
+  </script>
+
+</dom-module>

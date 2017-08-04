@@ -30,7 +30,7 @@
 
     },
 
-    connectedCallback: function() {
+    attached: function() {
 
       this.language = ForgeWebComponents.Settings.DefaultLocale;
       this._boundNotifyLanguageChange = this.notifyLanguageChange.bind(this);
@@ -39,7 +39,7 @@
 
     },
 
-    disconnectedCallback: function() {
+    detached: function() {
 
       document.removeEventListener('ForgeLanguageChanged', this._boundNotifyLanguageChange);
 

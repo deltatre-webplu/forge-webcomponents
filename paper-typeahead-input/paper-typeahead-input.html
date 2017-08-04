@@ -307,7 +307,7 @@ Polymer({
     input.$.input.autocomplete = 'address-level4';
   },
 
-  connectedCallback: function() {
+  attached: function() {
     // `attached` fires once the element and its parents have been inserted
     // into a document.
     //
@@ -316,7 +316,7 @@ Polymer({
     // loading resources, etc).
   },
 
-  disconnectedCallback: function() {
+  detached: function() {
     // The analog to `attached`, `detached` fires when the element has been
     // removed from a document.
     //

@@ -73,10 +73,10 @@
     ready: function() {
       register(this);
     },
-    connectedCallback: function() {
+    attached: function() {
       start();
     },
-    disconnectedCallback: function() {
+    detached: function() {
       unregister(this);
     },
     _computeOutput: function(language, datetime, format, timezone, _updateIncrement) {
