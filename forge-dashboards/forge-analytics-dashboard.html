@@ -1,0 +1,51 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<link rel="import" href="../forge-cards/forge-cards.html">
+
+<dom-module id="forge-analytics-dashboard">
+
+  <style>
+    .dashboard-container {
+      position: absolute;
+      top: -8px;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: row;
+    }
+
+    @media (max-width: 1000px) {
+      .dashboard-container {
+        display: block;
+      }
+    }
+
+    .padded {
+      padding: 8px;
+    }
+  </style>
+
+  <template>
+
+
+    <div class="dashboard-container">
+      <div class="layout vertical flex">
+        <forge-trendingnow-card class="padded"></forge-trendingnow-card>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    (function () {
+      "use strict";
+
+      Polymer({
+        is: 'forge-analytics-dashboard'
+      });
+
+    })();
+  </script>
+
+</dom-module>

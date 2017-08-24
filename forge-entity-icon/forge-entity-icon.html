@@ -1,0 +1,58 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<dom-module id="forge-entity-icon">
+
+  <style>
+     :host {
+      display: block;
+    }
+
+    .entity-icon-wrapper {
+      display: inline-block;
+      box-sizing: border-box;
+      border-radius: 50%;
+      background: var(--google-grey-300);
+      height: var(--forge-entity-icon-size, 40px);
+      width: var(--forge-entity-icon-size, 40px);
+      position: relative;
+    }
+
+    .entity-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      --iron-icon-fill-color: white;
+    }
+  </style>
+
+  <template>
+
+    <div class="entity-icon-wrapper" style$="background:[[iconItem.color]]" item-icon>
+      <iron-icon class="entity-icon" icon="[[iconItem.icon]]"></iron-icon>
+    </div>
+
+  </template>
+
+  <script>
+    (function () {
+
+      Polymer({
+        is: 'forge-entity-icon',
+        properties: {
+          entityType: {
+            type: String,
+            observer: '_entityTypeChanged'
+          }
+        },
+        iconItem: null,
+        _entityTypeChanged: function (newVal, oldVal) {
+          if (!newVal) return;
+          this.iconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(newVal);
+        }
+      });
+
+    })();
+  </script>
+
+</dom-module>

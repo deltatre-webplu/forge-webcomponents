@@ -1,0 +1,50 @@
+[
+  {
+    "id": "2e13dc7c-14e4-4a05-b72d-328f9fa50717",
+    "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
+    "title": "Story 1",
+    "entityType": "story",
+    "culture": "en-US",
+    "views": 500
+  },
+  {
+    "id": "2e13dc7c-14e4-4a05-b72d-328f9fa50718",
+    "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
+    "title": "Photo 2",
+    "entityType": "photo",
+    "culture": "it-IT",
+    "views": 450
+  },
+  {
+    "id": "2e13dc7c-14e4-4a05-b72d-328f9fa50719",
+    "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
+    "title": "Driver 3",
+    "entityType": "customentity.driver",
+    "culture": "ru-RU",
+    "views": 425
+  },
+  {
+    "id": "2e13dc7c-14e4-4a05-b72d-328f9fa50710",
+    "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
+    "title": "Album 4",
+    "entityType": "album",
+    "culture": "fr-FR",
+    "views": 400
+  },
+  {
+    "id": "2e13dc7c-14e4-4a05-b72d-328f9fa5071A",
+    "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
+    "title": "Document 5",
+    "entityType": "document",
+    "culture": "en-US",
+    "views": 375
+  },
+  {
+    "id": "2e13dc7c-14e4-4a05-b72d-328f9fa5071B",
+    "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
+    "title": "Story 6",
+    "entityType": "story",
+    "culture": "it-IT",
+    "views": 350
+  }
+]
