@@ -18,8 +18,8 @@
   {
     "id": "2e13dc7c-14e4-4a05-b72d-328f9fa50719",
     "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
-    "title": "Driver 3",
-    "entityType": "customentity.driver",
+    "title": "Player 3",
+    "entityType": "customentity.player",
     "culture": "ru-RU",
     "views": 425
   },
@@ -46,5 +46,21 @@
     "entityType": "story",
     "culture": "it-IT",
     "views": 350
+  },
+  {
+    "id": "2e13dc7c-14e4-4a05-b72d-328f9fa5071C",
+    "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
+    "title": "Video 7",
+    "entityType": "customentity.youtube-video",
+    "culture": "en-US",
+    "views": 325
+  },
+  {
+    "id": "2e13dc7c-14e4-4a05-b72d-328f9fa5071D",
+    "translationId": "1d8aba8b-8b18-487d-86f4-5818fb075dab",
+    "title": "Poll 8",
+    "entityType": "customentity.poll",
+    "culture": "en-US",
+    "views": 300
   }
 ]

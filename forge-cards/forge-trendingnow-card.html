@@ -20,6 +20,11 @@
       position: absolute;
     }
 
+    .items-table {
+      border: 0;
+      border-collapse: collapse;
+    }
+
     .items-table thead th {
       color: gray;
       font-weight: normal;
@@ -28,6 +33,14 @@
     .items-table .col-title {
       width: 100%;
       text-align: left;
+    }
+
+    .items-table tbody tr {
+      cursor: pointer;
+    }
+
+    .items-table tbody tr:hover {
+      background: var(--paper-grey-200);
     }
 
     .items-table .cell-padded {
@@ -96,22 +109,18 @@
         <paper-dropdown-menu noink no-animations no-label-float="true">
           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterEntity}}" class="dropdown-content">
             <paper-item value="all">All Types</paper-item>
-            <paper-item value="story">Story</paper-item>
-            <paper-item value="photo">Photo</paper-item>
-            <paper-item value="album">Album</paper-item>
-            <paper-item value="document">Document</paper-item>
+            <template is="dom-repeat" items="[[_entities]]">
+              <paper-item value="[[item.code]]">[[localize(item.name)]]</paper-item>
+            </template>
           </paper-listbox>
         </paper-dropdown-menu>
 
         <paper-dropdown-menu noink no-animations no-label-float="true">
           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterLanguage}}" class="dropdown-content">
             <paper-item value="all">All Languages</paper-item>
-            <paper-item value="en-US">English (US)</paper-item>
-            <paper-item value="it-IT">Italian</paper-item>
-            <paper-item value="fr-FR">French</paper-item>
-            <paper-item value="es-ES">Spanglish</paper-item>
-            <paper-item value="de-DE">Crucco</paper-item>
-            <paper-item value="nd-ND">Simultaneo</paper-item>
+            <template is="dom-repeat" items="[[_cultures]]">
+              <paper-item value="[[item.Culture]]">[[localize(item.Name)]]</paper-item>
+            </template>
           </paper-listbox>
         </paper-dropdown-menu>
 
@@ -137,11 +146,11 @@
 
             <tbody>
 
-              <template is="dom-repeat" items="{{_data}}">
+              <template is="dom-repeat" items="[[_data]]">
 
                 <tr on-tap="_openItem">
 
-                  <td class="cell-padded cell-index">[[index]]</td>
+                  <td class="cell-padded cell-index">[[item.rank]]</td>
                   <td class="cell-padded cell-title">[[item.title]]</td>
                   <td class="cell-padded cell-icon">
                     <forge-entity-icon class="entity-icon" entity-type="[[item.entityType]]"></forge-entity-icon>
@@ -176,6 +185,9 @@
   <script>
     (function () {
       "use strict";
+
+      var _entities = ForgeWebComponents.Helpers.EntityHelper.entities;
+      var _cultures = ForgeWebComponents.Config["deltatre.forge.wcm"].SystemLanguagesConfiguration.Languages;
 
       Polymer({
         is: 'forge-trendingnow-card',
@@ -212,15 +224,24 @@
             observer: "_filterLanguageChanged"
           }
         },
-        _pollingUrl: '',
-        _data: [],
+
+        ready: function () {
+          this._pollingUrl = '';
+          this._data = [];
+          this._entities = _entities;
+          this._cultures = _cultures;
+        },
+
         _onPollingUpdate: function (result) {
 
           if (!(result && result.length)) {
             result = [];
           }
 
+          var rank = 0;
+
           result.forEach(function (e) {
+            e.rank = ++rank;
             e.entityName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.entityType);
           });
 

@@ -1,145 +1,192 @@
 <script>
-(function() {
+  (function () {
 
-  "use strict";
+    "use strict";
 
-  ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
-  ForgeWebComponents.Helpers.EntityHelper = {
-    pluralize: pluralize,
-    createLink: createLink,
-    createSearchLink: createSearchLink,
-    getFriendlyName: getFriendlyName,
-    canPluralize: canPluralize,
-    getEntityIcon: getEntityIcon
-  };
+    ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
+    var EH = ForgeWebComponents.Helpers.EntityHelper = {
+      pluralize: pluralize,
+      createLink: createLink,
+      createSearchLink: createSearchLink,
+      getFriendlyName: getFriendlyName,
+      canPluralize: canPluralize,
+      getEntityIcon: getEntityIcon,
+      customEntities: [],
+      entities: []
+    };
 
-  var customEntityDefinitions = ForgeWebComponents.Config["deltatre.forge.wcm"].CustomEntitiesConfiguration.Definitions;
-
-  var CUSTOM_ENTITY_PREFIX = "customentity.";
-  var customEntities = customEntityDefinitions.reduce(function(o, v) {
-    o[v.Code.toLowerCase()] = v;
-    return o;
-  }, {});
-
-  function sanitizeEntityType(entityType) {
-    entityType = entityType.toLowerCase();
-    if (entityType.startsWith(CUSTOM_ENTITY_PREFIX))
-      return entityType.substring(CUSTOM_ENTITY_PREFIX.length);
-    return entityType;
-  }
-
-  function getEntityIcon(entityType) {
-
-    entityType = sanitizeEntityType(entityType);
-
-    var result = ForgeWebComponents.Settings.EntityIcons[entityType]
-      ? ForgeWebComponents.Settings.EntityIcons[entityType]
-      : ForgeWebComponents.Settings.EntityIcons.unknown;
-
-    return result;
-
-  }
-
-
-  function getFriendlyName(entityType) {
-
-    entityType = sanitizeEntityType(entityType);
-    var result = customEntities[entityType] ? customEntities[entityType].Name : entityType;
-    return result.toLowerCase();
-
-  }
-
-  function pluralize(entityType) {
-
-    if (entityType.endsWith("y")) {
-      return entityType.substring(0, entityType.length - 1) + "ies";
+    function ItemIcon(icon, color) {
+      //search the icon in the icon map
+      this.icon = ForgeWebComponents.Settings.IconMap[icon] || "icons:help-outline";
+      this.color = color || "#ccc";
     }
-    if (entityType.endsWith("s") ||
+
+    function Entity(code, name, icon) {
+      this.code = code.toLowerCase();
+      this.name = name;
+      this.icon = icon;
+    }
+
+    var customEntityDefinitions = ForgeWebComponents.Config["deltatre.forge.wcm"].CustomEntitiesConfiguration.Definitions;
+
+    var CUSTOM_ENTITY_PREFIX = "customentity.";
+    var customEntities = customEntityDefinitions.reduce(function (o, v) {
+      o[v.Code.toLowerCase()] = v;
+      return o;
+    }, {});
+
+    var systemEntityIcons = {
+      story: new ItemIcon("description", "dodgerblue"),
+      photo: new ItemIcon("photo", "darkorange"),
+      album: new ItemIcon("photo_album", "orangered"),
+      tag: new ItemIcon("label", "darkgreen"),
+      selection: new ItemIcon("format_list_bulleted", "#663300"),
+      document: new ItemIcon("attach_file", "blueviolet"),
+    };
+
+    //populate entities 
+    EH.entities.push(new Entity("story", "Story", systemEntityIcons["story"]));
+    EH.entities.push(new Entity("photo", "Photo", systemEntityIcons["photo"]));
+    EH.entities.push(new Entity("album", "Album", systemEntityIcons["album"]));
+    EH.entities.push(new Entity("tag", "Tag", systemEntityIcons["tag"]));
+    EH.entities.push(new Entity("selection", "Selection", systemEntityIcons["selection"]));
+    EH.entities.push(new Entity("document", "Document", systemEntityIcons["document"]));
+
+    var palette = ForgeWebComponents.Settings.CustomEntityColorPalette;
+
+    //populate custom entities
+    for (var index = 0; index < customEntityDefinitions.length; index++) {
+      var element = customEntityDefinitions[index];
+      var color = palette[index % palette.length];
+      var icon = new ItemIcon(element.Icon, color);
+      var ce = new Entity(element.Code, element.Name, icon);
+      EH.entities.push(ce);
+      EH.customEntities.push(ce);
+    }
+
+
+    function sanitizeEntityType(entityType) {
+      entityType = entityType.toLowerCase();
+      if (entityType.startsWith(CUSTOM_ENTITY_PREFIX))
+        return entityType.substring(CUSTOM_ENTITY_PREFIX.length);
+      return entityType;
+    }
+
+    function getEntityIcon(entityType) {
+
+      var unknown = new ItemIcon("icons:help-outline", "#bbb");
+
+      entityType = sanitizeEntityType(entityType);
+
+      var entity = EH.entities.find(function (e) { return e.code === entityType; });
+
+      return entity ? entity.icon : unknown;
+
+    }
+
+    function getFriendlyName(entityType) {
+
+      entityType = sanitizeEntityType(entityType);
+      var result = customEntities[entityType] ? customEntities[entityType].Name : entityType;
+      return result.toLowerCase();
+
+    }
+
+    function pluralize(entityType) {
+
+      if (entityType.endsWith("y")) {
+        return entityType.substring(0, entityType.length - 1) + "ies";
+      }
+      if (entityType.endsWith("s") ||
         entityType.endsWith("x") ||
         entityType.endsWith("sh") ||
         entityType.endsWith("ch")) {
-      return entityType + "es";
-    }
-    return entityType + "s";
+        return entityType + "es";
+      }
+      return entityType + "s";
 
-  }
-
-  function canPluralize(entityType) {
-
-    switch (entityType) {
-      case "story":
-      case "photo":
-      case "document":
-      case "tag":
-      case "selection":
-      case "album":
-        return true;
-      break;
-
-      default:
-        return false;
-      break;
-    }
-  }
-
-  function createLink(entityType, entityId, translationId) {
-
-    var rootUrl = "#/wcm/";
-    var result;
-
-    switch (entityType) {
-      case "story":
-      case "selection":
-        result = rootUrl + pluralize(entityType) + "/" + translationId
-        break;
-      case "photo":
-      case "document":
-      case "tag":
-      case "album":
-        result = rootUrl + pluralize(entityType) + "/" + entityId
-        break;
-      case "customentity":
-      break;
-      default:
-        result = rootUrl + "custom/" + entityType + "/" + entityId;
-        break;
     }
 
-    return result;
+    function canPluralize(entityType) {
 
-  }
+      switch (entityType) {
+        case "story":
+        case "photo":
+        case "document":
+        case "tag":
+        case "selection":
+        case "album":
+          return true;
+          break;
 
-  function createSearchLink(entityType, query){
-    var rootUrl = "#/wcm/";
-    var result;
-
-    switch (entityType) {
-      case "story":
-      case "photo":
-      case "document":
-      case "tag":
-      case "selection":
-      case "album":
-        result = rootUrl + pluralize(entityType);
-        break;
-      default:
-        result =  rootUrl + "custom/" + entityType;
-        break;
+        default:
+          return false;
+          break;
+      }
     }
-    if(result && query){
-      var queryString = "?search=";
 
-      for(var k in query){
-        queryString += (k.toLowerCase() + ":" + query[k] + " ");
+    function createLink(entityTypeFull, entityId, translationId) {
+
+      var entityType = sanitizeEntityType(entityTypeFull);
+
+      var rootUrl = "#/wcm/";
+      var result;
+
+      switch (entityType) {
+        case "story":
+        case "selection":
+          result = rootUrl + pluralize(entityType) + "/" + translationId
+          break;
+        case "photo":
+        case "document":
+        case "tag":
+        case "album":
+          result = rootUrl + pluralize(entityType) + "/" + entityId
+          break;
+        case "customentity":
+          console.error("unprocessable entityTypeFull:", entityTypeFull);
+          break;
+        default:
+          result = rootUrl + "custom/" + entityType + "/" + entityId;
+          break;
       }
 
-      queryString = queryString.trim();
+      return result;
 
-      result += encodeURI(queryString);
     }
 
-    return result;
-  }
+    function createSearchLink(entityType, query) {
+      var rootUrl = "#/wcm/";
+      var result;
 
-})();
+      switch (entityType) {
+        case "story":
+        case "photo":
+        case "document":
+        case "tag":
+        case "selection":
+        case "album":
+          result = rootUrl + pluralize(entityType);
+          break;
+        default:
+          result = rootUrl + "custom/" + entityType;
+          break;
+      }
+      if (result && query) {
+        var queryString = "?search=";
+
+        for (var k in query) {
+          queryString += (k.toLowerCase() + ":" + query[k] + " ");
+        }
+
+        queryString = queryString.trim();
+
+        result += encodeURI(queryString);
+      }
+
+      return result;
+    }
+
+  })();
+
 </script>

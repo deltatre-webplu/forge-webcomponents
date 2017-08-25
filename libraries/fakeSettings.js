@@ -4,7 +4,7 @@ window.ForgeWebComponents.Settings.RootUrl = "/api-mock/"
 window.ForgeWebComponents.Config = {
 	"deltatre.forge.main": {
 		"WebComponentsConfiguration": {
-			"SiteRoot": "//rawgit.com/deltatre-webplu/forge-webcomponents/1.6.1/",
+			"SiteRoot": "//cdn.rawgit.com/deltatre-webplu/forge-webcomponents/2.0.1/",
 			"Endpoints": [{
 				"Name": "forge-core-style",
 				"Url": "custom-styles/forge-core-style.html",
@@ -20,6 +20,26 @@ window.ForgeWebComponents.Config = {
 			}, {
 				"Name": "forge-tags-suggestion",
 				"Url": "samples/forge-tags-suggestion.html",
+				"Permission": null
+			}, {
+				"Name": "forge-performance-dashboard",
+				"Url": "forge-dashboards/forge-performance-dashboard.html",
+				"Permission": null
+			}, {
+				"Name": "forge-diva-video",
+				"Url": "http://localhost:60194/webcomponent/forge-diva-video.html",
+				"Permission": null
+			}, {
+				"Name": "forge-story-behavior-sample",
+				"Url": "samples/forge-story-behavior-sample.html",
+				"Permission": null
+			}, {
+				"Name": "forge-table-input",
+				"Url": "forge-story-parts/forge-table-input.html",
+				"Permission": null
+			}, {
+				"Name": "forge-empty-field",
+				"Url": "samples/forge-empty-field.html",
 				"Permission": null
 			}],
 			"DashboardEndpoints": [{
@@ -42,7 +62,57 @@ window.ForgeWebComponents.Config = {
 				"Name": "forge-workflow-dashboard",
 				"Url": "forge-dashboards/forge-workflow-dashboard.html",
 				"Permission": "Wcm.BasicAccess"
+			}, {
+				"Name": "forge-diva-dashboard",
+				"Url": "http://localhost:60194/webcomponent/forge-diva-dashboard.html",
+				"Permission": null
 			}]
+		},
+		"LogStoreConfiguration": {
+			"LogStoreType": "MongoDb"
+		}
+	},
+	"deltatre.forge.vsm": {
+		"AccessControlListConfiguration": {
+			"Permissions": [{
+				"Name": "TestAcl",
+				"Description": "ACL for E2E tests"
+			}, {
+				"Name": "TestAcl2",
+				"Description": "ACL for E2E tests"
+			}, {
+				"Name": "Story Writers",
+				"Description": "The guys in charge of writing stories"
+			}]
+		},
+		"FrontEndSiteConfiguration": {
+			"AllSites": [{
+				"Culture": "en-US",
+				"Environment": "Dev",
+				"Platform": "default",
+				"OriginUrl": "http://localhost:54787"
+			}, {
+				"Culture": "it-IT",
+				"Environment": "Dev",
+				"Platform": "default",
+				"OriginUrl": "http://www.google.it"
+			}, {
+				"Culture": "fr-FR",
+				"Environment": "Dev",
+				"Platform": "default",
+				"OriginUrl": "http://www.google.fr"
+			}, {
+				"Culture": "ru-RU",
+				"Environment": "Dev",
+				"Platform": "default",
+				"OriginUrl": "http://www.google.ru"
+			}, {
+				"Culture": "ar-QA",
+				"Environment": "Dev",
+				"Platform": "default",
+				"OriginUrl": "http://www.aljazeera.com"
+			}],
+			"SiteAssetsUrl": "http://localhost:54787"
 		}
 	},
 	"deltatre.forge.wcm": {
@@ -119,7 +189,10 @@ window.ForgeWebComponents.Config = {
 				"Icon": "accessibility",
 				"DistributionCode": "players",
 				"Enabled": true,
-				"UsableForTagging": true
+				"UsableForTagging": true,
+				"ShowInCompactMenu": false,
+				"ShowAsStoryParts": false,
+				"DisableCreation": false
 			}, {
 				"Code": "team",
 				"Name": "Team",
@@ -127,7 +200,10 @@ window.ForgeWebComponents.Config = {
 				"Icon": "android",
 				"DistributionCode": "teams",
 				"Enabled": true,
-				"UsableForTagging": true
+				"UsableForTagging": true,
+				"ShowInCompactMenu": false,
+				"ShowAsStoryParts": false,
+				"DisableCreation": false
 			}, {
 				"Code": "drivers",
 				"Name": "drivers",
@@ -135,7 +211,10 @@ window.ForgeWebComponents.Config = {
 				"Icon": "face",
 				"DistributionCode": "drivers",
 				"Enabled": true,
-				"UsableForTagging": true
+				"UsableForTagging": true,
+				"ShowInCompactMenu": true,
+				"ShowAsStoryParts": true,
+				"DisableCreation": false
 			}, {
 				"Code": "youtube",
 				"Name": "YouTube",
@@ -143,7 +222,10 @@ window.ForgeWebComponents.Config = {
 				"Icon": "ondemand_video",
 				"DistributionCode": "youtubeVideos",
 				"Enabled": true,
-				"UsableForTagging": false
+				"UsableForTagging": false,
+				"ShowInCompactMenu": false,
+				"ShowAsStoryParts": false,
+				"DisableCreation": false
 			}, {
 				"Code": "test",
 				"Name": "TestName",
@@ -151,15 +233,21 @@ window.ForgeWebComponents.Config = {
 				"Icon": "accessible",
 				"DistributionCode": "TestAPICode",
 				"Enabled": true,
-				"UsableForTagging": false
+				"UsableForTagging": false,
+				"ShowInCompactMenu": false,
+				"ShowAsStoryParts": false,
+				"DisableCreation": false
 			}, {
 				"Code": "test2",
 				"Name": "test2",
 				"MenuLabel": "test2",
 				"Icon": null,
 				"DistributionCode": "test2",
-				"Enabled": true,
-				"UsableForTagging": false
+				"Enabled": false,
+				"UsableForTagging": false,
+				"ShowInCompactMenu": false,
+				"ShowAsStoryParts": false,
+				"DisableCreation": false
 			}, {
 				"Code": "suggest",
 				"Name": "Suggest",
@@ -167,7 +255,76 @@ window.ForgeWebComponents.Config = {
 				"Icon": null,
 				"DistributionCode": "suggests",
 				"Enabled": true,
-				"UsableForTagging": false
+				"UsableForTagging": false,
+				"ShowInCompactMenu": false,
+				"ShowAsStoryParts": false,
+				"DisableCreation": false
+			}, {
+				"Code": "Sample",
+				"Name": "Sample",
+				"MenuLabel": "Sample",
+				"Icon": "",
+				"DistributionCode": "Sample",
+				"Enabled": true,
+				"UsableForTagging": true,
+				"ShowInCompactMenu": true,
+				"ShowAsStoryParts": true,
+				"DisableCreation": false
+			}, {
+				"Code": "divavideo",
+				"Name": "Diva Video",
+				"MenuLabel": "Diva Video",
+				"Icon": "video_call",
+				"DistributionCode": "divavideos",
+				"Enabled": true,
+				"UsableForTagging": false,
+				"ShowInCompactMenu": true,
+				"ShowAsStoryParts": false,
+				"DisableCreation": true
+			}, {
+				"Code": "poll",
+				"Name": "Poll",
+				"MenuLabel": "Poll",
+				"Icon": "poll",
+				"DistributionCode": "polls",
+				"Enabled": true,
+				"UsableForTagging": false,
+				"ShowInCompactMenu": true,
+				"ShowAsStoryParts": true,
+				"DisableCreation": false
+			}, {
+				"Code": "author",
+				"Name": "Author",
+				"MenuLabel": "Authors",
+				"Icon": "create",
+				"DistributionCode": "authors",
+				"Enabled": true,
+				"UsableForTagging": true,
+				"ShowInCompactMenu": false,
+				"ShowAsStoryParts": true,
+				"DisableCreation": false
+			}, {
+				"Code": "TestEntity",
+				"Name": "Test entity",
+				"MenuLabel": "Test Entity",
+				"Icon": "backup",
+				"DistributionCode": "TestEntity",
+				"Enabled": true,
+				"UsableForTagging": true,
+				"ShowInCompactMenu": false,
+				"ShowAsStoryParts": false,
+				"DisableCreation": false
+			}, {
+				"Code": "youtube-video",
+				"Name": "Youtube Video",
+				"MenuLabel": "Youtube Videos",
+				"Icon": "ondemand_video",
+				"DistributionCode": "youtube-videos",
+				"Enabled": true,
+				"UsableForTagging": false,
+				"ShowInCompactMenu": true,
+				"ShowAsStoryParts": false,
+				"DisableCreation": false
 			}]
 		},
 		"ExtendedFieldsConfiguration": {
@@ -176,52 +333,42 @@ window.ForgeWebComponents.Config = {
 				"JsonSchema": {
 					"type": "object",
 					"properties": {
-						"suggest": {
+						"author": {
 							"type": "string",
-							"description": "The placeholder for suggested tags",
-							"title": "Suggest",
-							"extended-type": "forge-tags-suggestion"
+							"title": "Author",
+							"description": "The author of the story",
+							"filter": true
 						},
 						"copyright": {
-							"type": "string",
-							"title": "Copyright",
-							"description": "Do not remove, used for tests"
-						},
-						"FieldNotCamelCase": {
-							"type": "string",
-							"title": "Field Not Camel Case",
-							"description": "Do not remove, used for tests"
-						},
-						"number": {
-							"type": "number",
-							"title": "A number value",
-							"description": "Do not remove, used for tests"
-						},
-						"integer": {
-							"type": "integer",
-							"title": "An integer value",
-							"description": "Do not remove, used for tests"
+							"type": "string"
 						},
 						"showAdvertising": {
-							"type": "boolean",
-							"title": "A bool value",
-							"description": "Do not remove, used for tests"
+							"description": "True to show advertising",
+							"title": "Show banners",
+							"type": "boolean"
 						},
 						"kind": {
 							"description": "Content kind",
 							"type": "string",
-							"enum": ["Live Coverage", "Editorial", "Biography"]
+							"enum": ["Live Coverage", "Editorial", "Biography"],
+							"filter": true
+						},
+						"integer": {
+							"description": "end2end integer field",
+							"type": "integer"
+						},
+						"number": {
+							"description": "end2end number field",
+							"type": "number"
+						},
+						"FieldNotCamelCase": {
+							"description": "end2end FieldNotCamelCase field",
+							"type": "string"
 						}
 					},
 					"indexes": {
-						"numberIndex": {
-							"number": 1
-						},
-						"integerIndex": {
+						"e2etests": {
 							"integer": 1
-						},
-						"FieldNotCamelCaseIndex": {
-							"FieldNotCamelCase": 1
 						}
 					}
 				}
@@ -565,7 +712,8 @@ window.ForgeWebComponents.Config = {
 							"type": "string",
 							"title": "Country Code",
 							"description": "The code of the country of the driver. E.g. ITA",
-							"tagextradata": true
+							"tagextradata": true,
+							"filter": true
 						},
 						"team": {
 							"title": "Team",
@@ -577,7 +725,8 @@ window.ForgeWebComponents.Config = {
 							"title": "Race victories",
 							"type": "number",
 							"description": "The total number of victories",
-							"tagextradata": true
+							"tagextradata": true,
+							"filter": true
 						},
 						"points": {
 							"title": "Points in career",
@@ -585,17 +734,25 @@ window.ForgeWebComponents.Config = {
 							"description": "The total number of points",
 							"tagextradata": true
 						},
+						"dob": {
+							"title": "Date of Birth",
+							"type": "string",
+							"format": "date-time",
+							"filter": true
+						},
 						"bio": {
 							"title": "Brief Bio",
 							"type": "string",
 							"localized": true,
-							"extended-type": "rich-text"
+							"extended-type": "rich-text",
+							"filter": true
 						},
 						"showAdvertising": {
 							"description": "True to show advertising",
 							"title": "Show banners",
 							"type": "boolean",
-							"tagextradata": true
+							"tagextradata": true,
+							"filter": true
 						}
 					},
 					"system": {
@@ -896,6 +1053,228 @@ window.ForgeWebComponents.Config = {
 						}
 					}
 				}
+			}, {
+				"Scope": "customentity.Sample",
+				"JsonSchema": {
+					"type": "object",
+					"properties": {
+						"author": {
+							"type": "string",
+							"title": "Author",
+							"description": "Name and Surname of the author",
+							"tagextradata": true
+						},
+						"copyright": {
+							"type": "string",
+							"tagextradata": true,
+							"localized": true
+						},
+						"description": {
+							"title": "Description",
+							"type": "string",
+							"description": "A short introduction (100 words)",
+							"extended-type": "rich-text",
+							"localized": true
+						},
+						"showAdvertising": {
+							"title": "Show banners",
+							"description": "True to show advertising",
+							"type": "boolean"
+						},
+						"kind": {
+							"title": "Kind",
+							"type": "string",
+							"enum": ["Live Coverage", "Editorial", "Biography"],
+							"tagextradata": true
+						}
+					}
+				}
+			}, {
+				"Scope": "customentity.divavideo",
+				"JsonSchema": {
+					"type": "object",
+					"properties": {
+						"description": {
+							"type": "string",
+							"description": "The description of the video",
+							"title": "Description",
+							"localized": true,
+							"tagextradata": false,
+							"extended-type": "rich-text"
+						},
+						"videoId": {
+							"type": "string",
+							"description": "The unique identifier of the video inside the Diva platform",
+							"title": "Video Id",
+							"localized": true,
+							"extended-type": "forge-diva-video",
+							"tagextradata": true,
+							"filter": true
+						},
+						"videoStatus": {
+							"type": "string",
+							"description": "The status of the video inside the Diva platform",
+							"title": "Video Status",
+							"enum": ["Scheduled", "OnDemand", "Live"],
+							"tagextradata": true,
+							"filter": true,
+							"readonly": true
+						},
+						"videoDuration": {
+							"type": "string",
+							"description": "The duration of the video inside the Diva platform",
+							"title": "Video Duration",
+							"readonly": true
+						},
+						"videoTimeCodeIn": {
+							"type": "string",
+							"format": "date-time",
+							"description": "The time code in of the video inside the Diva platform",
+							"title": "Video Time Code In",
+							"readonly": true
+						}
+					},
+					"indexes": {
+						"videoIdIndex": {
+							"videoId": 1
+						},
+						"videoStatusIndex": {
+							"videoStatus": 1
+						}
+					}
+				}
+			}, {
+				"Scope": "customentity.poll",
+				"JsonSchema": {
+					"type": "object",
+					"properties": {
+						"description": {
+							"title": "Description",
+							"type": "string",
+							"extended-type": "rich-text",
+							"localized": true
+						}
+					}
+				}
+			}, {
+				"Scope": "customentity.author",
+				"JsonSchema": {
+					"type": "object",
+					"properties": {
+						"firstName": {
+							"title": "First name",
+							"type": "string",
+							"extended-type": "rich-text",
+							"localized": true
+						},
+						"lastName": {
+							"title": "Last name",
+							"type": "string",
+							"extended-type": "rich-text",
+							"localized": true
+						},
+						"bio": {
+							"title": "Brief Biography",
+							"type": "string",
+							"extended-type": "rich-text",
+							"localized": true
+						}
+					}
+				}
+			}, {
+				"Scope": "customentity.TestEntity",
+				"JsonSchema": {
+					"type": "object",
+					"properties": {
+						"besugo": {
+							"type": "string",
+							"enum": ["bar"],
+							"tagextradata": true
+						},
+						"noteditable": {
+							"type": "string",
+							"readonly": true
+						}
+					}
+				}
+			}, {
+				"Scope": "customentity.youtube-video",
+				"JsonSchema": {
+					"type": "object",
+					"properties": {
+						"description": {
+							"type": "string",
+							"description": "The description of the video",
+							"title": "Description",
+							"localized": true,
+							"tagextradata": false,
+							"extended-type": "rich-text"
+						},
+						"videoId": {
+							"type": "string",
+							"description": "The unique identifier of the video",
+							"title": "Video Id",
+							"localized": true,
+							"tagextradata": true,
+							"extended-type": "forge-youtube-video-input"
+						}
+					},
+					"indexes": {
+						"videoIdIndex": {
+							"videoId": 1
+						}
+					}
+				}
+			}]
+		},
+		"DistributionIndexesConfiguration": {
+			"Definitions": [{
+				"Scope": "story",
+				"JsonSchema": {
+					"type": "object",
+					"indexes": {
+						"titleIndexFTS": {
+							"system.title": "text",
+							"system.headline": "text",
+							"system.summary": "text"
+						}
+					}
+				}
+			}]
+		},
+		"ReferenceFieldsConfiguration": {
+			"ReferenceFieldsDefinitions": [{
+				"Entity": "customentity.poll",
+				"FieldName": "options",
+				"Localizable": true,
+				"AllowedReferencedEntities": ["Story", "album", "document", "photo", "customentity.drivers"]
+			}, {
+				"Entity": "customentity.sample",
+				"FieldName": "samples",
+				"Localizable": true,
+				"AllowedReferencedEntities": ["story", "album", "document", "customentity.team", "customentity.drivers"]
+			}, {
+				"Entity": "customentity.sample",
+				"FieldName": "samples-global",
+				"Localizable": false,
+				"AllowedReferencedEntities": ["photo", "story"]
+			}, {
+				"Entity": "customentity.poll",
+				"FieldName": "test",
+				"Localizable": true,
+				"AllowedReferencedEntities": ["photo", "customentity.drivers"]
+			}, {
+				"Entity": "story",
+				"FieldName": "Test1",
+				"Localizable": true,
+				"AllowedReferencedEntities": ["story", "photo", "document", "album"]
+			}]
+		},
+		"CustomBehaviorsConfiguration": {
+			"CustomBehaviorDefinitions": [{
+				"Entity": "story",
+				"Name": "forge-story-behavior-sample",
+				"Enabled": true
 			}]
 		},
 		"ExternalStoryParts": [{
@@ -952,7 +1331,7 @@ window.ForgeWebComponents.Config = {
 					},
 					"required": ["firstName", "lastName"]
 				},
-				"Search": "http://sample-externaldata.azurewebsites.net/parts/search"
+				"Search": "http://webplu-sample-externaldata.azurewebsites.net/parts/search"
 			}
 		}, {
 			"Name": "fifacom-players",
@@ -968,51 +1347,93 @@ window.ForgeWebComponents.Config = {
 					},
 					"required": ["name"]
 				},
-				"Search": "http://externaldata.azurewebsites.net/players/search"
+				"Search": "http://webplu-sample-externaldata.azurewebsites.net/players/search"
+			}
+		}, {
+			"Name": "Sample Table",
+			"Definition": {
+				"Icon": "grid_on",
+				"Schema": {
+					"title": "Table with Polymer Components",
+					"type": "object",
+					"properties": {
+						"tableValue": {
+							"type": "polymer",
+							"extended-type": "forge-table-input"
+						}
+					}
+				},
+				"Search": "http://webplu-sample-externaldata.azurewebsites.net/table-input/search"
 			}
 		}],
 		"ExternalFeedsConfiguration": {
 			"ExternalFeedsEndpoints": [{
 				"TargetEntity": "story",
 				"Name": "FifaRss",
-				"Url": "http://sample-externaldata.azurewebsites.net/fifa-rss",
+				"Url": "http://webplu-sample-externaldata.azurewebsites.net/fifa-rss",
 				"Permission": null
 			}, {
 				"TargetEntity": "photo",
-				"Name": "Getty",
-				"Url": "http://sample-gettyintegration.azurewebsites.net/feeds",
+				"Name": "GettyPhotos",
+				"Url": "http://webplu-sample-gettyintegration.azurewebsites.net/feeds",
 				"Permission": null
 			}, {
 				"TargetEntity": "document",
 				"Name": "SampleDocuments",
-				"Url": "http://sample-externaldata.azurewebsites.net/feeds/document",
+				"Url": "http://webplu-sample-externaldata.azurewebsites.net/feeds/document",
 				"Permission": null
 			}, {
 				"TargetEntity": "album",
 				"Name": "SampleAlbums",
-				"Url": "http://sample-externaldata.azurewebsites.net/feeds/album",
+				"Url": "http://webplu-sample-externaldata.azurewebsites.net/feeds/album",
 				"Permission": null
 			}, {
 				"TargetEntity": "selection",
 				"Name": "SampleSelections",
-				"Url": "http://sample-externaldata.azurewebsites.net/feeds/selection",
+				"Url": "http://webplu-sample-externaldata.azurewebsites.net/feeds/selection",
 				"Permission": null
 			}, {
 				"TargetEntity": "customEntity.player",
 				"Name": "SampleCEPlayers",
-				"Url": "http://sample-externaldata.azurewebsites.net/feeds/customEntityPlayer",
+				"Url": "http://webplu-sample-externaldata.azurewebsites.net/feeds/customEntityPlayer",
 				"Permission": null
 			}, {
 				"TargetEntity": "story",
 				"Name": "StoriesWithError",
-				"Url": "http://sample-externaldata.azurewebsites.net/feeds/storiesImportError",
+				"Url": "http://webplu-sample-externaldata.azurewebsites.net/feeds/storiesImportError",
 				"Permission": null
 			}, {
 				"TargetEntity": "customEntity.youtube",
 				"Name": "Youtube",
-				"Url": "http://sample-youtubeintegration.azurewebsites.net/feeds/FIFATV",
+				"Url": "http://webplu-sample-youtubeintegration.azurewebsites.net/feeds/FIFATV",
 				"Permission": null
+			}, {
+				"TargetEntity": "customEntity.youtube-video",
+				"Name": "NBA",
+				"Url": "http://webplu-sample-youtubeintegration.azurewebsites.net/feeds/nba?entityName=youtube-video",
+				"Permission": null
+			}]
+		},
+		"SystemLanguagesConfiguration": {
+			"Languages": [{
+				"Culture": "en-US",
+				"Name": "English (United States)"
+			}, {
+				"Culture": "it-IT",
+				"Name": "Italian (Italy)"
+			}, {
+				"Culture": "ro-RO",
+				"Name": "Romanian (Romania)"
+			}, {
+				"Culture": "ru-RU",
+				"Name": "Russian (Russia)"
+			}, {
+				"Culture": "zh-CN",
+				"Name": "Chinese (Simplified, PRC)"
+			}, {
+				"Culture": "ar-QA",
+				"Name": "Arabic (Qatar)"
 			}]
 		}
 	}
-}
+};
