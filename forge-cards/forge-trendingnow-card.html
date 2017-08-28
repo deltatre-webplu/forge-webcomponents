@@ -85,6 +85,17 @@
       padding-top: 10px;
     }
 
+    google-chart {
+      height: 80px;
+      width: 320px;
+    }
+
+    .trend-label {
+      background: white;
+      font-style: italic;
+      color: var(--paper-grey-500);
+    }
+
     .card-disclaimer {}
   </style>
 
@@ -98,11 +109,9 @@
 
         <paper-dropdown-menu noink no-animations no-label-float="true">
           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterTime}}" class="dropdown-content">
-            <paper-item value="1dayAgo">[[localize('Last 24 hours')]]</paper-item>
-            <paper-item value="7daysAgo">[[localize('Last 7 days')]]</paper-item>
-            <paper-item value="30daysAgo">[[localize('Last month')]]</paper-item>
-            <paper-item value="90daysAgo">[[localize('Last 3 months')]]</paper-item>
-            <paper-item value="365daysAgo">[[localize('Last year')]]</paper-item>
+            <template is="dom-repeat" items="[[_filterTimes]]">
+              <paper-item value="[[item.value]]">[[localize(item.label)]]</paper-item>
+            </template>
           </paper-listbox>
         </paper-dropdown-menu>
 
@@ -141,6 +150,7 @@
                 <th>[[localize('Type')]]</th>
                 <th>[[localize('Language')]]</th>
                 <th>[[localize('Views')]]</th>
+                <th>[[localize('Trend')]]</th>
               </tr>
             </thead>
 
@@ -159,6 +169,12 @@
                     <forge-flag-icon class="flag-icon" country="[[item.culture]]"></forge-flag-icon>
                   </td>
                   <td class="cell-padded cell-views">[[item.views]]</td>
+                  <td class="cell-padded">
+                    <div class="layout vertical">
+                      <google-chart type="area" options="[[_chartOptions]]" data="[[item.data]]"></google-chart>
+                      <div class="trend-label">[[localize(_currentFilter.label)]]</div>
+                    </div>
+                  </td>
 
                 </tr>
 
@@ -189,6 +205,42 @@
       var _entities = ForgeWebComponents.Helpers.EntityHelper.entities;
       var _cultures = ForgeWebComponents.Config["deltatre.forge.wcm"].SystemLanguagesConfiguration.Languages;
 
+      function FilterTime(value, label, momentFormat) {
+        this.value = value;
+        this.label = label;
+        this.format = momentFormat;
+      }
+
+      var filterTimes = [
+        new FilterTime("1dayAgo", "Last 24 hours", "HH:00"),
+        new FilterTime("7daysAgo", "Last 7 days", "DD/MM HH:00"),
+        new FilterTime("30daysAgo", "Last month", "DD/MM"),
+        new FilterTime("90daysAgo", "Last 3 months", "DD/MM"),
+        new FilterTime("365daysAgo", "Last year", "MMM")
+      ];
+
+      var chartOptions = {
+        "legend": "none",
+        "vAxis": {
+          "viewWindow": {
+            "min": 0
+          },
+          "title": "",
+          "textPosition": "none",
+          "gridlines": {
+            "count": 0
+          }
+        },
+        "hAxis": {
+          "title": "",
+          "textPosition": "none",
+          "gridlines": {
+            "count": 0
+          },
+          "baselineColor": "#fff"
+        }
+      };
+
       Polymer({
         is: 'forge-trendingnow-card',
         behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
@@ -207,7 +259,7 @@
           },
           filterTime: {
             type: String,
-            value: "90daysAgo",
+            value: "1dayAgo",
             notify: true,
             observer: "_filterTimeChanged"
           },
@@ -228,8 +280,11 @@
         ready: function () {
           this._pollingUrl = '';
           this._data = [];
+          this._filterTimes = filterTimes;
           this._entities = _entities;
           this._cultures = _cultures;
+          this._currentFilter = null;
+          this._chartOptions = chartOptions;
         },
 
         _onPollingUpdate: function (result) {
@@ -240,13 +295,29 @@
 
           var rank = 0;
 
+          if (!this._currentFilter) {
+            this._setCurrentFilter();
+          }
+
+          var currentFilter = this._currentFilter;
+
           result.forEach(function (e) {
             e.rank = ++rank;
             e.entityName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.entityType);
+            e.data = getTrendData(e.trend, currentFilter)
           });
 
           this._data = result;
 
+        },
+
+        _setCurrentFilter: function (value) {
+          if (!value) {
+            value = this.filterTime;
+          }
+          this._currentFilter = filterTimes.find(function (ft) {
+            return ft.value === value;
+          });
         },
 
         _openItem: function (e) {
@@ -268,8 +339,13 @@
         },
 
         _filterTimeChanged: function (value, oldValue) {
+
           if (!value) return;
+
+          this._setCurrentFilter(value);
+
           this.filterChanged(value, this.filterEntity, this.filterLanguage);
+
         },
         _filterEntityChanged: function (value, oldValue) {
           if (!value) return;
@@ -281,6 +357,24 @@
         },
 
       });
+
+      function getTrendData(trend, filterTime) {
+
+        var data = [["DateTime", "Views"]];
+
+        for (var i = 0; i < trend.length; i++) {
+
+          var t = trend[i];
+
+          var formatted = moment(t.timestamp).format(filterTime.format);
+
+          data.push([formatted, t.views]);
+
+        }
+
+        return data;
+
+      }
 
     })();
   </script>
