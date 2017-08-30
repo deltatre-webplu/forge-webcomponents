@@ -50,6 +50,10 @@
 
     _triggerPolling: function() {
       engine.trigger(this);
+    },
+
+    _stopPolling: function() {
+      engine.unregister(this);
     }
 
   };

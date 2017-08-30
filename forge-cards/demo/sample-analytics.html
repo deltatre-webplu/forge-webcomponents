@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+
+<head>
+  <script src="//cdn.rawgit.com/download/polymer-cdn/2.0.1/lib/webcomponentsjs/webcomponents-lite.js"></script>
+  <script>
+    /*
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+      */
+  </script>
+
+  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyDaukm57ynm64AM30M0y7-AJwtZ5-143b8"></script>
+
+  <link rel="import" href="../../libraries/libraries.html">
+  <link rel="import" href="../../custom-styles/forge-core-style.html">
+
+  <link rel="import" href="../forge-trendingnow-card.html">
+  <link rel="import" href="../forge-itemanalytics-card.html">
+
+</head>
+
+<body>
+
+  <div>
+    <button onclick="changeLanguage('en')">ENG</button>
+    <button onclick="changeLanguage('it')">ITA</button>
+  </div>
+
+  <div class="layout horizontal">
+    <forge-trendingnow-card class="padded flex-2" url="http://localhost:3000/query/dashboards-top-requested-entities"></forge-trendingnow-card>
+    <forge-itemanalytics-card class="padded flex" url="http://localhost:3000/query/dashboards-entity-analytics" entity='{"entityId":"61b32210-b93e-4434-927a-654b92f19e1d","localizations": [{"TranslationInfo": {"Culture": "en-US"}}, {"TranslationInfo": {"Culture": "it-IT"}}],"isNeutral":false}'></forge-itemanalytics-card>
+  </div>
+
+  <script>
+    function changeLanguage(lang) {
+      ForgeWebComponents.Helpers.EventHelper.changeLanguage(lang);
+    }
+  </script>
+
+</body>
+
+</html>

@@ -27,11 +27,26 @@
       }
     };
 
+    function FilterTime(value, label, momentFormat) {
+      this.value = value;
+      this.label = label;
+      this.format = momentFormat;
+    }
+
+    var filterTimes = [
+      new FilterTime("1dayAgo", "Last 24 hours", "HH:00"),
+      new FilterTime("7daysAgo", "Last 7 days", "DD/MM HH:00"),
+      new FilterTime("30daysAgo", "Last month", "DD/MM"),
+      new FilterTime("90daysAgo", "Last 3 months", "DD/MM"),
+      new FilterTime("365daysAgo", "Last year", "MMM")
+    ];
+
     window.ForgeWebComponents = window.ForgeWebComponents || {};
     window.ForgeWebComponents.Settings = window.ForgeWebComponents.Settings || {};
     window.ForgeWebComponents.Settings.SystemRoles = systemRoles;
     window.ForgeWebComponents.Settings.DefaultLocale = window.ForgeWebComponents.Settings.DefaultLocale || 'en';
     window.ForgeWebComponents.Settings.CustomEntityColorPalette = palette;
+    window.ForgeWebComponents.Settings.AnalyticsFilterTimes = filterTimes;
 
     //1000 rows of icons, I strongly suggest to add things BEFORE this wall of text, and let it run till the end of the file
     window.ForgeWebComponents.Settings.IconMap = {

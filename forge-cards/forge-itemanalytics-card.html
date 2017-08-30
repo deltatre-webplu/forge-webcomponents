@@ -1,0 +1,285 @@
+<link rel="import" href="../forge-shared/polymer.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="../moment-element/moment-element.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/2.0.1/lib/google-chart/google-chart.html">
+<!-- <link rel="import" href="forge-itemanalytics-details.html"> -->
+
+<dom-module id="forge-itemanalytics-card">
+
+  <style is="custom-style" include="iron-flex iron-flex-alignment" />
+  <style>
+     :host {
+      display: block;
+    }
+
+    paper-card {
+      display: block;
+    }
+
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
+
+    .card-disclaimer {}
+  </style>
+
+  <template>
+
+    <paper-card>
+
+      <div class="card-header layout horizontal">
+
+        <div class="card-header-title flex">[[localize('Test Card')]]</div>
+        <!-- <paper-button on-tap="_openDetails">[[localize('Details')]]</paper-button> -->
+
+
+        <paper-dropdown-menu noink no-animations no-label-float="true">
+          <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterLanguage}}" class="dropdown-content">
+            <paper-item value="all">All Languages</paper-item>
+            <template is="dom-repeat" items="[[_cultures]]">
+              <paper-item value="[[item.culture]]">[[localize(item.culture)]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+
+
+      </div>
+
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+      <template is="dom-repeat" items="[[_cultures]]">
+          <div>[[item.culture]]</div>
+        </template>
+
+      <div class="card-content">
+
+        <template is="dom-if" if="[[_result]]">
+
+          <div class="layout vertical">
+            <google-chart type="area" options="[[_trendChartOptions]]" data="[[_trendData]]"></google-chart>
+            <google-chart type="geo" options="[[_geoChartOptions]]" data="[[_geoData]]"></google-chart>
+          </div>
+
+        </template>
+
+        <template is="dom-if" if="[[!_result]]">
+
+          [[localize("wcm.noDataAvailable")]]
+
+        </template>
+
+      </div>
+
+    </paper-card>
+
+    <!-- <paper-dialog id="detailModal" modal on-iron-overlay-closed="onDetailClosed">
+      <forge-itemanalytics-details entity-id="[[entity.entityId]]"></forge-itemanalytics-details>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus>[[localize('Close')]]</paper-button>
+      </div>
+    </paper-dialog> -->
+
+  </template>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var trendChartOptions = {
+        "legend": "none",
+        "vAxis": {
+          "viewWindow": {
+            "min": 0
+          },
+          "title": "",
+          "textPosition": "none",
+          "gridlines": {
+            "count": 0
+          }
+        },
+        "hAxis": {
+          "title": "",
+          "textPosition": "none",
+          "gridlines": {
+            "count": 0
+          },
+          "baselineColor": "#fff"
+        }
+      };
+
+      var geoChartOptions = {
+        colorAxis: { colors: ['#eaeaff', '#00f'] },
+      };
+
+      var currentFilter = ForgeWebComponents.Settings.AnalyticsFilterTimes.find(function (ft) {
+        return ft.value === '1dayAgo';
+      });
+
+      function Localization(culture, translationId) {
+        this.culture = culture.toLowerCase();
+        this.translationId = translationId;
+      }
+
+      Polymer({
+        is: 'forge-itemanalytics-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/analytics/singleResult"
+          },
+          interval: {
+            type: Number,
+            value: 600000 //10 minues
+          },
+          manual: {
+            type: Boolean,
+            value: true
+          },
+          entity: {
+            type: Object,
+            observer: '_entityChanged'
+          },
+          filterLanguage: {
+            type: String,
+            value: "all",
+            notify: true,
+            observer: "_filterLanguageChanged"
+          },
+          _cultures: {
+            type: Array,
+            value: []
+          }
+        },
+
+        ready: function () {
+
+          this._pollingUrl = '';
+          this._result = null;
+          this._currentFilter = null;
+          this._trendChartOptions = trendChartOptions;
+          this._geoChartOptions = geoChartOptions;
+
+          this._trendData = [];
+          this._geoData = [];
+
+        },
+
+        _onPollingUpdate: function (result) {
+
+          if (!result) {
+            this._result = null;
+            return;
+          }
+
+          this._result = result;
+          this._fillResults();
+
+        },
+
+        _openItem: function (e) {
+          var entity = e.model.item;
+          var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.entityType, entity.id, entity.translationId);
+          if (href) location.href = href;
+        },
+
+        _entityChanged: function (entity, oldEntity) {
+
+          if (!entity) return;
+          if (typeof entity === 'string') return;
+
+          this._cultures = (entity.localizations || [])
+            .filter(function (loc) {
+              return loc.TranslationInfo.Culture.toLowerCase() !== "nd-nd";
+            })
+            .map(function (loc) {
+              return new Localization(loc.TranslationInfo.Culture, loc.TranslationId);
+            });
+
+          var newUrl = this.url + '?time=1dayAgo&entityId=' + entity.entityId;
+          if (newUrl != this._pollingUrl) this._changePollingUrl(newUrl);
+          this._pollingUrl = newUrl;
+
+        },
+
+        _filterLanguageChanged: function(culture, oldCulture) {
+
+          if (!culture) return;
+          this._fillResults(culture);
+
+        },
+
+        _fillResults: function(culture) {
+
+          culture = culture || this.filterLanguage;
+
+          var result = this._result;
+
+          if (!result) return;
+
+          if (culture === "all") {
+
+            this._trendData = getTrendData(result.trend, currentFilter);
+            this._geoData = getGeoData(result.geoLocations);
+
+          }
+          else {
+
+            var trend = result.trendsByTranslation.find(function(t) { return t.culture.toLowerCase() === culture });
+            var geoLocations = result.geoLocationsByTranslation.find(function(t) { return t.culture.toLowerCase() === culture });
+
+            this._trendData = getTrendData(result.trend || [], currentFilter);
+            this._geoData = getGeoData(result.geoLocations || []);
+
+          }
+
+        }
+
+        // _openDetails: function() {
+        //   this.$.detailModal.open();
+        //   this.$$("forge-itemanalytics-details").start();
+        // },
+
+        // onDetailClosed: function() {
+        //   this.$$("forge-itemanalytics-details").stop();
+        // }
+
+      });
+
+      function getTrendData(trend, filterTime) {
+
+        var data = [["DateTime", "Views"]];
+
+        for (var i = 0; i < trend.length; i++) {
+
+          var t = trend[i];
+
+          var formatted = moment(t.timestamp).format(filterTime.format);
+
+          data.push([formatted, t.views]);
+
+        }
+
+        return data;
+
+      }
+
+      function getGeoData(geo) {
+
+        var data = [["Country", "Views"]];
+
+        for (var i = 0; i < geo.length; i++) {
+          var g = geo[i];
+          data.push([g.country, g.views]);
+        }
+
+        return data;
+
+      }
+
+    })();
+  </script>
+
+</dom-module>

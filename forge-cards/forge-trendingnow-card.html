@@ -1,6 +1,7 @@
 <link rel="import" href="../forge-shared/polymer.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
 <link rel="import" href="../moment-element/moment-element.html">
+<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/2.0.1/lib/google-chart/google-chart.html">
 
 <dom-module id="forge-trendingnow-card">
 
@@ -163,7 +164,7 @@
                   <td class="cell-padded cell-index">[[item.rank]]</td>
                   <td class="cell-padded cell-title">[[item.title]]</td>
                   <td class="cell-padded cell-icon">
-                    <forge-entity-icon class="entity-icon" entity-type="[[item.entityType]]"></forge-entity-icon>
+                    <forge-entity-icon class="entity-icon" entity-type="[[item.entityCode]]"></forge-entity-icon>
                   </td>
                   <td class="cell-padded cell-icon">
                     <forge-flag-icon class="flag-icon" country="[[item.culture]]"></forge-flag-icon>
@@ -205,19 +206,7 @@
       var _entities = ForgeWebComponents.Helpers.EntityHelper.entities;
       var _cultures = ForgeWebComponents.Config["deltatre.forge.wcm"].SystemLanguagesConfiguration.Languages;
 
-      function FilterTime(value, label, momentFormat) {
-        this.value = value;
-        this.label = label;
-        this.format = momentFormat;
-      }
-
-      var filterTimes = [
-        new FilterTime("1dayAgo", "Last 24 hours", "HH:00"),
-        new FilterTime("7daysAgo", "Last 7 days", "DD/MM HH:00"),
-        new FilterTime("30daysAgo", "Last month", "DD/MM"),
-        new FilterTime("90daysAgo", "Last 3 months", "DD/MM"),
-        new FilterTime("365daysAgo", "Last year", "MMM")
-      ];
+      var filterTimes = ForgeWebComponents.Settings.AnalyticsFilterTimes;
 
       var chartOptions = {
         "legend": "none",
@@ -303,7 +292,7 @@
 
           result.forEach(function (e) {
             e.rank = ++rank;
-            e.entityName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.entityType);
+            e.entityName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.entityCode);
             e.data = getTrendData(e.trend, currentFilter)
           });
 
