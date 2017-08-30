@@ -16,6 +16,10 @@
       display: block;
     }
 
+    .card-content * + * {
+      margin-top: 1.5em;
+    }
+
     .loading-bar {
       --paper-progress-active-color: var(--paper-light-blue-500);
       width: 100%;
@@ -27,18 +31,22 @@
       width: 100%;
     }
 
-    .views-summary  span {
+    .views-summary span {
       text-align: center;
     }
 
-    .views-summary  .views-count {
+    .views-summary .views-count {
       font-size: 1.8em;
     }
 
-    .views-summary  .legend {
+    .views-summary .legend {
       font-size: 1.3em;
+      margin-top: 0;
     }
 
+    .entity-summary .localized-entity-code {
+      margin-top: 0;
+    }
   </style>
 
   <template>
@@ -65,13 +73,20 @@
       <div class="card-content">
 
         <div class="layout horizontal">
-          
+
           <div class="views-summary layout vertical">
             <span class="views-count">280</span>
             <span class="legend">views</span>
           </div>
 
           <div class="flex"></div>
+
+        </div>
+
+        <div class="entity-summary layout horizontal">
+
+          <div class="entity-code layout vertical flex">Entity code here</div>
+          <div class="localized-entity-code layout vertical flex">Localized entity code here</div>
 
         </div>
 
