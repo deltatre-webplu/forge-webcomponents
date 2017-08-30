@@ -22,6 +22,11 @@
       position: absolute;
     }
 
+    google-chart {
+      height: 350px;
+      width: 100%;
+    }
+
     .card-disclaimer {}
   </style>
 
@@ -49,17 +54,13 @@
 
       <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-      <template is="dom-repeat" items="[[_cultures]]">
-          <div>[[item.culture]]</div>
-        </template>
-
       <div class="card-content">
 
         <template is="dom-if" if="[[_result]]">
 
           <div class="layout vertical">
-            <google-chart type="area" options="[[_trendChartOptions]]" data="[[_trendData]]"></google-chart>
-            <google-chart type="geo" options="[[_geoChartOptions]]" data="[[_geoData]]"></google-chart>
+            <google-chart id="trendChart" type="area" options="[[_trendChartOptions]]" data="[[_trendData]]"></google-chart>
+            <google-chart id="geoChart" type="geo" options="[[_geoChartOptions]]" data="[[_geoData]]"></google-chart>
           </div>
 
         </template>
@@ -94,23 +95,25 @@
             "min": 0
           },
           "title": "",
-          "textPosition": "none",
+          "textPosition": "",
           "gridlines": {
-            "count": 0
+            "count": 5
           }
         },
         "hAxis": {
-          "title": "",
-          "textPosition": "none",
+          "showTextEvery": 8,
           "gridlines": {
             "count": 0
           },
-          "baselineColor": "#fff"
-        }
+          "baselineColor": "white"
+        },
+        "lineWidth": 4
       };
 
       var geoChartOptions = {
-        colorAxis: { colors: ['#eaeaff', '#00f'] },
+        colorAxis: {
+          colors: ['#eaeaff', '#00f']
+        },
       };
 
       var currentFilter = ForgeWebComponents.Settings.AnalyticsFilterTimes.find(function (ft) {
@@ -124,7 +127,9 @@
 
       Polymer({
         is: 'forge-itemanalytics-card',
-        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior,
+          ForgeWebComponents.Behaviors.ForgeLocalizeBehavior
+        ],
         properties: {
           url: {
             type: String,
@@ -167,6 +172,10 @@
 
         },
 
+        _onIronResize: function () {
+          this._redrawCharts();
+        },
+
         _onPollingUpdate: function (result) {
 
           if (!result) {
@@ -204,14 +213,14 @@
 
         },
 
-        _filterLanguageChanged: function(culture, oldCulture) {
+        _filterLanguageChanged: function (culture, oldCulture) {
 
           if (!culture) return;
           this._fillResults(culture);
 
         },
 
-        _fillResults: function(culture) {
+        _fillResults: function (culture) {
 
           culture = culture || this.filterLanguage;
 
@@ -224,19 +233,29 @@
             this._trendData = getTrendData(result.trend, currentFilter);
             this._geoData = getGeoData(result.geoLocations);
 
+          } else {
+
+            var trend = result.trendsByTranslation.find(function (t) {
+              return t.culture.toLowerCase() === culture
+            }).trend;
+            var geoLocations = result.geoLocationsByTranslation.find(function (t) {
+              return t.culture.toLowerCase() === culture
+            }).geoLocations;
+
+            this._trendData = getTrendData(trend || [], currentFilter);
+            this._geoData = getGeoData(geoLocations || []);
+
           }
-          else {
+          this._redrawCharts();
 
-            var trend = result.trendsByTranslation.find(function(t) { return t.culture.toLowerCase() === culture });
-            var geoLocations = result.geoLocationsByTranslation.find(function(t) { return t.culture.toLowerCase() === culture });
+        },
+        _redrawCharts: function () {
+          if (this.$.geoChart)
+            this.$.trendChart.redraw();
 
-            this._trendData = getTrendData(result.trend || [], currentFilter);
-            this._geoData = getGeoData(result.geoLocations || []);
-
-          }
-
+          if (this.$.geoChart)
+            this.$.geoChart.redraw();
         }
-
         // _openDetails: function() {
         //   this.$.detailModal.open();
         //   this.$$("forge-itemanalytics-details").start();
@@ -250,7 +269,9 @@
 
       function getTrendData(trend, filterTime) {
 
-        var data = [["DateTime", "Views"]];
+        var data = [
+          ["DateTime", "Views"]
+        ];
 
         for (var i = 0; i < trend.length; i++) {
 
@@ -268,7 +289,9 @@
 
       function getGeoData(geo) {
 
-        var data = [["Country", "Views"]];
+        var data = [
+          ["Country", "Views"]
+        ];
 
         for (var i = 0; i < geo.length; i++) {
           var g = geo[i];
