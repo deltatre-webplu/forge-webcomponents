@@ -27,7 +27,18 @@
       width: 100%;
     }
 
-    .card-disclaimer {}
+    .views-summary  span {
+      text-align: center;
+    }
+
+    .views-summary  .views-count {
+      font-size: 1.8em;
+    }
+
+    .views-summary  .legend {
+      font-size: 1.3em;
+    }
+
   </style>
 
   <template>
@@ -36,9 +47,7 @@
 
       <div class="card-header layout horizontal">
 
-        <div class="card-header-title flex">[[localize('Test Card')]]</div>
-        <!-- <paper-button on-tap="_openDetails">[[localize('Details')]]</paper-button> -->
-
+        <div class="flex"></div>
 
         <paper-dropdown-menu noink no-animations no-label-float="true">
           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterLanguage}}" class="dropdown-content">
@@ -49,12 +58,22 @@
           </paper-listbox>
         </paper-dropdown-menu>
 
-
       </div>
 
       <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
       <div class="card-content">
+
+        <div class="layout horizontal">
+          
+          <div class="views-summary layout vertical">
+            <span class="views-count">280</span>
+            <span class="legend">views</span>
+          </div>
+
+          <div class="flex"></div>
+
+        </div>
 
         <template is="dom-if" if="[[_result]]">
 
@@ -128,7 +147,7 @@
       Polymer({
         is: 'forge-itemanalytics-card',
         behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior,
-          ForgeWebComponents.Behaviors.ForgeLocalizeBehavior
+        ForgeWebComponents.Behaviors.ForgeLocalizeBehavior
         ],
         properties: {
           url: {
