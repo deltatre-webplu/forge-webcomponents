@@ -47,6 +47,19 @@
     .entity-summary .localized-entity-code {
       margin-top: 0;
     }
+
+    .entity-code .code-value {
+      margin-top: 0;
+      font-size: 0.7em;
+      color: grey;
+    }
+
+    .localized-entity-code .code-value {
+      margin-top: 0;
+      font-size: 0.7em;
+      color: grey;
+    }
+
   </style>
 
   <template>
@@ -85,8 +98,15 @@
 
         <div class="entity-summary layout horizontal">
 
-          <div class="entity-code layout vertical flex">Entity code here</div>
-          <div class="localized-entity-code layout vertical flex">Localized entity code here</div>
+          <div class="entity-code layout vertical flex">
+            <span class="code-name">Entity Code</span>
+            <span class="code-value">e7236d15-810f-478e-8d72-cdf84e24faea</span>
+          </div>
+
+          <div class="localized-entity-code layout vertical flex">
+            <span class="code-name">Localized Entity Code</span>
+            <span class="code-value">007a6066-3103-41d1-8612-5ff4bffaa8a0</span>
+          </div>
 
         </div>
 
