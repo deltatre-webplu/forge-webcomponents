@@ -15,11 +15,7 @@
     paper-card {
       display: block;
     }
-
-    .card-content * + * {
-      margin-top: 1.5em;
-    }
-
+    
     .loading-bar {
       --paper-progress-active-color: var(--paper-light-blue-500);
       width: 100%;
@@ -30,22 +26,26 @@
       height: 350px;
       width: 100%;
     }
-
-    .views-summary span {
-      text-align: center;
+    
+    .summary {
+      min-height: 70px;
     }
 
     .views-summary .views-count {
-      font-size: 1.8em;
+      font-size: 1.6em;
     }
 
     .views-summary .legend {
-      font-size: 1.3em;
-      margin-top: 0;
+      font-size: 1.1em;
     }
 
-    .entity-summary .localized-entity-code {
-      margin-top: 0;
+    .views-summary {
+      align-self: flex-start;
+    }
+
+    .views-summary span {
+      text-align: center;
+      line-height: 0.9;
     }
 
     .entity-code .code-value {
@@ -60,6 +60,9 @@
       color: grey;
     }
 
+    .localized-entity-code {
+      margin-top: 4px;
+    }
   </style>
 
   <template>
@@ -74,7 +77,7 @@
           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterLanguage}}" class="dropdown-content">
             <paper-item value="all">All Languages</paper-item>
             <template is="dom-repeat" items="[[_cultures]]">
-              <paper-item value="[[item.culture]]">[[localize(item.culture)]]</paper-item>
+              <paper-item value="[[item]]">[[localize(item)]]</paper-item>
             </template>
           </paper-listbox>
         </paper-dropdown-menu>
@@ -85,33 +88,31 @@
 
       <div class="card-content">
 
-        <div class="layout horizontal">
-
-          <div class="views-summary layout vertical">
-            <span class="views-count">280</span>
-            <span class="legend">views</span>
-          </div>
-
-          <div class="flex"></div>
-
-        </div>
-
-        <div class="entity-summary layout horizontal">
-
-          <div class="entity-code layout vertical flex">
-            <span class="code-name">Entity Code</span>
-            <span class="code-value">e7236d15-810f-478e-8d72-cdf84e24faea</span>
-          </div>
-
-          <div class="localized-entity-code layout vertical flex">
-            <span class="code-name">Localized Entity Code</span>
-            <span class="code-value">007a6066-3103-41d1-8612-5ff4bffaa8a0</span>
-          </div>
-
-        </div>
-
         <template is="dom-if" if="[[_result]]">
+          <div class="summary layout horizontal">
 
+            <div class="views-summary layout vertical flex">
+              <span class="views-count">[[_result.totalViews]]</span>
+              <span class="legend">[[localize('views')]]</span>
+            </div>
+
+            <div class="entity-summary layout vertical flex-3">
+
+              <div class="entity-code layout vertical">
+                <span class="code-name">[[localize('Entity Code')]]</span>
+                <span class="code-value">[[_result.entityId]]</span>
+              </div>
+
+              <template is="dom-if" if="[[_currentTranslationId]]">
+                <div class="localized-entity-code layout vertical">
+                  <span class="code-name">[[localize('Localized Entity Code')]]</span>
+                  <span class="code-value">[[_currentTranslationId]]</span>
+                </div>
+              </template>
+
+            </div>
+
+          </div>
           <div class="layout vertical">
             <google-chart id="trendChart" type="area" options="[[_trendChartOptions]]" data="[[_trendData]]"></google-chart>
             <google-chart id="geoChart" type="geo" options="[[_geoChartOptions]]" data="[[_geoData]]"></google-chart>
@@ -174,11 +175,6 @@
         return ft.value === '1dayAgo';
       });
 
-      function Localization(culture, translationId) {
-        this.culture = culture.toLowerCase();
-        this.translationId = translationId;
-      }
-
       Polymer({
         is: 'forge-itemanalytics-card',
         behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior,
@@ -220,10 +216,9 @@
           this._currentFilter = null;
           this._trendChartOptions = trendChartOptions;
           this._geoChartOptions = geoChartOptions;
-
           this._trendData = [];
           this._geoData = [];
-
+          this._currentTranslationId = '';
         },
 
         _onIronResize: function () {
@@ -257,9 +252,7 @@
             .filter(function (loc) {
               return loc.TranslationInfo.Culture.toLowerCase() !== "nd-nd";
             })
-            .map(function (loc) {
-              return new Localization(loc.TranslationInfo.Culture, loc.TranslationId);
-            });
+            .map(function (loc) { return loc.TranslationInfo.Culture });
 
           var newUrl = this.url + '?time=1dayAgo&entityId=' + entity.entityId;
           if (newUrl != this._pollingUrl) this._changePollingUrl(newUrl);
@@ -286,19 +279,19 @@
 
             this._trendData = getTrendData(result.trend, currentFilter);
             this._geoData = getGeoData(result.geoLocations);
-
+            this._currentTranslationId = '';
           } else {
 
-            var trend = result.trendsByTranslation.find(function (t) {
-              return t.culture.toLowerCase() === culture
-            }).trend;
-            var geoLocations = result.geoLocationsByTranslation.find(function (t) {
-              return t.culture.toLowerCase() === culture
-            }).geoLocations;
+            var trendsByTranslation = result.trendsByTranslation.find(function (t) {
+              return t.culture.toLowerCase() === culture.toLowerCase()
+            });
+            var geoLocationsByTranslation = result.geoLocationsByTranslation.find(function (t) {
+              return t.culture.toLowerCase() === culture.toLowerCase()
+            });
 
-            this._trendData = getTrendData(trend || [], currentFilter);
-            this._geoData = getGeoData(geoLocations || []);
-
+            this._trendData = getTrendData(trendsByTranslation.trend || [], currentFilter);
+            this._geoData = getGeoData(geoLocationsByTranslation.geoLocations || []);
+            this._currentTranslationId = trendsByTranslation.translationId || geoLocationsByTranslation.translationId;
           }
           this._redrawCharts();
 
