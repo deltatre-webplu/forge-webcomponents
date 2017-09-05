@@ -4,7 +4,7 @@
 <link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/2.0.1/lib/google-chart/google-chart.html">
 <!-- <link rel="import" href="forge-itemanalytics-details.html"> -->
 
-<dom-module id="forge-itemanalytics-card">
+<dom-module id="forge-itemanalytics-content">
 
   <style is="custom-style" include="iron-flex iron-flex-alignment" />
   <style>
@@ -12,23 +12,40 @@
       display: block;
     }
 
-    paper-card {
-      display: block;
-    }
-    
     .loading-bar {
       --paper-progress-active-color: var(--paper-light-blue-500);
       width: 100%;
       position: absolute;
     }
 
-    google-chart {
-      height: 350px;
-      width: 100%;
+    .analytics-header {
+      padding: 8px;
     }
-    
+
+    .analytics-header .analytics-title-wrap {
+      padding: 9px;
+    }
+
+    .analytics-header .analytics-title-wrap .analytics-title {
+      font-size: 24px;
+    }
+
+    .analytics-header .analytics-title-wrap .analytics-subtitle {
+      margin-top: 1px;
+      font-size: 12px;
+      color: var(--paper-grey-500);;
+    }
+
+    .analytics-content {}
+
+    google-chart {
+      width: 100%;
+      height: auto;
+    }
+
     .summary {
-      min-height: 70px;
+      border-top: 1px solid var(--paper-grey-200);;
+      border-bottom: 1px solid var(--paper-grey-200);;
     }
 
     .views-summary .views-count {
@@ -40,13 +57,17 @@
     }
 
     .views-summary {
-      -ms-flex-item-align: start;
-          align-self: flex-start;
+      padding: 24px;
     }
 
     .views-summary span {
       text-align: center;
       line-height: 0.9;
+    }
+
+    .entity-code {
+      padding: 24px;
+      border-left: 1px solid var(--paper-grey-200);;
     }
 
     .entity-code .code-value {
@@ -55,82 +76,110 @@
       color: grey;
     }
 
+    .localized-entity-code {
+      padding: 24px;
+      border-left: 1px solid var(--paper-grey-200);;
+    }
+
     .localized-entity-code .code-value {
       margin-top: 0;
       font-size: 0.7em;
       color: grey;
     }
 
-    .localized-entity-code {
-      margin-top: 4px;
+    #trendChart {
+      display: block;
+      border-bottom: 1px solid var(--paper-grey-200);;
     }
 
+    #geoChart {
+      display: block;
+    }
+
+    .graph-title {
+      padding: 8px;
+      font-size: 20px;
+    }
   </style>
 
   <template>
 
-    <paper-card>
+    <div class="analytics-header layout horizontal">
 
-      <div class="card-header layout horizontal">
+      <!-- MULTILINGUAL ENTITY -->
 
-        <div class="flex"></div>
+      <div class="flex layout vertical analytics-title-wrap">
+        <div class="analytics-title">[[localize('Analytics Data')]]</div>
+        <div class="analytics-subtitle">[[localize('Last 24 hours')]]</div>
+      </div>
 
-        <paper-dropdown-menu noink no-animations no-label-float="true">
+      <template is="dom-if" if="[[!entity.isNeutral]]">
+
+        <paper-dropdown-menu noink no-animations label="[[localize('Show results for')]]">
+
           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterLanguage}}" class="dropdown-content">
             <paper-item value="all">All Languages</paper-item>
             <template is="dom-repeat" items="[[_cultures]]">
               <paper-item value="[[item]]">[[localize(item)]]</paper-item>
             </template>
           </paper-listbox>
+
         </paper-dropdown-menu>
 
-      </div>
+      </template>
 
-      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    </div>
 
-      <div class="card-content">
+    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-        <template is="dom-if" if="[[_result]]">
-          <div class="summary layout horizontal">
+    <div class="analytics-content">
 
-            <div class="views-summary layout vertical flex">
-              <span class="views-count">[[_result.totalViews]]</span>
-              <span class="legend">[[localize('views')]]</span>
-            </div>
+      <template is="dom-if" if="[[_result]]">
 
-            <div class="entity-summary layout vertical flex-3">
+        <div class="summary layout horizontal">
 
-              <div class="entity-code layout vertical">
-                <span class="code-name">[[localize('Entity Code')]]</span>
-                <span class="code-value">[[_result.entityId]]</span>
-              </div>
-
-              <template is="dom-if" if="[[_currentTranslationId]]">
-                <div class="localized-entity-code layout vertical">
-                  <span class="code-name">[[localize('Localized Entity Code')]]</span>
-                  <span class="code-value">[[_currentTranslationId]]</span>
-                </div>
-              </template>
-
-            </div>
-
-          </div>
-          <div class="layout vertical">
-            <google-chart id="trendChart" type="area" options="[[_trendChartOptions]]" data="[[_trendData]]"></google-chart>
-            <google-chart id="geoChart" type="geo" options="[[_geoChartOptions]]" data="[[_geoData]]"></google-chart>
+          <div class="views-summary layout vertical">
+            <span class="views-count">[[_result.totalViews]]</span>
+            <span class="legend">[[localize('views')]]</span>
           </div>
 
-        </template>
+          <div class="entity-code layout vertical flex">
+            <span class="code-name">[[localize('Entity Code')]]</span>
+            <span class="code-value">[[_result.entityId]]</span>
+          </div>
 
-        <template is="dom-if" if="[[!_result]]">
+          <template is="dom-if" if="[[_currentTranslationId]]">
+            <div class="localized-entity-code layout vertical flex">
+              <span class="code-name">[[localize('Localized Entity Code')]]</span>
+              <span class="code-value">[[_currentTranslationId]]</span>
+            </div>
+          </template>
 
+        </div>
+
+        <div class="layout vertical">
+
+          <div class="graph-title">[[localize("Time Trends")]]</div>
+
+          <google-chart id="trendChart" type="area" options="[[_trendChartOptions]]" data="[[_trendData]]"></google-chart>
+
+          <div class="graph-title">[[localize("Interests by Geographic Area")]]</div>
+
+          <google-chart id="geoChart" type="geo" options="[[_geoChartOptions]]" data="[[_geoData]]"></google-chart>
+
+        </div>
+
+      </template>
+
+      <template is="dom-if" if="[[!_result]]">
+
+        <div class="no-data-available">
           [[localize("wcm.noDataAvailable")]]
+        </div>
 
-        </template>
+      </template>
 
-      </div>
-
-    </paper-card>
+    </div>
 
     <!-- <paper-dialog id="detailModal" modal on-iron-overlay-closed="onDetailClosed">
       <forge-itemanalytics-details entity-id="[[entity.entityId]]"></forge-itemanalytics-details>
@@ -178,14 +227,16 @@
       });
 
       Polymer({
-        is: 'forge-itemanalytics-card',
-        behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior,
-        ForgeWebComponents.Behaviors.ForgeLocalizeBehavior
+        is: 'forge-itemanalytics-content',
+        behaviors: [
+          Polymer.IronResizableBehavior,
+          ForgeWebComponents.Behaviors.PollingBehavior,
+          ForgeWebComponents.Behaviors.ForgeLocalizeBehavior
         ],
         properties: {
           url: {
             type: String,
-            value: "/api/analytics/singleResult"
+            value: "/api/extensions/query/dashboards-entity-analytics"
           },
           interval: {
             type: Number,
@@ -210,7 +261,9 @@
             value: []
           }
         },
-
+        listeners: {
+          'iron-resize': '_onIronResize'
+        },
         ready: function () {
 
           this._pollingUrl = '';
@@ -221,9 +274,11 @@
           this._trendData = [];
           this._geoData = [];
           this._currentTranslationId = '';
+
         },
 
         _onIronResize: function () {
+          console.log("_onIronResize");
           this._redrawCharts();
         },
 
@@ -254,7 +309,9 @@
             .filter(function (loc) {
               return loc.TranslationInfo.Culture.toLowerCase() !== "nd-nd";
             })
-            .map(function (loc) { return loc.TranslationInfo.Culture });
+            .map(function (loc) {
+              return loc.TranslationInfo.Culture.toLowerCase()
+            });
 
           var newUrl = this.url + '?time=1dayAgo&entityId=' + entity.entityId;
           if (newUrl != this._pollingUrl) this._changePollingUrl(newUrl);
@@ -295,16 +352,26 @@
             this._geoData = getGeoData(geoLocationsByTranslation.geoLocations || []);
             this._currentTranslationId = trendsByTranslation.translationId || geoLocationsByTranslation.translationId;
           }
+
           this._redrawCharts();
 
         },
-        _redrawCharts: function () {
-          if (this.$.geoChart)
-            this.$.trendChart.redraw();
 
-          if (this.$.geoChart)
-            this.$.geoChart.redraw();
+        _redrawCharts: function () {
+
+          var trendChart = this.$$('#trendChart');
+          var geoChart = this.$$('#geoChart');
+
+          if (trendChart) {
+            trendChart.redraw();
+          }
+
+          if (geoChart) {
+            geoChart.redraw();
+          }
+
         }
+
         // _openDetails: function() {
         //   this.$.detailModal.open();
         //   this.$$("forge-itemanalytics-details").start();

@@ -16,7 +16,7 @@
   <link rel="import" href="../../custom-styles/forge-core-style.html">
 
   <link rel="import" href="../forge-trendingnow-card.html">
-  <link rel="import" href="../forge-itemanalytics-card.html">
+  <link rel="import" href="../forge-itemanalytics-content.html">
 
 </head>
 
@@ -28,8 +28,12 @@
   </div>
 
   <div class="layout horizontal">
-    <forge-trendingnow-card class="padded flex-2" url="http://localhost:3000/query/dashboards-top-requested-entities"></forge-trendingnow-card>
-    <forge-itemanalytics-card class="padded flex" url="http://localhost:3000/query/dashboards-entity-analytics" entity='{"entityId":"61b32210-b93e-4434-927a-654b92f19e1d","localizations": [{"TranslationInfo": {"Culture": "en-US"}}, {"TranslationInfo": {"Culture": "it-IT"}}],"isNeutral":false}'></forge-itemanalytics-card>
+    <paper-card class="padded flex">
+      <forge-itemanalytics-content url="http://localhost:3000/query/dashboards-entity-analytics" entity='{"entityId":"61b32210-b93e-4434-927a-654b92f19e1d","localizations": [{"TranslationInfo": {"Culture": "en-US"}}, {"TranslationInfo": {"Culture": "it-IT"}}],"isNeutral":true}'></forge-itemanalytics-content>
+    </paper-card>
+    <paper-card class="padded flex">
+      <forge-itemanalytics-content url="http://localhost:3000/query/dashboards-entity-analytics" entity='{"entityId":"61b32210-b93e-4434-927a-654b92f19e1d","localizations": [{"TranslationInfo": {"Culture": "en-US"}}, {"TranslationInfo": {"Culture": "it-IT"}}],"isNeutral":false}'></forge-itemanalytics-content>
+    </paper-card>
   </div>
 
   <script>

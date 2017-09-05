@@ -189,7 +189,10 @@
 
         <template is="dom-if" if="[[!_data.length]]">
 
-          [[localize("wcm.noDataAvailable")]]
+          <div class="no-data-available">
+            [[localize("wcm.noDataAvailable")]]
+          </div>
+
 
         </template>
 
@@ -233,7 +236,7 @@
         properties: {
           url: {
             type: String,
-            value: "/api/analytics/trendingNow"
+            value: "/api/extensions/query/dashboards-top-requested-entities"
           },
           interval: {
             type: Number,
