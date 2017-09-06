@@ -367,23 +367,36 @@
 
           if (!result) return;
 
+          this._trendData = [];
+          this._geoData = [];
+          this._currentTranslationId = '';
+
           if (culture === "all") {
 
             this._trendData = getTrendData(result.trend, currentFilter);
             this._geoData = getGeoData(result.geoLocations);
-            this._currentTranslationId = '';
+
           } else {
 
             var trendsByTranslation = result.trendsByTranslation.find(function (t) {
               return t.culture.toLowerCase() === culture.toLowerCase()
             });
+            
+            if (trendsByTranslation) {
+              this._trendData = getTrendData(trendsByTranslation.trend || [], currentFilter);
+            }
+
             var geoLocationsByTranslation = result.geoLocationsByTranslation.find(function (t) {
               return t.culture.toLowerCase() === culture.toLowerCase()
             });
 
-            this._trendData = getTrendData(trendsByTranslation.trend || [], currentFilter);
-            this._geoData = getGeoData(geoLocationsByTranslation.geoLocations || []);
-            this._currentTranslationId = trendsByTranslation.translationId || geoLocationsByTranslation.translationId;
+            if (geoLocationsByTranslation) {
+              this._geoData = getGeoData(geoLocationsByTranslation.geoLocations || []);
+            }
+            
+            if (trendsByTranslation || geoLocationsByTranslation) {
+              this._currentTranslationId = trendsByTranslation.translationId || geoLocationsByTranslation.translationId;
+            }
           }
 
           this._redrawCharts();
