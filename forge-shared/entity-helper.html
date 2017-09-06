@@ -8,6 +8,7 @@
       pluralize: pluralize,
       createLink: createLink,
       createSearchLink: createSearchLink,
+      createThumbnailUrl: createThumbnailUrl,
       getFriendlyName: getFriendlyName,
       canPluralize: canPluralize,
       getEntityIcon: getEntityIcon,
@@ -185,6 +186,34 @@
       }
 
       return result;
+    }
+
+    function createThumbnailUrl(entityTypeFull, translationId) {
+
+      var entityType = sanitizeEntityType(entityTypeFull);
+
+      var rootUrl = ForgeWebComponents.Settings.RootUrl + "deltatre.forge.wcm/api/";
+      var result;
+
+      switch (entityType) {
+        case "story":
+        case "selection":
+        case "photo":
+        case "document":
+        case "tag":
+        case "album":
+          result = rootUrl + pluralize(entityType) + "/working/" + translationId + "/thumbnail/_thumb";
+          break;
+        case "customentity":
+          console.error("unprocessable entityTypeFull:", entityTypeFull);
+          break;
+        default:
+          result = rootUrl + "customentities/" + entityType + "/working/" + translationId + "/thumbnail/_thumb";
+          break;
+      }
+
+      return result;
+
     }
 
   })();
