@@ -33,7 +33,8 @@
     .analytics-header .analytics-title-wrap .analytics-subtitle {
       margin-top: 1px;
       font-size: 12px;
-      color: var(--paper-grey-500);;
+      color: var(--paper-grey-500);
+      ;
     }
 
     .analytics-content {}
@@ -44,8 +45,10 @@
     }
 
     .summary {
-      border-top: 1px solid var(--paper-grey-200);;
-      border-bottom: 1px solid var(--paper-grey-200);;
+      border-top: 1px solid var(--paper-grey-200);
+      ;
+      border-bottom: 1px solid var(--paper-grey-200);
+      ;
     }
 
     .views-summary .views-count {
@@ -67,7 +70,8 @@
 
     .entity-code {
       padding: 24px;
-      border-left: 1px solid var(--paper-grey-200);;
+      border-left: 1px solid var(--paper-grey-200);
+      ;
     }
 
     .entity-code .code-value {
@@ -78,7 +82,8 @@
 
     .localized-entity-code {
       padding: 24px;
-      border-left: 1px solid var(--paper-grey-200);;
+      border-left: 1px solid var(--paper-grey-200);
+      ;
     }
 
     .localized-entity-code .code-value {
@@ -89,7 +94,7 @@
 
     #trendChart {
       display: block;
-      border-bottom: 1px solid var(--paper-grey-200);;
+      border-bottom: 1px solid var(--paper-grey-200);
     }
 
     #geoChart {
@@ -99,6 +104,17 @@
     .graph-title {
       padding: 8px;
       font-size: 20px;
+    }
+
+    .no-data-available {
+      padding: 16px 0;
+      color: gray;
+    }
+
+    .no-data-available iron-icon {
+      width: 128px;
+      height: 128px;
+      margin: 8px;
     }
   </style>
 
@@ -113,7 +129,7 @@
         <div class="analytics-subtitle">[[localize('Last 24 hours')]]</div>
       </div>
 
-      <template is="dom-if" if="[[!entity.isNeutral]]">
+      <template is="dom-if" if="[[entity.isNeutral]]">
 
         <paper-dropdown-menu noink no-animations label="[[localize('Show results for')]]">
 
@@ -161,27 +177,45 @@
 
           <div class="graph-title">[[localize("Time Trends")]]</div>
 
-          <google-chart id="trendChart" type="area" options="[[_trendChartOptions]]" data="[[_trendData]]"></google-chart>
+          <template is="dom-if" if="[[_trendData.length]]">
+            <google-chart id="trendChart" type="area" options="[[_trendChartOptions]]" data="[[_trendData]]"></google-chart>
+          </template>
+
+          <template is="dom-if" if="[[!_trendData.length]]">
+            <div class="no-data-available layout vertical center-center">
+              <iron-icon icon="editor:insert-chart"></iron-icon>
+              <div>[[localize('wcm.noTrendDataAvailable')]]
+                <div>
+                </div>
+          </template>
 
           <div class="graph-title">[[localize("Interests by Geographic Area")]]</div>
 
-          <google-chart id="geoChart" type="geo" options="[[_geoChartOptions]]" data="[[_geoData]]"></google-chart>
+          <template is="dom-if" if="[[_geoData.length]]">
+            <google-chart id="geoChart" type="geo" options="[[_geoChartOptions]]" data="[[_geoData]]"></google-chart>
+          </template>
 
-        </div>
+          <template is="dom-if" if="[[!_geoData.length]]">
+            <div class="no-data-available layout vertical center-center">
+              <iron-icon icon="maps:map"></iron-icon>
+              <div>[[localize('wcm.noGeoDataAvailable')]]</div>
+            </div>
+          </template>
+
+          </div>
 
       </template>
 
       <template is="dom-if" if="[[!_result]]">
-
-        <div class="no-data-available">
-          [[localize("wcm.noDataAvailable")]]
+        <div class="no-data-available layout vertical center-center">
+          <iron-icon icon="icons:hourglass-full"></iron-icon>
+          <div>[[localize('Loading...')]]</div>
         </div>
-
       </template>
 
-    </div>
+      </div>
 
-    <!-- <paper-dialog id="detailModal" modal on-iron-overlay-closed="onDetailClosed">
+      <!-- <paper-dialog id="detailModal" modal on-iron-overlay-closed="onDetailClosed">
       <forge-itemanalytics-details entity-id="[[entity.entityId]]"></forge-itemanalytics-details>
       <div class="buttons">
         <paper-button dialog-confirm autofocus>[[localize('Close')]]</paper-button>
@@ -278,7 +312,6 @@
         },
 
         _onIronResize: function () {
-          console.log("_onIronResize");
           this._redrawCharts();
         },
 
@@ -385,9 +418,7 @@
 
       function getTrendData(trend, filterTime) {
 
-        var data = [
-          ["DateTime", "Views"]
-        ];
+        var data = [];
 
         for (var i = 0; i < trend.length; i++) {
 
@@ -399,19 +430,25 @@
 
         }
 
+        if (data.length) {
+          data.unshift(["DateTime", "Views"]);
+        }
+
         return data;
 
       }
 
       function getGeoData(geo) {
 
-        var data = [
-          ["Country", "Views"]
-        ];
+        var data = [];
 
         for (var i = 0; i < geo.length; i++) {
           var g = geo[i];
           data.push([g.country, g.views]);
+        }
+
+        if (data.length) {
+          data.unshift(["Country", "Views"]);
         }
 
         return data;
