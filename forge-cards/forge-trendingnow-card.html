@@ -5,8 +5,7 @@
 
 <dom-module id="forge-trendingnow-card">
 
-  <style is="custom-style" include="iron-flex iron-flex-alignment" />
-  <style>
+  <style include="iron-flex iron-flex-alignment">
      :host {
       display: block;
     }
@@ -26,9 +25,10 @@
       border-collapse: collapse;
     }
 
-    .items-table thead th {
+    .items-table th {
       color: gray;
       font-weight: normal;
+      text-align: center;
     }
 
     .items-table .col-title {
@@ -67,6 +67,7 @@
 
     .items-table .cell-views {
       font-weight: 500;
+      font-size: 24px;
     }
 
     .entity-icon {
@@ -97,7 +98,16 @@
       color: var(--paper-grey-500);
     }
 
-    .card-disclaimer {}
+    .no-data-available {
+      padding: 16px 0;
+      color: gray;
+    }
+
+    .no-data-available iron-icon {
+      width: 128px;
+      height: 128px;
+      margin: 8px;
+    }
   </style>
 
   <template>
@@ -118,7 +128,7 @@
 
         <paper-dropdown-menu noink no-animations no-label-float="true">
           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterEntity}}" class="dropdown-content">
-            <paper-item value="all">All Types</paper-item>
+            <paper-item value="all">[[localize('All Types')]]</paper-item>
             <template is="dom-repeat" items="[[_entities]]">
               <paper-item value="[[item.code]]">[[localize(item.name)]]</paper-item>
             </template>
@@ -127,7 +137,7 @@
 
         <paper-dropdown-menu noink no-animations no-label-float="true">
           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterLanguage}}" class="dropdown-content">
-            <paper-item value="all">All Languages</paper-item>
+            <paper-item value="all">[[localize('All Languages')]]</paper-item>
             <template is="dom-repeat" items="[[_cultures]]">
               <paper-item value="[[item.Culture]]">[[localize(item.Name)]]</paper-item>
             </template>
@@ -167,7 +177,7 @@
                     <forge-entity-icon class="entity-icon" entity-type="[[item.entityCode]]"></forge-entity-icon>
                   </td>
                   <td class="cell-padded cell-icon">
-                    <forge-flag-icon class="flag-icon" country="[[item.culture]]"></forge-flag-icon>
+                    <forge-flag-icon class="item-flag-icon" country="[[item.culture]]"></forge-flag-icon>
                   </td>
                   <td class="cell-padded cell-views">[[item.views]]</td>
                   <td class="cell-padded">
@@ -189,10 +199,10 @@
 
         <template is="dom-if" if="[[!_data.length]]">
 
-          <div class="no-data-available">
-            [[localize("wcm.noDataAvailable")]]
+          <div class="no-data-available layout vertical center-center">
+            <iron-icon icon="icons:hourglass-full"></iron-icon>
+            <div>[[localize('Loading...')]]</div>
           </div>
-
 
         </template>
 
@@ -282,6 +292,8 @@
             result = [];
           }
 
+          this._forceSelectedValues();
+
           var rank = 0;
 
           if (!this._currentFilter) {
@@ -297,6 +309,23 @@
           });
 
           this._data = result;
+
+        },
+
+        _forceSelectedValues: function () {
+          var temp;
+
+          temp = this.filterTime;
+          this.filterTime = null;
+          this.filterTime = temp;
+
+          temp = this.filterEntity;
+          this.filterEntity = null;
+          this.filterEntity = temp;
+
+          temp = this.filterLanguage;
+          this.filterLanguage = null;
+          this.filterLanguage = temp;
 
         },
 

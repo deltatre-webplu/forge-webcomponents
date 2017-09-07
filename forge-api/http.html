@@ -1,72 +1,81 @@
 <script>
-(function() {
+  (function () {
 
-  function RejectObject(req) {
-    this.status = req.status;
-    this.response = req;
-  }
+    function RejectObject(req) {
+      this.status = req.status;
+      this.response = req;
+    }
 
-  function _get(url, response) {
+    function _get(url, response) {
 
-    var request = new XMLHttpRequest();
-    request.open("GET", url, true);
-    //request.timeout = something;
-    request.onreadystatechange = function () {
-      if (request.readyState === 4) {
-        if (request.status === 200) {
-          var result = JSON.parse(request.responseText);
-          response.resolve(result);
-        } else {
-          response.reject(new RejectObject(request));
+      var request = new XMLHttpRequest();
+
+      request.onerror = function () {
+        console.error(request, request.status);
+        response.reject(new RejectObject(request));
+      };
+
+      request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+          if (request.status === 200) {
+            var result = JSON.parse(request.responseText);
+            response.resolve(result);
+          } else {
+            response.reject(new RejectObject(request));
+          }
         }
-      }
-    };
-    request.send(null);
+      };
 
-  }
+      request.open("GET", url, true);
+      //request.timeout = something;
 
-  function _post(url, response, data) {
-
-    var request = new XMLHttpRequest();
-    request.open("POST", url, true);
-    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-    //request.timeout = something;
-    request.onreadystatechange = function () {
-      if (request.readyState === 4) {
-        if (request.status === 200) {
-          var result = JSON.parse(request.responseText);
-          response.resolve(result);
-        } else {
-          response.reject(new RejectObject(request));
-        }
-      }
-    };
-    request.send(data ? JSON.stringify(data) : null);
-
-  }
-
-  http = {
-
-    get: function(url, config) {
-
-      var response = Q.defer();
-      _get(url, response);
-      return response.promise;
-
-    },
-
-    post: function(url, data, config) {
-
-      var response = Q.defer();
-      _post(url, response, data);
-      return response.promise;
+      request.send(null);
 
     }
 
-  };
+    function _post(url, response, data) {
 
-  window.ForgeWebComponents = window.ForgeWebComponents || {};
-  window.ForgeWebComponents.Http = http;
+      var request = new XMLHttpRequest();
+      request.open("POST", url, true);
+      request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+      //request.timeout = something;
+      request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+          if (request.status === 200) {
+            var result = JSON.parse(request.responseText);
+            response.resolve(result);
+          } else {
+            response.reject(new RejectObject(request));
+          }
+        }
+      };
+      request.send(data ? JSON.stringify(data) : null);
 
-})();
+    }
+
+    http = {
+
+      get: function (url, config) {
+
+        var response = Q.defer();
+        _get(url, response);
+        return response.promise;
+
+      },
+
+      post: function (url, data, config) {
+
+        var response = Q.defer();
+        _post(url, response, data);
+        return response.promise;
+
+      }
+
+    };
+
+    window.ForgeWebComponents = window.ForgeWebComponents || {};
+    window.ForgeWebComponents.Http = http;
+
+  })();
+
 </script>
