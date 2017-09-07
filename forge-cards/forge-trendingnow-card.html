@@ -200,8 +200,8 @@
         <template is="dom-if" if="[[!_data.length]]">
 
           <div class="no-data-available layout vertical center-center">
-            <iron-icon icon="icons:hourglass-full"></iron-icon>
-            <div>[[localize('Loading...')]]</div>
+              <iron-icon icon="editor:insert-chart"></iron-icon>
+              <div>[[localize('wcm.noTrendDataAvailable')]]</div>
           </div>
 
         </template>
@@ -313,6 +313,7 @@
         },
 
         _forceSelectedValues: function () {
+
           var temp;
 
           temp = this.filterTime;
@@ -340,7 +341,7 @@
 
         _openItem: function (e) {
           var entity = e.model.item;
-          var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.entityType, entity.id, entity.translationId);
+          var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.entityCode, entity.entityId, entity.translationId);
           if (href) location.href = href;
         },
 
@@ -348,7 +349,7 @@
 
           if (!time || !entity || !language) return;
 
-          var newUrl = this.url + '?time=' + time + '&entity=' + entity + '&language=' + language;
+          var newUrl = this.url + '?time=' + time + '&entityCode=' + entity + '&culture=' + language;
 
           if (newUrl != this._pollingUrl) this._changePollingUrl(newUrl);
 

@@ -184,9 +184,8 @@
           <template is="dom-if" if="[[!_trendData.length]]">
             <div class="no-data-available layout vertical center-center">
               <iron-icon icon="editor:insert-chart"></iron-icon>
-              <div>[[localize('wcm.noTrendDataAvailable')]]
-                <div>
-                </div>
+              <div>[[localize('wcm.noTrendDataAvailable')]]</div>
+            </div>
           </template>
 
           <div class="graph-title">[[localize("Interests by Geographic Area")]]</div>
@@ -202,7 +201,7 @@
             </div>
           </template>
 
-          </div>
+        </div>
 
       </template>
 
@@ -213,9 +212,9 @@
         </div>
       </template>
 
-      </div>
+    </div>
 
-      <!-- <paper-dialog id="detailModal" modal on-iron-overlay-closed="onDetailClosed">
+    <!-- <paper-dialog id="detailModal" modal on-iron-overlay-closed="onDetailClosed">
       <forge-itemanalytics-details entity-id="[[entity.entityId]]"></forge-itemanalytics-details>
       <div class="buttons">
         <paper-button dialog-confirm autofocus>[[localize('Close')]]</paper-button>
@@ -381,7 +380,7 @@
             var trendsByTranslation = result.trendsByTranslation.find(function (t) {
               return t.culture.toLowerCase() === culture.toLowerCase()
             });
-            
+
             if (trendsByTranslation) {
               this._trendData = getTrendData(trendsByTranslation.trend || [], currentFilter);
             }
@@ -393,7 +392,7 @@
             if (geoLocationsByTranslation) {
               this._geoData = getGeoData(geoLocationsByTranslation.geoLocations || []);
             }
-            
+
             if (trendsByTranslation || geoLocationsByTranslation) {
               this._currentTranslationId = trendsByTranslation.translationId || geoLocationsByTranslation.translationId;
             }
