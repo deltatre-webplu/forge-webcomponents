@@ -69,9 +69,8 @@
     }
 
     .entity-code {
-      padding: 24px;
+      padding: 0 24px;
       border-left: 1px solid var(--paper-grey-200);
-      ;
     }
 
     .entity-code .code-value {
@@ -155,21 +154,18 @@
         <div class="summary layout horizontal">
 
           <div class="views-summary layout vertical">
-            <span class="views-count">[[_result.totalViews]]</span>
+            <span class="views-count">[[_totalViews]]</span>
             <span class="legend">[[localize('views')]]</span>
           </div>
 
-          <div class="entity-code layout vertical flex">
+          <div class="entity-code layout vertical center-justified flex">
             <span class="code-name">[[localize('Entity Code')]]</span>
-            <span class="code-value">[[_result.entityId]]</span>
-          </div>
-
-          <template is="dom-if" if="[[_currentTranslationId]]">
-            <div class="localized-entity-code layout vertical flex">
+            <span class="code-value">[[entity.entityId]]</span>
+            <template is="dom-if" if="[[_currentTranslationId]]">
               <span class="code-name">[[localize('Localized Entity Code')]]</span>
               <span class="code-value">[[_currentTranslationId]]</span>
-            </div>
-          </template>
+            </template>
+          </div>
 
         </div>
 
@@ -306,6 +302,7 @@
           this._geoChartOptions = geoChartOptions;
           this._trendData = [];
           this._geoData = [];
+          this._totalViews = 0;
           this._currentTranslationId = '';
 
         },
@@ -337,13 +334,16 @@
           if (!entity) return;
           if (typeof entity === 'string') return;
 
-          this._cultures = (entity.localizations || [])
+          var allTranslationsExceptNeutral = (entity.localizations || [])
             .filter(function (loc) {
               return loc.TranslationInfo.Culture.toLowerCase() !== "nd-nd";
-            })
-            .map(function (loc) {
-              return loc.TranslationInfo.Culture.toLowerCase()
             });
+
+          this._cultures = allTranslationsExceptNeutral.map(function (loc) {
+            return loc.TranslationInfo.Culture.toLowerCase()
+          });
+
+          console.log(entity);
 
           var newUrl = this.url + '?time=1dayAgo&entityId=' + entity.entityId;
           if (newUrl != this._pollingUrl) this._changePollingUrl(newUrl);
@@ -360,18 +360,29 @@
 
         _fillResults: function (culture) {
 
+          if (!this.entity || typeof this.entity === 'string') {
+            // still not initialized
+            return;
+          }
+
           culture = culture || this.filterLanguage;
+
+          if (!this.entity.isNeutral) {
+            culture = this.entity.translationInfo.culture;
+          }
 
           var result = this._result;
 
           if (!result) return;
 
+          this._totalViews = 0;
           this._trendData = [];
           this._geoData = [];
           this._currentTranslationId = '';
 
           if (culture === "all") {
-
+            
+            this._totalViews = result.totalViews;
             this._trendData = getTrendData(result.trend, currentFilter);
             this._geoData = getGeoData(result.geoLocations);
 
@@ -382,6 +393,7 @@
             });
 
             if (trendsByTranslation) {
+              this._totalViews = trendsByTranslation.totalViews;
               this._trendData = getTrendData(trendsByTranslation.trend || [], currentFilter);
             }
 
@@ -393,9 +405,12 @@
               this._geoData = getGeoData(geoLocationsByTranslation.geoLocations || []);
             }
 
-            if (trendsByTranslation || geoLocationsByTranslation) {
-              this._currentTranslationId = trendsByTranslation.translationId || geoLocationsByTranslation.translationId;
-            }
+            var localization = this.entity.localizations.find(function (l) {
+              return l.TranslationInfo.Culture === culture;
+            });
+
+            this._currentTranslationId = localization ? localization.TranslationId : '-';
+
           }
 
           this._redrawCharts();
