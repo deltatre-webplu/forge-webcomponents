@@ -343,8 +343,6 @@
             return loc.TranslationInfo.Culture.toLowerCase()
           });
 
-          console.log(entity);
-
           var newUrl = this.url + '?time=1dayAgo&entityId=' + entity.entityId;
           if (newUrl != this._pollingUrl) this._changePollingUrl(newUrl);
           this._pollingUrl = newUrl;
@@ -360,7 +358,9 @@
 
         _fillResults: function (culture) {
 
-          if (!this.entity || typeof this.entity === 'string') {
+          var result = this._result;
+
+          if (!result || !this.entity || typeof this.entity === 'string') {
             // still not initialized
             return;
           }
@@ -370,10 +370,6 @@
           if (!this.entity.isNeutral) {
             culture = this.entity.translationInfo.culture;
           }
-
-          var result = this._result;
-
-          if (!result) return;
 
           this._totalViews = 0;
           this._trendData = [];
