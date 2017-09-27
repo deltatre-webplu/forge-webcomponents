@@ -42,8 +42,13 @@
       request.onreadystatechange = function () {
         if (request.readyState === 4) {
           if (request.status === 200) {
-            var result = JSON.parse(request.responseText);
-            response.resolve(result);
+            try {
+              var result = JSON.parse(request.responseText);
+              response.resolve(result);
+            }
+            catch (e) {
+              response.reject(new RejectObject(request));
+            }
           } else {
             response.reject(new RejectObject(request));
           }

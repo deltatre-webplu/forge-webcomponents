@@ -43,7 +43,7 @@
           for (var i = 0; i < entity.parts.length; i++) {
             var part = entity.parts[i];
             if (part.type === 'markdown') {
-              wordCount += part.body.contentMarkdown.split(' ').length;
+              wordCount += part.body.value.split(' ').length;
             }
           }
           this.wordCount = wordCount;

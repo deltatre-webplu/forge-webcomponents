@@ -36,6 +36,14 @@
       text-align: left;
     }
 
+    .items-table tr {
+      border-bottom: 1px solid var(--paper-grey-300);
+    }
+
+    .items-table tbody tr:last-of-type {
+      border-bottom: 0;
+    }
+
     .items-table tbody tr {
       cursor: pointer;
     }
@@ -45,7 +53,7 @@
     }
 
     .items-table .cell-padded {
-      padding: 8px;
+      padding: 4px 16px;
       text-align: center;
     }
 
@@ -88,13 +96,15 @@
     }
 
     google-chart {
-      height: 80px;
-      width: 320px;
+      height: 60px;
+      width: 200px;
     }
 
     .trend-label {
+      padding-top: 4px;
       background: transparent;
       font-style: italic;
+      font-size: 12px;
       color: var(--paper-grey-500);
     }
 
@@ -179,7 +189,7 @@
                   <td class="cell-padded cell-icon">
                     <forge-flag-icon class="item-flag-icon" country="[[item.culture]]"></forge-flag-icon>
                   </td>
-                  <td class="cell-padded cell-views">[[item.views]]</td>
+                  <td class="cell-padded cell-views">[[item.humanizedViews]]</td>
                   <td class="cell-padded">
                     <div class="layout vertical">
                       <google-chart type="area" options="[[_chartOptions]]" data="[[item.data]]"></google-chart>
@@ -200,8 +210,8 @@
         <template is="dom-if" if="[[!_data.length]]">
 
           <div class="no-data-available layout vertical center-center">
-              <iron-icon icon="editor:insert-chart"></iron-icon>
-              <div>[[localize('wcm.noTrendDataAvailable')]]</div>
+            <iron-icon icon="[[_message.icon]]"></iron-icon>
+            <div>[[localize(_message.text)]]</div>
           </div>
 
         </template>
@@ -221,6 +231,21 @@
 
       var filterTimes = ForgeWebComponents.Settings.AnalyticsFilterTimes;
 
+      var messages = {
+        nodata: {
+          icon: "editor:insert-chart",
+          text: "wcm.noTrendDataAvailable"
+        },
+        loading: {
+          icon: "icons:hourglass-full",
+          text: "Loading..."
+        },
+        error: {
+          icon: "icons:error-outline",
+          text: "wcm.somethingWentWrong"
+        }
+      }
+
       var chartOptions = {
         "legend": "none",
         "vAxis": {
@@ -236,6 +261,10 @@
         "hAxis": {
           "title": "",
           "textPosition": "none"
+        },
+        "chartArea": {
+          "width": "100%",
+          "height": "100%"
         },
         "backgroundColor": "transparent"
       };
@@ -284,15 +313,17 @@
           this._cultures = _cultures;
           this._currentFilter = null;
           this._chartOptions = chartOptions;
+          this._message = messages.loading;
         },
 
         _onPollingUpdate: function (result) {
 
+          this._forceSelectedValues();
+
           if (!(result && result.length)) {
             result = [];
+            this._message = messages.nodata;
           }
-
-          this._forceSelectedValues();
 
           var rank = 0;
 
@@ -303,6 +334,7 @@
           var currentFilter = this._currentFilter;
 
           result.forEach(function (e) {
+            e.humanizedViews = humanize(e.views);
             e.rank = ++rank;
             e.entityName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.entityCode);
             e.data = getTrendData(e.trend, currentFilter)
@@ -310,6 +342,14 @@
 
           this._data = result;
 
+        },
+
+        _onPollingStart: function() {
+          this._message = messages.loading;
+        },
+        _onPollingError: function() {
+          this._forceSelectedValues();
+          this._message = messages.error;
         },
 
         _forceSelectedValues: function () {
@@ -340,9 +380,16 @@
         },
 
         _openItem: function (e) {
+
           var entity = e.model.item;
-          var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.entityCode, entity.entityId, entity.translationId);
+          var href = null;
+
+          if (ForgeWebComponents.Helpers.UserHelper.canOperateWithEntity(entity.entityCode)) {
+            href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.entityCode, entity.entityId, entity.translationId);
+          }
+
           if (href) location.href = href;
+
         },
 
         filterChanged: function (time, entity, language) {
@@ -393,6 +440,16 @@
 
         return data;
 
+      }
+
+      function humanize(views) {
+        if (views >= 1000000) {
+          return parseFloat((views / 1000000).toFixed(1)).toString() + "M";
+        }
+        if (views >= 1000) {
+          return parseFloat((views / 1000).toFixed(0)).toString() + "k";
+        }
+        return views.toString();
       }
 
     })();

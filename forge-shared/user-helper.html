@@ -1,0 +1,34 @@
+<script>
+  (function (user) {
+
+    "use strict";
+
+    ForgeWebComponents.Helpers = window.ForgeWebComponents.Helpers || {};
+    var UH = ForgeWebComponents.Helpers.UserHelper = {
+      canOperateWithEntity: canOperateWithEntity,
+      canOperateWithCulture: canOperateWithCulture
+    };
+
+    function canOperateWithEntity(entityTypeFull) {
+
+      var EH = ForgeWebComponents.Helpers.EntityHelper;
+
+      var entityType = EH.sanitizeEntityType(entityTypeFull);
+
+      var permission = "CanOperateOn.Wcm." + entityType;
+
+      return user.Permissions.indexOf(permission) > -1;
+
+    }
+
+    function canOperateWithCulture(culture) {
+
+      var permission = "CanOperateOn.Wcm." + culture.toLowerCase();
+
+      return user.Permissions.indexOf(permission) > -1;
+
+    }
+
+  })(window.ForgeUser);
+
+</script>
