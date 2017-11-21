@@ -8,7 +8,7 @@
 
   <style is="custom-style" include="iron-flex iron-flex-alignment" />
   <style>
-     :host {
+    :host {
       display: block;
     }
 
@@ -111,8 +111,8 @@
     }
 
     .no-data-available iron-icon {
-      width: 128px;
-      height: 128px;
+      width: 72px;
+      height: 72px;
       margin: 8px;
     }
   </style>
@@ -377,7 +377,7 @@
           this._currentTranslationId = '';
 
           if (culture === "all") {
-            
+
             this._totalViews = result.totalViews;
             this._trendData = getTrendData(result.trend, currentFilter);
             this._geoData = getGeoData(result.geoLocations);
