@@ -37,6 +37,10 @@
         _entityChanged: function (newEntity, oldEntity) {
           if (typeof newEntity === 'string') return;
           this.onEntityChanged(newEntity);
+          
+          if(!this.text || !this.text.length){
+            this.text = '(no suggestions)';
+          }
         },
         onEntityChanged: function (entity) {
           var wordCount = 0;
