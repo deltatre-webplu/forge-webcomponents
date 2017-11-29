@@ -19,7 +19,7 @@
 
     function ItemIcon(icon, color) {
       //search the icon in the icon map
-      this.icon = ForgeWebComponents.Settings.IconMap[icon] || "icons:help-outline";
+      this.icon = ForgeWebComponents.Settings.IconMap[icon] || "device:widgets";
       this.color = color || "#ccc";
     }
 
@@ -46,7 +46,7 @@
       document: new ItemIcon("attach_file", "blueviolet"),
     };
 
-    //populate entities 
+    //populate entities
     EH.entities.push(new Entity("story", "Story", systemEntityIcons["story"]));
     EH.entities.push(new Entity("photo", "Photo", systemEntityIcons["photo"]));
     EH.entities.push(new Entity("album", "Album", systemEntityIcons["album"]));
@@ -76,7 +76,7 @@
 
     function getEntityIcon(entityType) {
 
-      var unknown = new ItemIcon("icons:help-outline", "#bbb");
+      var unknown = new ItemIcon("device:widgets", "#bbb");
 
       entityType = sanitizeEntityType(entityType);
 
