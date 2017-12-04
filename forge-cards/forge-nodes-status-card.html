@@ -5,200 +5,205 @@
 
 <dom-module id="forge-nodes-status-card">
 
-<style>
-:root {
+  <style>
+    :root {
 
-  --paper-item-focused-before: {
-    background-color: transparent;
-  }
-
-}
-
-:host {
-  display: block;
-}
-
-.nodes-status-card {
-  display: block;
-}
-
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
-
-.status {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--google-grey-300);
-}
-
-.status-0 {
-  background: var(--status-green-color);
-}
-.status-1 {
-  background: var(--status-red-color)
-}
-.status-2 {
-  background: var(--status-yellow-color);
-}
-
-.role-icon {
-  margin: 4px;
-  --iron-icon-fill-color: white;
-}
-
-.group-title {
-  @apply(--paper-font-title);
-}
-
-.paper-item-group {
-  background: var(--google-grey-100);
-}
-
-.card-actions {
-  display: flex;
-  justify-content: space-between;
-}
-
-.heartbeat-last-update {
-  @apply(--paper-font-body-1);
-  margin-top: 8px;
-}
-</style>
-
-<template>
-
-  <paper-card class="nodes-status-card" heading="[[localize('Nodes')]]">
-
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
-
-    <div class="card-content">
-
-      <template is="dom-repeat" items="{{groups}}" as="group">
-        <paper-icon-item class="paper-item-group">
-          <div class$="status status-[[group.Status]]" item-icon>
-            <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
-          </div>
-          <paper-item-body class="group-title">[[localize(group.Key)]]</paper-item-body>
-          <paper-icon-button icon="expand-more" alt="expand" on-tap="toggle"></paper-icon-button>
-        </paper-icon-item>
-        <iron-collapse id$="collapse-[[group.Key]]">
-          <template is="dom-repeat" items="{{group.Nodes}}">
-            <paper-icon-item>
-              <div class$="status status-[[item.Status]]" item-icon>
-                <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
-              </div>
-              <paper-item-body>
-                <div class="layout horizontal">
-                  <span class="flex" title="[[item.MachineIP]]">[[item.NodeId]]</span>
-                  <span>[[item.ApplicationVersion]]</span>
-                </div>
-              </paper-item-body>
-            </paper-icon-item>
-          </template>
-        </iron-collapse>
-      </template>
-
-    </div>
-
-    <div class="card-actions">
-      <paper-button on-click="restore">[[localize("reset")]]</paper-button>
-      <template is="dom-if" if="[[lastHeartbeatUpdate]]">
-        <div class="heartbeat-last-update">
-          <span>[[localize("Last update")]]: </span>
-          <moment-element date-time="[[lastHeartbeatUpdate]]"></moment-element>
-        </div>
-      </template>
-    </div>
-
-  </paper-card>
-
-</template>
-
-<script>
-(function() {
-  // icon: "icons:report-problem"
-  // icon: "icons:check-circle"
-  "use strict";
-
-  var hbApi = ForgeWebComponents.Api.HeartBeats;
-
-  Polymer({
-    is: 'forge-nodes-status-card',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      groups: {
-        type: Array,
-        notify: true,
-        value: []
-      },
-      lastHeartbeatUpdate: {
-        type: String
-      },
-      url: {
-        type: String,
-        value: "/api/heartbeats/groupBy/RoleType"
-      },
-      interval: {
-        type: Number,
-        value: 10000
+      --paper-item-focused-before: {
+        background-color: transparent;
       }
-    },
-    _onPollingUpdate: function(result) {
 
-      if(result) this.lastHeartbeatUpdate = new Date();
-
-      result.forEach(function(g) {
-        var role = ForgeWebComponents.Settings.SystemRoles[g.Key];
-        if (role) g.Icon = role.icon;
-      });
-
-      this.groups = result.sort(function(a,b) {
-
-        var A = a.Key.toUpperCase(); // ignore upper and lowercase
-        var B = b.Key.toUpperCase(); // ignore upper and lowercase
-
-        if (A < B) {
-          return -1;
-        }
-        if (A > B) {
-          return 1;
-        }
-
-        // names must be equal
-        return 0;
-
-      });
-
-    },
-    toggle: function(e) {
-      var collapse = this.$$("#collapse-" + e.model.group.Key);
-      var opened = !collapse.opened;
-      collapse.toggle();
-      if (opened) {
-        e.target.setAttribute('icon', 'expand-less');
-        e.target.setAttribute('alt', 'collapse');
-      }
-      else {
-        e.target.setAttribute('icon', 'expand-more')
-        e.target.setAttribute('alt', 'expand');
-      }
-    },
-    restore: function() {
-      hbApi.reset();
-      for (var i = 0; i < this.groups.length; i++) {
-        this.set("groups." + i + ".Status", 3);
-        this.set("groups." + i + ".Nodes", []);
-      }
     }
-  });
 
-})();
-</script>
+    :host {
+      display: block;
+    }
+
+    .nodes-status-card {
+      display: block;
+    }
+
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
+
+    .status {
+      display: inline-block;
+      box-sizing: border-box;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--google-grey-300);
+    }
+
+    .status-0 {
+      background: var(--status-green-color);
+    }
+
+    .status-1 {
+      background: var(--status-red-color)
+    }
+
+    .status-2 {
+      background: var(--status-yellow-color);
+    }
+
+    .role-icon {
+      margin: 4px;
+      --iron-icon-fill-color: white;
+    }
+
+    .group-title {
+      @apply(--paper-font-title);
+    }
+
+    .paper-item-group {
+      background: var(--google-grey-100);
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .heartbeat-last-update {
+      @apply(--paper-font-body-1);
+      margin-top: 8px;
+    }
+  </style>
+
+  <template>
+
+    <paper-card class="nodes-status-card" heading="[[localize('Nodes')]]">
+
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+      <div class="card-content">
+
+        <template is="dom-repeat" items="{{groups}}" as="group">
+          <paper-icon-item class="paper-item-group">
+            <div class$="status status-[[group.Status]]" item-icon>
+              <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
+            </div>
+            <paper-item-body class="group-title">[[localize(group.Key)]]</paper-item-body>
+            <paper-icon-button icon="expand-more" alt="expand" on-tap="toggle"></paper-icon-button>
+          </paper-icon-item>
+          <iron-collapse id$="collapse-[[group.Key]]">
+            <template is="dom-repeat" items="{{group.Nodes}}">
+              <paper-icon-item>
+                <div class$="status status-[[item.Status]]" item-icon>
+                  <iron-icon class="role-icon" icon="[[group.Icon]]"></iron-icon>
+                </div>
+                <paper-item-body>
+                  <div class="layout horizontal">
+                    <span class="flex" title="[[item.MachineIP]]">[[item.NodeId]]</span>
+                    <span>[[item.ApplicationVersion]]</span>
+                  </div>
+                </paper-item-body>
+              </paper-icon-item>
+            </template>
+          </iron-collapse>
+        </template>
+
+      </div>
+
+      <div class="card-actions">
+        <paper-button on-click="restore">[[localize("reset")]]</paper-button>
+        <template is="dom-if" if="[[lastHeartbeatUpdate]]">
+          <div class="heartbeat-last-update">
+            <span>[[localize("Last update")]]: </span>
+            <moment-element date-time="[[lastHeartbeatUpdate]]"></moment-element>
+          </div>
+        </template>
+      </div>
+
+    </paper-card>
+
+  </template>
+
+  <script>
+    (function () {
+      // icon: "icons:report-problem"
+      // icon: "icons:check-circle"
+      "use strict";
+
+      var hbApi = ForgeWebComponents.Api.HeartBeats;
+
+      Polymer({
+        is: 'forge-nodes-status-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          groups: {
+            type: Array,
+            notify: true,
+            value: []
+          },
+          lastHeartbeatUpdate: {
+            type: String
+          },
+          url: {
+            type: String,
+            value: "/api/heartbeats/groupBy/RoleType"
+          },
+          interval: {
+            type: Number,
+            value: 10000
+          }
+        },
+        _onPollingUpdate: function (result) {
+
+          if (result) {
+            this.lastHeartbeatUpdate = new Date();
+          }
+
+          const resultSet = result || [];
+          resultSet.forEach(function (g) {
+            var role = ForgeWebComponents.Settings.SystemRoles[g.Key];
+            if (role) {
+              g.Icon = role.icon;
+            }
+          });
+
+          this.groups = resultSet.sort(function (a, b) {
+            var A = a.Key.toUpperCase(); // ignore upper and lowercase
+            var B = b.Key.toUpperCase(); // ignore upper and lowercase
+
+            if (A < B) {
+              return -1;
+            }
+            if (A > B) {
+              return 1;
+            }
+
+            // names must be equal
+            return 0;
+          });
+
+        },
+        toggle: function (e) {
+          var collapse = this.$$("#collapse-" + e.model.group.Key);
+          var opened = !collapse.opened;
+          collapse.toggle();
+          if (opened) {
+            e.target.setAttribute('icon', 'expand-less');
+            e.target.setAttribute('alt', 'collapse');
+          }
+          else {
+            e.target.setAttribute('icon', 'expand-more')
+            e.target.setAttribute('alt', 'expand');
+          }
+        },
+        restore: function () {
+          hbApi.reset();
+          for (var i = 0; i < this.groups.length; i++) {
+            this.set("groups." + i + ".Status", 3);
+            this.set("groups." + i + ".Nodes", []);
+          }
+        }
+      });
+
+    })();
+  </script>
 
 </dom-module>

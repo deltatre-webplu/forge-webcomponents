@@ -6,119 +6,120 @@
 
 <dom-module id="forge-timetopublish-card">
 
-<style>
-:host {
-  display: block;
-}
+  <style>
+    :host {
+      display: block;
+    }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-paper-card {
-  display: block;
-}
+    paper-card {
+      display: block;
+    }
 
-.entity-icon-wrapper {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--google-grey-300);
-}
+    .entity-icon-wrapper {
+      display: inline-block;
+      box-sizing: border-box;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--google-grey-300);
+    }
 
-.entity-icon {
-  margin: 8px;
-  width: 24px;
-  height: 24px;
-  --iron-icon-fill-color: white;
-}
-.capitalize {
-  text-transform: capitalize;
-}
+    .entity-icon {
+      margin: 8px;
+      width: 24px;
+      height: 24px;
+      --iron-icon-fill-color: white;
+    }
 
-.card-disclaimer {
-  padding-bottom: 5px;
-}
-</style>
+    .capitalize {
+      text-transform: capitalize;
+    }
 
-<template>
+    .card-disclaimer {
+      padding-bottom: 5px;
+    }
+  </style>
 
-  <paper-card heading="[[localize('Time to first publish')]]">
+  <template>
 
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    <paper-card heading="[[localize('Time to first publish')]]">
 
-    <div class="card-content">
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-      <template is="dom-if" if="[[entities.length]]">
-        <div class="card-disclaimer">[[localize('wcm.cardTimeToPublishDisclaimer')]]</div>
-        <template is="dom-repeat" items="{{entities}}">
-          <paper-icon-item>
-            <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
-              <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
-            </div>
-            <paper-item-body>
-              <div class="entityTotal">
-                <span class="capitalize">[[localize(item.FriendlyName)]]:</span>
-                <moment-element format="humanize" date-time="[[item.Average]]"></moment-element>
+      <div class="card-content">
+
+        <template is="dom-if" if="[[entities.length]]">
+          <div class="card-disclaimer">[[localize('wcm.cardTimeToPublishDisclaimer')]]</div>
+          <template is="dom-repeat" items="{{entities}}">
+            <paper-icon-item>
+              <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+                <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
               </div>
-            </paper-item-body>
-          </paper-icon-item>
+              <paper-item-body>
+                <div class="entityTotal">
+                  <span class="capitalize">[[localize(item.FriendlyName)]]:</span>
+                  <moment-element format="humanize" date-time="[[item.Average]]"></moment-element>
+                </div>
+              </paper-item-body>
+            </paper-icon-item>
 
+          </template>
         </template>
-      </template>
 
-      <template is="dom-if" if="[[!entities.length]]">
+        <template is="dom-if" if="[[!entities.length]]">
           [[localize('wcm.cardTimeToPublishEmptyState')]]
           <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
-      </template>
+        </template>
 
-    </div>
+      </div>
 
-  </paper-card>
+    </paper-card>
 
-</template>
+  </template>
 
-<script>
-(function() {
-  "use strict";
+  <script>
+    (function () {
+      "use strict";
 
-  Polymer({
-    is: 'forge-timetopublish-card',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "/api/extensions/query/dashboards-wcm-timeToPublish"
-      },
-      interval: {
-        type: Number,
-        value: 600000
-      }
-    },
-    entities: {},
-    _onPollingUpdate: function(result) {
+      Polymer({
+        is: 'forge-timetopublish-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/dashboards-wcm-timeToPublish"
+          },
+          interval: {
+            type: Number,
+            value: 600000
+          }
+        },
+        entities: {},
+        _onPollingUpdate: function (result) {
+          const resultSet = result || [];
+          resultSet.forEach(function (e) {
 
-      result.forEach(function(e) {
+            e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
+            e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
+            //e.AverageHumanReadable = moment.duration(e.Average).humanize();
 
-        e.IconItem =  ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
-        e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
-        //e.AverageHumanReadable = moment.duration(e.Average).humanize();
+          });
 
+          this.entities = _.sortBy(resultSet, ['Average']).reverse();
+
+        },
+        _tellNewStory: function () {
+          location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');
+        }
       });
 
-      this.entities = _.sortBy(result, ['Average']).reverse();
-
-    },
-    _tellNewStory: function() {
-      location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>

@@ -8,175 +8,172 @@
 
 <dom-module id="forge-commandmetrics-trend-card">
 
-<style>
-:host {
-  display: block;
-}
+  <style>
+    :host {
+      display: block;
+    }
 
-paper-card {
-  display: block;
-}
+    paper-card {
+      display: block;
+    }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-.card-disclaimer {
+    .card-disclaimer {}
 
-}
+    .card-last-updated {
+      text-align: right;
+    }
 
-.card-last-updated {
-  text-align: right;
-}
+    google-chart {
+      height: auto;
+      width: 100%;
+    }
+  </style>
 
-google-chart {
-  height: auto;
-  width:100%;
-}
-</style>
+  <template>
 
-<template>
+    <paper-card heading="[[localize('Incoming Commands Trend')]]">
 
-  <paper-card heading="[[localize('Incoming Commands Trend')]]">
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+      <div class="card-content">
 
-    <div class="card-content">
+        <div class="card-disclaimer">[[localize('wcm.cardCommandTrendDisclaimer')]]</div>
 
-      <div class="card-disclaimer">[[localize('wcm.cardCommandTrendDisclaimer')]]</div>
+        <google-chart id="incomingCommandsTrend" type="line" options='{"legend" : { "alignment": "center", "position" : "right"  }, "curveType": "function", "vAxis": { "viewWindow": { "min": 0 } }, "series": { "0": { "lineWidth": 2, "color": "black" }, "1": { "lineWidth": 4, "color": "green" } } }'></google-chart>
 
-      <google-chart id="incomingCommandsTrend" type="line" options='{"legend" : { "alignment": "center", "position" : "right"  }, "curveType": "function", "vAxis": { "viewWindow": { "min": 0 } }, "series": { "0": { "lineWidth": 2, "color": "black" }, "1": { "lineWidth": 4, "color": "green" } } }'></google-chart>
+        <div class="card-last-updated">
+          <span>[[localize("Last Command Logged")]]: </span>
 
-      <div class="card-last-updated">
-        <span>[[localize("Last Command Logged")]]: </span>
+          <template is="dom-if" if="[[_hasLastCommandLogged(lastCommandLogged)]]">
+            <moment-element date-time="[[lastCommandLogged]]"></moment-element>
+          </template>
 
-        <template is="dom-if" if="[[_hasLastCommandLogged(lastCommandLogged)]]">
-          <moment-element date-time="[[lastCommandLogged]]"></moment-element>
-        </template>
+          <template is="dom-if" if="[[!_hasLastCommandLogged(lastCommandLogged)]]">
+            <span> [[localize('more than an hour ago')]]</span>
+          </template>
+        </div>
 
-        <template is="dom-if" if="[[!_hasLastCommandLogged(lastCommandLogged)]]">
-          <span> [[localize('more than an hour ago')]]</span>
-        </template>
       </div>
 
-    </div>
+    </paper-card>
 
-  </paper-card>
+  </template>
 
-</template>
+  <script>
+    (function () {
+      "use strict";
 
-<script>
-(function() {
-  "use strict";
-
-  function DataColumn(id, label, type) {
-    this.id = id;
-    this.label = label;
-    this.type = type;
-  }
-
-  function DataRow(dateTime, sent, handled) {
-    this.c = [{ v: dateTime }, { v: sent }, { v: handled }];
-  }
-
-  Polymer({
-    is: 'forge-commandmetrics-trend-card',
-    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "/api/extensions/query/dashboards-servicebus-commands?query=commandrate"
-      },
-      interval: {
-        type: Number,
-        value: 60000
-      }
-    },
-    listeners: {
-      'iron-resize': '_onIronResize',
-      'forge-language-changed': '_onLanguageChange'
-    },
-    lastCommandLogged: null,
-    _hasLastCommandLogged: function(lastCommandLogged){
-      return lastCommandLogged !== undefined &&
-              lastCommandLogged !== null &&
-               lastCommandLogged.length;
-    },
-    _onPollingUpdate: function(result) {
-      var data = {};
-
-      data.cols=[
-        new DataColumn("time", this.localize("Time"), "datetime"),
-        new DataColumn("sent", this.localize("Sent"), "number"),
-        new DataColumn("handled", this.localize("Handled"), "number")
-      ];
-
-      data.rows=[];
-
-      var last;
-      if (result && result.length) {
-        last = result[result.length - 1];
-        this.lastCommandLogged = last.rangeStart;
-      }
-      else
-      {
-        var now = new Date(Date.now());
-        now.setSeconds(0);
-        //Hide last minutes (AppInsight needs couples of minutes to expose data)
-        now.setMinutes(now.getMinutes() - 2);
-
-        last = { rangeStart: now };
-        this.lastCommandLogged = null;
+      function DataColumn(id, label, type) {
+        this.id = id;
+        this.label = label;
+        this.type = type;
       }
 
-      var firstDate = new Date(last.rangeStart);
-      firstDate.setHours(firstDate.getHours() - 1);
-
-      var date = new Date(firstDate);
-
-      for (var i = 0; i < 60; i++) {
-
-        date.setMinutes(date.getMinutes() + 1);
-        var isoDate = date.toISOString().substring(0, 19) + "Z";
-
-        var sent = result.find(function(entry) {
-          return entry.rangeStart === isoDate && entry.action === "sb:Send";
-        }) || { count: 0 };
-
-        var handledSuccess = result.find(function(entry) {
-          return entry.rangeStart === isoDate && entry.action === "sb:HandleSuccess";
-        }) || { count: 0 };
-
-        var handledFail = result.find(function(entry) {
-          return entry.rangeStart === isoDate && entry.action === "sb:HandleFail";
-        }) || { count: 0 };
-
-        data.rows.push(
-          new DataRow(new Date(date), sent.count, handledSuccess.count + handledFail.count)
-        );
-
+      function DataRow(dateTime, sent, handled) {
+        this.c = [{ v: dateTime }, { v: sent }, { v: handled }];
       }
 
-      this.$.incomingCommandsTrend.data = data;
+      Polymer({
+        is: 'forge-commandmetrics-trend-card',
+        behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/dashboards-servicebus-commands?query=commandrate"
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          }
+        },
+        listeners: {
+          'iron-resize': '_onIronResize',
+          'forge-language-changed': '_onLanguageChange'
+        },
+        lastCommandLogged: null,
+        _hasLastCommandLogged: function (lastCommandLogged) {
+          return lastCommandLogged !== undefined &&
+            lastCommandLogged !== null &&
+            lastCommandLogged.length;
+        },
+        _onPollingUpdate: function (result) {
+          const resultSet = result || [];
+          var data = {};
+          data.cols = [
+            new DataColumn("time", this.localize("Time"), "datetime"),
+            new DataColumn("sent", this.localize("Sent"), "number"),
+            new DataColumn("handled", this.localize("Handled"), "number")
+          ];
 
-    },
-    _onIronResize: function() {
-      this.$.incomingCommandsTrend.redraw();
-    },
-    _onLanguageChange: function() {
-      var data = _.cloneDeep(this.$.incomingCommandsTrend.data);
-      data.cols=[
-        new DataColumn("time", this.localize("Time"), "datetime"),
-        new DataColumn("sent", this.localize("Sent"), "number"),
-        new DataColumn("handled", this.localize("Handled"), "number")
-      ];
-      this.$.incomingCommandsTrend.data = data;
-    }
-  });
+          data.rows = [];
 
-})();
-</script>
+          var last;
+          if (resultSet.length) {
+            last = resultSet[resultSet.length - 1];
+            this.lastCommandLogged = last.rangeStart;
+          }
+          else {
+            var now = new Date(Date.now());
+            now.setSeconds(0);
+            //Hide last minutes (AppInsight needs couples of minutes to expose data)
+            now.setMinutes(now.getMinutes() - 2);
+
+            last = { rangeStart: now };
+            this.lastCommandLogged = null;
+          }
+
+          var firstDate = new Date(last.rangeStart);
+          firstDate.setHours(firstDate.getHours() - 1);
+
+          var date = new Date(firstDate);
+
+          for (var i = 0; i < 60; i++) {
+
+            date.setMinutes(date.getMinutes() + 1);
+            var isoDate = date.toISOString().substring(0, 19) + "Z";
+
+            var sent = resultSet.find(function (entry) {
+              return entry.rangeStart === isoDate && entry.action === "sb:Send";
+            }) || { count: 0 };
+
+            var handledSuccess = resultSet.find(function (entry) {
+              return entry.rangeStart === isoDate && entry.action === "sb:HandleSuccess";
+            }) || { count: 0 };
+
+            var handledFail = resultSet.find(function (entry) {
+              return entry.rangeStart === isoDate && entry.action === "sb:HandleFail";
+            }) || { count: 0 };
+
+            data.rows.push(
+              new DataRow(new Date(date), sent.count, handledSuccess.count + handledFail.count)
+            );
+
+          }
+
+          this.$.incomingCommandsTrend.data = data;
+
+        },
+        _onIronResize: function () {
+          this.$.incomingCommandsTrend.redraw();
+        },
+        _onLanguageChange: function () {
+          var data = _.cloneDeep(this.$.incomingCommandsTrend.data);
+          data.cols = [
+            new DataColumn("time", this.localize("Time"), "datetime"),
+            new DataColumn("sent", this.localize("Sent"), "number"),
+            new DataColumn("handled", this.localize("Handled"), "number")
+          ];
+          this.$.incomingCommandsTrend.data = data;
+        }
+      });
+
+    })();
+  </script>
 
 </dom-module>

@@ -6,81 +6,85 @@
 
 <dom-module id="forge-publishing-trends-card">
 
-<style>
-:host {
-  display: block;
-}
-
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
-
-paper-card {
-  display: block;
-}
-
-google-chart {
-  height: auto;
-  width:100%;
-}
-</style>
-
-<template>
-<!-- type="area" || type="line" || type="column" -->
-  <paper-card heading="[[localize(heading)]]">
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
-
-    <div class="card-content">
-      <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none", "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
-    </div>
-  </paper-card>
-</template>
-<script>
-(function() {
-  "use strict";
-
-  Polymer({
-    is: 'forge-publishing-trends-card',
-    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String
-      },
-      interval: {
-        type: Number,
-        value: 600000
-      },
-      heading: {
-        type: String
-      }
-    },
-    listeners: {
-      'iron-resize': '_onIronResize'
-    },
-    data:null,
-    _onPollingUpdate: function(result) {
-
-      var data = {};
-
-      data.cols=[{"id": "ga:"+result[0][0],label:result[0][0],type:"datetime"},{"id": "ga:"+result[0][1],label:result[0][1],type:"number"}];
-      data.rows=[];
-
-      for (var i = 1; i < result.length; i++) {
-        var c = [{v:new Date(result[i][0])},{v:result[i][1]}];
-        data.rows.push({c:c});
-      }
-
-      this.$.publishingTrendsChart.data = data;
-
-    },
-    _onIronResize: function() {
-      this.$.publishingTrendsChart.redraw();
+  <style>
+    :host {
+      display: block;
     }
-  });
 
-})();
-</script>
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
+
+    paper-card {
+      display: block;
+    }
+
+    google-chart {
+      height: auto;
+      width: 100%;
+    }
+  </style>
+
+  <template>
+    <!-- type="area" || type="line" || type="column" -->
+    <paper-card heading="[[localize(heading)]]">
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+
+      <div class="card-content">
+        <google-chart id="publishingTrendsChart" type="line" options='{ "legend": "none", "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
+      </div>
+    </paper-card>
+  </template>
+  <script>
+    (function () {
+      "use strict";
+
+      Polymer({
+        is: 'forge-publishing-trends-card',
+        behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String
+          },
+          interval: {
+            type: Number,
+            value: 600000
+          },
+          heading: {
+            type: String
+          }
+        },
+        listeners: {
+          'iron-resize': '_onIronResize'
+        },
+        data: null,
+        _onPollingUpdate: function (result) {
+
+          if (!result) {
+            return;
+          }
+
+          var data = {};
+
+          data.cols = [{ "id": "ga:" + result[0][0], label: result[0][0], type: "datetime" }, { "id": "ga:" + result[0][1], label: result[0][1], type: "number" }];
+          data.rows = [];
+
+          for (var i = 1; i < result.length; i++) {
+            var c = [{ v: new Date(result[i][0]) }, { v: result[i][1] }];
+            data.rows.push({ c: c });
+          }
+
+          this.$.publishingTrendsChart.data = data;
+
+        },
+        _onIronResize: function () {
+          this.$.publishingTrendsChart.redraw();
+        }
+      });
+
+    })();
+  </script>
 
 </dom-module>

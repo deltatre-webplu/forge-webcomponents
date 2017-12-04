@@ -9,57 +9,57 @@
   <style include="forge-table-styles"></style>
 
   <style>
-  :host {
-    display: block;
-  }
+    :host {
+      display: block;
+    }
 
-  paper-card {
-    display: block;
-  }
+    paper-card {
+      display: block;
+    }
 
-  paper-icon-item {
-    cursor: pointer;
-    cursor: hand;
-  }
+    paper-icon-item {
+      cursor: pointer;
+      cursor: hand;
+    }
 
-  .loading-bar {
-    --paper-progress-active-color: var(--paper-light-blue-500);
-    width: 100%;
-    position: absolute;
-  }
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-  .card-header {
-    padding: 16px;
-    font-size: 24px;
-    font-weight: 400;
-    color: #000;
-  }
+    .card-header {
+      padding: 16px;
+      font-size: 24px;
+      font-weight: 400;
+      color: #000;
+    }
 
-  .card-header .icon {
-    width: 32px;
-    height: 32px;
-    margin-right: 12px;
-  }
+    .card-header .icon {
+      width: 32px;
+      height: 32px;
+      margin-right: 12px;
+    }
 
-  .table-disclaimer {
-    padding: 16px 8px;
-    font-size: 14px;
-  }
+    .table-disclaimer {
+      padding: 16px 8px;
+      font-size: 14px;
+    }
 
-  .missingResults{
-    text-align: center;
-  }
+    .missingResults {
+      text-align: center;
+    }
 
-  .forge-table td, .forge-table th {
-    width: 80px;
-  }
+    .forge-table td,
+    .forge-table th {
+      width: 80px;
+    }
 
-  .table-main-col {
-    width:auto !important;
-    overflow:hidden;
-    white-space:nowrap;
-  }
-
+    .table-main-col {
+      width: auto !important;
+      overflow: hidden;
+      white-space: nowrap;
+    }
   </style>
 
   <template>
@@ -84,7 +84,7 @@
                 <th class="table-main-col">[[localize("Page")]]</th>
                 <th>[[localize("Status")]]</th>
                 <th>[[localize("Count")]]*</th>
-              <tr>
+                <tr>
             </thead>
 
             <tbody>
@@ -121,46 +121,47 @@
   </template>
 
   <script>
-  (function() {
-    "use strict";
+    (function () {
+      "use strict";
 
-    Polymer({
-      is: 'forge-page-statistics-card',
-      behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-      _missingResults: true,
-      properties: {
-        url: {
-          type: String,
-          value: "/api/extensions/query/statistics?queryId=topRequestedPages"
+      Polymer({
+        is: 'forge-page-statistics-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        _missingResults: true,
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/statistics?queryId=topRequestedPages"
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          },
+          heading: {
+            type: String,
+            value: "Top requested pages"
+          },
+          icon: {
+            type: String,
+            value: "icons:star"
+          }
         },
-        interval: {
-          type: Number,
-          value: 60000
+        pages: [],
+        hideLoading: true,
+        _onPollingError: function () {
+          this._missingResults = true;
         },
-        heading: {
-          type: String,
-          value: "Top requested pages"
-        },
-        icon:{
-          type: String,
-          value: "icons:star"
+        _onPollingUpdate: function (result) {
+          const resultSet = result || [];
+          resultSet.forEach(function (r) {
+            r.url = ForgeWebComponents.Helpers.VsmHelper.createPageUrl(r.path);
+          });
+          this._missingResults = !resultSet.length;
+          this.pages = resultSet;
         }
-      },
-      pages: [],
-      hideLoading: true,
-      _onPollingError: function() {
-        this._missingResults = true;
-      },
-      _onPollingUpdate: function(result) {
-        result.forEach(function(r) {
-          r.url = ForgeWebComponents.Helpers.VsmHelper.createPageUrl(r.path);
-        });
-        this._missingResults = !result.length;
-        this.pages = result;
-      }
-    });
+      });
 
-  })();
+    })();
   </script>
 
 </dom-module>

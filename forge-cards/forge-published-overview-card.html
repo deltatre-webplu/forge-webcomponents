@@ -5,135 +5,138 @@
 
 <dom-module id="forge-published-overview-card">
 
-<style>
-:root {
-  --paper-item-focused-before: {
-    background-color: transparent;
-  }
-}
-:host {
-  display: block;
-}
+  <style>
+    :root {
+      --paper-item-focused-before: {
+        background-color: transparent;
+      }
+    }
 
-paper-icon-item {
-  cursor: pointer;
-  cursor: hand;
-}
+    :host {
+      display: block;
+    }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    paper-icon-item {
+      cursor: pointer;
+      cursor: hand;
+    }
 
-paper-card {
-  display: block;
-}
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-.header {
-  padding: 16px;
-  font-size: 24px;
-  font-weight: 400;
-}
+    paper-card {
+      display: block;
+    }
 
-.entityTotal {
-  font-size: 16px;
-  text-transform: capitalize;
-}
+    .header {
+      padding: 16px;
+      font-size: 24px;
+      font-weight: 400;
+    }
 
-.entity-icon-wrapper {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--google-grey-300);
-}
+    .entityTotal {
+      font-size: 16px;
+      text-transform: capitalize;
+    }
 
-.entity-icon {
-  margin: 8px;
-  width: 24px;
-  height: 24px;
-  --iron-icon-fill-color: white;
-}
-</style>
+    .entity-icon-wrapper {
+      display: inline-block;
+      box-sizing: border-box;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--google-grey-300);
+    }
 
-<template>
+    .entity-icon {
+      margin: 8px;
+      width: 24px;
+      height: 24px;
+      --iron-icon-fill-color: white;
+    }
+  </style>
 
-  <paper-card heading="[[localize('wcm.chartHeadingEntitiesPublishedTotal')]]: [[grandTotal]]">
+  <template>
 
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    <paper-card heading="[[localize('wcm.chartHeadingEntitiesPublishedTotal')]]: [[grandTotal]]">
 
-    <div class="card-content">
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-			<template is="dom-if" if="[[!entities.length]]">
+      <div class="card-content">
+
+        <template is="dom-if" if="[[!entities.length]]">
           [[localize('wcm.cardPublihedOverviewEmptyState')]]
           <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
-      </template>
+        </template>
 
-      <template is="dom-repeat" items="{{entities}}">
-        <paper-icon-item on-tap="_openItem">
-          <paper-ripple></paper-ripple>
-          <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
-            <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
-          </div>
-          <paper-item-body>
-            <div class="entityTotal">[[localize(item.FriendlyName)]]: [[item.Total]]</div>
-          </paper-item-body>
-        </paper-icon-item>
+        <template is="dom-repeat" items="{{entities}}">
+          <paper-icon-item on-tap="_openItem">
+            <paper-ripple></paper-ripple>
+            <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+              <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
+            </div>
+            <paper-item-body>
+              <div class="entityTotal">[[localize(item.FriendlyName)]]: [[item.Total]]</div>
+            </paper-item-body>
+          </paper-icon-item>
 
-      </template>
+        </template>
 
-    </div>
+      </div>
 
-  </paper-card>
+    </paper-card>
 
-</template>
-<script>
-(function() {
-  "use strict";
+  </template>
+  <script>
+    (function () {
+      "use strict";
 
-  Polymer({
-    is: 'forge-published-overview-card',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "/api/extensions/query/dashboards-wcm-published-totals"
-      },
-      interval: {
-        type: Number,
-        value: 600000
-      }
-    },
-    entities:[],
-    grandTotal:0,
-    _onPollingUpdate: function(result) {
+      Polymer({
+        is: 'forge-published-overview-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/dashboards-wcm-published-totals"
+          },
+          interval: {
+            type: Number,
+            value: 600000
+          }
+        },
+        entities: [],
+        grandTotal: 0,
+        _onPollingUpdate: function (result) {
+          if (!result) {
+            return;
+          }
 
-      result.TotalByEntities.forEach(function(e) {
-        e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
-        e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
+          result.TotalByEntities.forEach(function (e) {
+            e.FriendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
+            e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
+          });
+
+          this.grandTotal = result.Total;
+          this.entities = _.sortBy(result.TotalByEntities, ['Total']).reverse();
+        },
+        _openItem: function (e) {
+          var entity = e.model.item;
+
+          let query = {
+            stage: "published"
+          }
+          var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(entity.EntityType, query);
+          if (href) location.href = href;
+        },
+        _tellNewStory: function () {
+          location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');
+        }
       });
 
-      this.grandTotal = result.Total;
-      this.entities = _.sortBy(result.TotalByEntities, ['Total']).reverse();
-
-    },
-    _openItem: function(e) {
-      var entity = e.model.item;
-
-      let query = {
-        stage: "published"
-      }
-      var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(entity.EntityType, query);
-      if (href) location.href = href;
-    },
-    _tellNewStory: function() {
-      location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>

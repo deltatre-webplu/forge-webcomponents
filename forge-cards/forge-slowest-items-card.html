@@ -9,67 +9,68 @@
   <style include="forge-table-styles"></style>
 
   <style>
-  :host {
-    display: block;
-  }
+    :host {
+      display: block;
+    }
 
-  paper-card {
-    display: block;
-  }
+    paper-card {
+      display: block;
+    }
 
-  paper-icon-item {
-    cursor: pointer;
-    cursor: hand;
-  }
+    paper-icon-item {
+      cursor: pointer;
+      cursor: hand;
+    }
 
-  .loading-bar {
-    --paper-progress-active-color: var(--paper-light-blue-500);
-    width: 100%;
-    position: absolute;
-  }
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-  .card-header {
-    padding: 16px;
-    font-size: 24px;
-    font-weight: 400;
-    color: #000;
-    line-height: 32px;
-  }
+    .card-header {
+      padding: 16px;
+      font-size: 24px;
+      font-weight: 400;
+      color: #000;
+      line-height: 32px;
+    }
 
-  .card-header .icon {
-    width: 32px;
-    height: 32px;
-    margin-right: 12px;
-  }
+    .card-header .icon {
+      width: 32px;
+      height: 32px;
+      margin-right: 12px;
+    }
 
-  .table-disclaimer {
-    padding: 16px 8px;
-    font-size: 14px;
-  }
+    .table-disclaimer {
+      padding: 16px 8px;
+      font-size: 14px;
+    }
 
-  .status-danger {
-    color: var(--status-red-color);
-    font-weight: 600;
-  }
-  .status-warning {
-    color: var(--status-yellow-color);
-    font-weight: 600;
-  }
+    .status-danger {
+      color: var(--status-red-color);
+      font-weight: 600;
+    }
 
-  .missingResults{
-    text-align: center;
-  }
+    .status-warning {
+      color: var(--status-yellow-color);
+      font-weight: 600;
+    }
 
-  .forge-table td, .forge-table th {
-    width: 80px;
-  }
+    .missingResults {
+      text-align: center;
+    }
 
-  .table-main-col {
-    width:auto !important;
-    overflow:hidden;
-    white-space:nowrap;
-  }
+    .forge-table td,
+    .forge-table th {
+      width: 80px;
+    }
 
+    .table-main-col {
+      width: auto !important;
+      overflow: hidden;
+      white-space: nowrap;
+    }
   </style>
 
   <template>
@@ -96,7 +97,7 @@
                   <th class="table-main-col">[[localize("Page")]]</th>
                   <th>[[localize("Status")]]</th>
                   <th>[[localize("Avg. (ms)")]]</th>
-                <tr>
+                  <tr>
               </thead>
 
               <tbody>
@@ -123,7 +124,7 @@
                 <tr>
                   <th class="table-main-col">[[localize("Page")]]</th>
                   <th>[[localize("Avg. (ms)")]]</th>
-                <tr>
+                  <tr>
               </thead>
 
               <tbody>
@@ -144,8 +145,16 @@
           <div class="table-disclaimer">
             <div>[[localize("Thresholds:")]]</div>
             <ul>
-              <li><span>[[localize("valuesHigherThanmsAreConsideredA", "from", thresholdWarning)]] <span><span class="status-warning">[[localize("warning")]]</span></li>
-              <li><span>[[localize("valuesHigherThanmsAreConsideredA", "from", thresholdDanger)]] <span><span class="status-danger">[[localize("danger")]]</span></li>
+              <li>
+                <span>[[localize("valuesHigherThanmsAreConsideredA", "from", thresholdWarning)]]
+                  <span>
+                    <span class="status-warning">[[localize("warning")]]</span>
+              </li>
+              <li>
+                <span>[[localize("valuesHigherThanmsAreConsideredA", "from", thresholdDanger)]]
+                  <span>
+                    <span class="status-danger">[[localize("danger")]]</span>
+              </li>
             </ul>
           </div>
 
@@ -165,78 +174,79 @@
   </template>
 
   <script>
-  (function() {
-    "use strict";
+    (function () {
+      "use strict";
 
-    Polymer({
-      is: 'forge-slowest-items-card',
-      behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-      _missingResults: true,
-      properties: {
-        url: {
-          type: String
+      Polymer({
+        is: 'forge-slowest-items-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        _missingResults: true,
+        properties: {
+          url: {
+            type: String
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          },
+          heading: {
+            type: String,
+            value: "Slowest items"
+          },
+          icon: {
+            type: String,
+            value: "icons:hourglass-empty"
+          },
+          mode: {
+            type: String,
+            value: "page" // or "query"
+          },
+          thresholdWarning: {
+            type: Number,
+            value: 1000
+          },
+          thresholdDanger: {
+            type: Number,
+            value: 3000
+          }
         },
-        interval: {
-          type: Number,
-          value: 60000
+        items: [],
+        hideLoading: true,
+        isMode: function (mode) {
+          return this.mode === mode;
         },
-        heading: {
-          type: String,
-          value: "Slowest items"
+        _onPollingError: function () {
+          this._missingResults = true;
         },
-        icon:{
-          type: String,
-          value: "icons:hourglass-empty"
-        },
-        mode: {
-          type: String,
-          value: "page" // or "query"
-        },
-        thresholdWarning: {
-          type: Number,
-          value: 1000
-        },
-        thresholdDanger: {
-          type: Number,
-          value: 3000
+        _onPollingUpdate: function (result) {
+          var _this = this;
+          const resultSet = result || [];
+          resultSet.forEach(function (r) {
+
+            if (_this.mode === "page") {
+              r.url = ForgeWebComponents.Helpers.VsmHelper.createPageUrl(r.path);
+            }
+            else if (_this.mode === "query") {
+              r.url = ForgeWebComponents.Helpers.VsmHelper.createQueryUrl(r.path);
+            }
+
+            r.average = Math.round(r.average);
+
+            r.class = "normal";
+            if (r.average >= _this.thresholdDanger) {
+              r.class = "danger";
+            }
+            else if (r.average >= _this.thresholdWarning) {
+              r.class = "warning";
+            }
+
+          });
+          this._missingResults = !resultSet.length;
+          this.items = resultSet;
         }
-      },
-      items: [],
-      hideLoading: true,
-      isMode: function(mode) {
-        return this.mode === mode;
-      },
-      _onPollingError: function() {
-        this._missingResults = true;
-      },
-      _onPollingUpdate: function(result) {
-        var _this = this;
-        result.forEach(function(r) {
+      });
 
-          if (_this.mode === "page") {
-            r.url = ForgeWebComponents.Helpers.VsmHelper.createPageUrl(r.path);
-          }
-          else if (_this.mode === "query") {
-            r.url = ForgeWebComponents.Helpers.VsmHelper.createQueryUrl(r.path);
-          }
-
-          r.average = Math.round(r.average);
-
-          r.class = "normal";
-          if (r.average >= _this.thresholdDanger) {
-            r.class = "danger";
-          }
-          else if (r.average >= _this.thresholdWarning) {
-            r.class = "warning";
-          }
-
-        });
-        this._missingResults = !result.length;
-        this.items = result;
-      }
-    });
-
-  })();
+    })();
   </script>
 
 </dom-module>

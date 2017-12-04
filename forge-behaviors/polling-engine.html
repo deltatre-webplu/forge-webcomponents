@@ -34,6 +34,12 @@
         }
       });
 
+      function repoll() {
+        var end = +new Date();
+        var t = self.interval - (end - start);
+        self.timeout = setTimeout(self.poll.bind(self), Math.max(t, 0));
+      }
+
       //console.log('polling', self.url);
 
       ForgeWebComponents.Api
@@ -53,9 +59,7 @@
             }
           });
 
-          var end = +new Date();
-          var t = error ? 500 : self.interval - (end - start);
-          self.timeout = setTimeout(self.poll.bind(self), Math.max(t, 0));
+          repoll();
 
         }, function () {
 
@@ -69,9 +73,7 @@
             }
           });
 
-          var end = +new Date();
-          var t = self.interval - (end - start);
-          self.timeout = setTimeout(self.poll.bind(self), t);
+          repoll();
 
         });
 

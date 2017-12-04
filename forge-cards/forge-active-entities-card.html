@@ -6,133 +6,136 @@
 
 <dom-module id="forge-active-entities-card">
 
-<style>
-:host {
-  display: block;
-}
+  <style>
+    :host {
+      display: block;
+    }
 
-paper-card {
-  display: block;
-}
+    paper-card {
+      display: block;
+    }
 
-paper-icon-item {
-  cursor: pointer;
-  cursor: hand;
-}
+    paper-icon-item {
+      cursor: pointer;
+      cursor: hand;
+    }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-.header {
-  font-weight: 400;
-  font-size: 16px;
-}
+    .header {
+      font-weight: 400;
+      font-size: 16px;
+    }
 
-.strong {
-  font-weight: 700;
-}
+    .strong {
+      font-weight: 700;
+    }
 
-.entity-icon-wrapper {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--google-grey-300);
-}
-.entity-icon {
-  margin: 8px;
-  width: 24px;
-  height: 24px;
-  --iron-icon-fill-color: white;
-}
-</style>
+    .entity-icon-wrapper {
+      display: inline-block;
+      box-sizing: border-box;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--google-grey-300);
+    }
 
-<template>
+    .entity-icon {
+      margin: 8px;
+      width: 24px;
+      height: 24px;
+      --iron-icon-fill-color: white;
+    }
+  </style>
 
-  <paper-card heading="[[localize('Last Active Entities')]]">
+  <template>
 
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    <paper-card heading="[[localize('Last Active Entities')]]">
 
-    <div class="card-content">
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-      <template is="dom-if" if="[[entities.length]]">
+      <div class="card-content">
 
-        <template is="dom-repeat" items="{{entities}}">
+        <template is="dom-if" if="[[entities.length]]">
 
-          <paper-icon-item on-tap="_openItem">
-            <paper-ripple></paper-ripple>
-            <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
-              <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
-            </div>
-            <paper-item-body two-line>
-              <div class="header">[[item.Title]] ([[localize(item.Name)]])</div>
-              <div secondary>
-                <span>[[localize('wcm.wasEditedBy')]]</span> <span class="strong">[[item.LastUpdateUser]]</span> <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
+          <template is="dom-repeat" items="{{entities}}">
+
+            <paper-icon-item on-tap="_openItem">
+              <paper-ripple></paper-ripple>
+              <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+                <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
               </div>
-            </paper-item-body>
-          </paper-icon-item>
+              <paper-item-body two-line>
+                <div class="header">[[item.Title]] ([[localize(item.Name)]])</div>
+                <div secondary>
+                  <span>[[localize('wcm.wasEditedBy')]]</span>
+                  <span class="strong">[[item.LastUpdateUser]]</span>
+                  <moment-element date-time="[[item.LastUpdateDate]]"></moment-element>
+                </div>
+              </paper-item-body>
+            </paper-icon-item>
+
+          </template>
 
         </template>
 
-      </template>
+        <template is="dom-if" if="[[!entities.length]]">
 
-      <template is="dom-if" if="[[!entities.length]]">
+          [[localize("wcm.noEntitiesInProgress")]]
+          <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
 
-        [[localize("wcm.noEntitiesInProgress")]]
-        <paper-button on-tap="_tellNewStory">[[localize("wcm.tellANewStory")]]</paper-button>
+        </template>
 
-      </template>
-
-    </div>
+      </div>
 
 
-  </paper-card>
+    </paper-card>
 
-</template>
+  </template>
 
-<script>
-(function() {
-  "use strict";
+  <script>
+    (function () {
+      "use strict";
 
-  Polymer({
-    is: 'forge-active-entities-card',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "deltatre.forge.wcm/api/realtime/active_entities"
-      },
-      interval: {
-        type: Number,
-        value: 60000
-      }
-    },
-    entities: [],
-    hideLoading: true,
-    _onPollingUpdate: function(result) {
+      Polymer({
+        is: 'forge-active-entities-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "deltatre.forge.wcm/api/realtime/active_entities"
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          }
+        },
+        entities: [],
+        hideLoading: true,
+        _onPollingUpdate: function (result) {
+          var resultSet = result || [];
+          resultSet.forEach(function (e) {
+            e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
+            e.Name = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
+          });
 
-      result.forEach(function(e) {
-        e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
-        e.Name = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
+          this.entities = resultSet;
+        },
+        _openItem: function (e) {
+          var entity = e.model.item;
+          var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.EntityType, entity.Id, entity.TranslationId);
+          if (href) location.href = href;
+        },
+        _tellNewStory: function () {
+          location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');
+        }
       });
 
-      this.entities = result;
-    },
-    _openItem: function(e) {
-      var entity = e.model.item;
-      var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.EntityType, entity.Id, entity.TranslationId);
-      if (href) location.href = href;
-    },
-    _tellNewStory: function() {
-      location.href = ForgeWebComponents.Helpers.EntityHelper.createLink('story', 'new', 'new');
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>

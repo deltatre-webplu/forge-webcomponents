@@ -6,130 +6,132 @@
 
 <dom-module id="forge-scheduled-failed-card">
 
-<style>
-:host {
-  display: block;
-}
+  <style>
+    :host {
+      display: block;
+    }
 
-paper-card {
-  display: block;
-}
+    paper-card {
+      display: block;
+    }
 
-paper-icon-item {
-  cursor: pointer;
-  cursor: hand;
-}
+    paper-icon-item {
+      cursor: pointer;
+      cursor: hand;
+    }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-.header {
-  font-weight: 400;
-  font-size: 16px;
-}
+    .header {
+      font-weight: 400;
+      font-size: 16px;
+    }
 
-.strong {
-  font-weight: 700;
-}
+    .strong {
+      font-weight: 700;
+    }
 
-.entity-icon-wrapper {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--google-grey-300);
-}
-.entity-icon {
-  margin: 8px;
-  width: 24px;
-  height: 24px;
-  --iron-icon-fill-color: white;
-}
-</style>
+    .entity-icon-wrapper {
+      display: inline-block;
+      box-sizing: border-box;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--google-grey-300);
+    }
 
-<template>
+    .entity-icon {
+      margin: 8px;
+      width: 24px;
+      height: 24px;
+      --iron-icon-fill-color: white;
+    }
+  </style>
 
-  <paper-card heading="[[localize('Failed Schedules')]]">
+  <template>
 
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    <paper-card heading="[[localize('Failed Schedules')]]">
 
-    <div class="card-content">
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-      <template is="dom-if" if="[[entities.length]]">
+      <div class="card-content">
 
-        <template is="dom-repeat" items="{{entities}}">
+        <template is="dom-if" if="[[entities.length]]">
 
-          <paper-icon-item on-tap="_openItem">
-            <paper-ripple></paper-ripple>
-            <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
-              <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
-            </div>
-            <paper-item-body two-line>
-              <div class="header">[[item.Title]] ([[localize(item.EntityType)]])</div>
-              <div secondary>
-                <span class="strong">[[localize(item.Command)]]</span> <moment-element date-time="[[item.ScheduleInfo.ScheduleAt]]"></moment-element>
+          <template is="dom-repeat" items="{{entities}}">
+
+            <paper-icon-item on-tap="_openItem">
+              <paper-ripple></paper-ripple>
+              <div class="entity-icon-wrapper" style$="background:[[item.IconItem.color]]" item-icon>
+                <iron-icon class="entity-icon" icon="[[item.IconItem.icon]]"></iron-icon>
               </div>
-            </paper-item-body>
-          </paper-icon-item>
+              <paper-item-body two-line>
+                <div class="header">[[item.Title]] ([[localize(item.EntityType)]])</div>
+                <div secondary>
+                  <span class="strong">[[localize(item.Command)]]</span>
+                  <moment-element date-time="[[item.ScheduleInfo.ScheduleAt]]"></moment-element>
+                </div>
+              </paper-item-body>
+            </paper-icon-item>
+
+          </template>
 
         </template>
 
-      </template>
+        <template is="dom-if" if="[[!entities.length]]">
 
-      <template is="dom-if" if="[[!entities.length]]">
+          [[localize("wcm.noEntitiesScheduledFailed")]]
 
-        [[localize("wcm.noEntitiesScheduledFailed")]]
+        </template>
 
-      </template>
-
-    </div>
+      </div>
 
 
-  </paper-card>
+    </paper-card>
 
-</template>
+  </template>
 
-<script>
-(function() {
-  "use strict";
-  var from = new Date();
-  from.setDate(from.getDate() - 2);
-  var apiUrl = "/deltatre.forge.wcm/api/scheduled/failed?limit=5&from=" + from.toJSON();
+  <script>
+    (function () {
+      "use strict";
+      var from = new Date();
+      from.setDate(from.getDate() - 2);
+      var apiUrl = "/deltatre.forge.wcm/api/scheduled/failed?limit=5&from=" + from.toJSON();
 
-  Polymer({
-    is: 'forge-scheduled-failed-card',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: apiUrl
-      },
-      interval: {
-        type: Number,
-        value: 60000
-      }
-    },
-    entities: [],
-    _onPollingUpdate: function(result) {
+      Polymer({
+        is: 'forge-scheduled-failed-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: apiUrl
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          }
+        },
+        entities: [],
+        _onPollingUpdate: function (result) {
+          const resultSet = result || [];
+          resultSet.forEach(function (e) {
+            e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
+          });
 
-      result.forEach(function(e) {
-        e.IconItem = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
+          this.entities = resultSet;
+        },
+        _openItem: function (e) {
+          var entity = e.model.item;
+          var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.EntityType, entity.EntityId, entity.TranslationId);
+          if (href) location.href = href;
+        }
       });
 
-      this.entities = result;
-    },
-    _openItem: function(e) {
-      var entity = e.model.item;
-      var href = ForgeWebComponents.Helpers.EntityHelper.createLink(entity.EntityType, entity.EntityId, entity.TranslationId);
-      if (href) location.href = href;
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>

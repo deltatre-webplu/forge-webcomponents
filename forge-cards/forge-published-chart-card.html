@@ -6,106 +6,105 @@
 
 <dom-module id="forge-published-chart-card">
 
-<style>
-:host {
-  display: block;
-}
+  <style>
+    :host {
+      display: block;
+    }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-paper-card {
-  display: block;
-}
+    paper-card {
+      display: block;
+    }
 
-google-chart {
-  height: 350px;
-  width: 100%;
-}
-</style>
+    google-chart {
+      height: 350px;
+      width: 100%;
+    }
+  </style>
 
-<template>
+  <template>
 
-  <paper-card heading="[[localize('wcm.chartHeadingEntitiesByType')]]">
+    <paper-card heading="[[localize('wcm.chartHeadingEntitiesByType')]]">
 
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-    <div class="card-content">
-      <google-chart id="publishedChart"
-                    type="pie"
-                    options="[[options]]"
-                    data="[[data]]"></google-chart>
-    </div>
-  </paper-card>
+      <div class="card-content">
+        <google-chart id="publishedChart" type="pie" options="[[options]]" data="[[data]]"></google-chart>
+      </div>
+    </paper-card>
 
-</template>
-<script>
-(function() {
-  "use strict";
+  </template>
+  <script>
+    (function () {
+      "use strict";
 
-  Polymer({
-    is: 'forge-published-chart-card',
-    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "/api/extensions/query/dashboards-wcm-published-totals?outputType=charts"
-      },
-      interval: {
-        type: Number,
-        value: 600000
-      }
-    },
-    listeners: {
-      'iron-resize': '_onIronResize',
-      'forge-language-changed': '_onLanguageChange'
-    },
-    data: null,
-    options: null,
-    _onPollingUpdate: function(result) {
-      this._result = result;
-      this._parseResult();
-    },
-    _parseResult: function() {
+      Polymer({
+        is: 'forge-published-chart-card',
+        behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/dashboards-wcm-published-totals?outputType=charts"
+          },
+          interval: {
+            type: Number,
+            value: 600000
+          }
+        },
+        listeners: {
+          'iron-resize': '_onIronResize',
+          'forge-language-changed': '_onLanguageChange'
+        },
+        data: null,
+        options: null,
+        _onPollingUpdate: function (result) {
+          this._result = result;
+          this._parseResult();
+        },
+        _parseResult: function () {
 
-      if (!this._result) return;
+          if (!this._result) {
+            return;
+          }
 
-      var working = _.cloneDeep(this._result);
-      var header = working.splice(0, 1)[0];
-      var colors = [];
+          var working = _.cloneDeep(this._result);
+          var header = working.splice(0, 1)[0];
+          var colors = [];
 
-      working.sort(function(a, b) {
-        return a[1] < b[1];
+          working.sort(function (a, b) {
+            return a[1] < b[1];
+          });
+
+          for (var i = 0; i < working.length; i++) {
+
+            var entityType = working[i][0];
+            var color = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(entityType).color;
+
+            working[i][0] = this.localize(ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(entityType));
+
+            colors.push(color);
+
+          }
+
+          working.unshift(header);
+          this.options = { colors: colors, chartArea: { "height": "90%" }, legend: { alignment: "center", position: "right" } };
+          this.data = working;
+
+        },
+        _onIronResize: function () {
+          this.$.publishedChart.redraw();
+        },
+        _onLanguageChange: function () {
+          this._parseResult();
+        }
       });
 
-      for (var i = 0; i < working.length; i++) {
-
-        var entityType = working[i][0];
-        var color = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(entityType).color;
-
-        working[i][0] = this.localize(ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(entityType));
-
-        colors.push(color);
-
-      }
-
-      working.unshift(header);
-      this.options = { colors: colors, chartArea: {"height": "90%"}, legend : { alignment: "center", position : "right"  } };
-      this.data = working;
-
-    },
-    _onIronResize: function() {
-      this.$.publishedChart.redraw();
-    },
-    _onLanguageChange: function() {
-      this._parseResult();
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>

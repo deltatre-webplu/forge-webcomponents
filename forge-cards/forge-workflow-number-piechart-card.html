@@ -6,99 +6,99 @@
 
 <dom-module id="forge-workflow-number-piechart-card">
 
-<style>
-:host {
-  display: block;
-}
+  <style>
+    :host {
+      display: block;
+    }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    .loading-bar {
+      --paper-progress-active-color: var(--paper-light-blue-500);
+      width: 100%;
+      position: absolute;
+    }
 
-paper-card {
-  display: block;
-}
+    paper-card {
+      display: block;
+    }
 
-google-chart {
-  height: 400;
-  width:100%;
-}
-</style>
+    google-chart {
+      height: 400;
+      width: 100%;
+    }
+  </style>
 
-<template>
+  <template>
 
-  <paper-card heading="[[localize('Stage distribution')]]">
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
+    <paper-card heading="[[localize('Stage distribution')]]">
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-    <div class="card-content">
-      <google-chart id="workflowNumberPieChart" type="pie" options='{ "chartArea": {"height": "90%"}, "legend" : { "alignment": "center", "position" : "right"  }, "pieHole": 0.4, "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
-    </div>
-  </paper-card>
+      <div class="card-content">
+        <google-chart id="workflowNumberPieChart" type="pie" options='{ "chartArea": {"height": "90%"}, "legend" : { "alignment": "center", "position" : "right"  }, "pieHole": 0.4, "vAxis": {"viewWindow": {"min": 0}}}'></google-chart>
+      </div>
+    </paper-card>
 
-</template>
-<script>
-(function() {
-  "use strict";
+  </template>
+  <script>
+    (function () {
+      "use strict";
 
-  Polymer({
-    is: 'forge-workflow-number-piechart-card',
-    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "/api/extensions/query/dashboards-wcm-stages-totals"
-      },
-      interval: {
-        type: Number,
-        value: 600000
-      }
-    },
-    listeners: {
-      'iron-resize': '_onIronResize',
-      'forge-language-changed': '_onLanguageChange'
-    },
-    stages:[],
+      Polymer({
+        is: 'forge-workflow-number-piechart-card',
+        behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/dashboards-wcm-stages-totals"
+          },
+          interval: {
+            type: Number,
+            value: 600000
+          }
+        },
+        listeners: {
+          'iron-resize': '_onIronResize',
+          'forge-language-changed': '_onLanguageChange'
+        },
+        stages: [],
 
-    _onPollingUpdate: function(result) {
-      this.stages = result;
-      this._drawFromEntites();
-    },
-    _drawFromEntites: function(){
-      var cols = ["EntityType", "Total"];
-      var rows = [];
-      var _this = this;
-      //Cycle over WorkflowStatuses
-      this.stages.forEach(function(ws) {
-        var status = _this.localize(ws.WorkflowStatus[0].toUpperCase() + ws.WorkflowStatus.substring(1));
+        _onPollingUpdate: function (result) {
+          this.stages = result || [];
+          this._drawFromEntites();
+        },
+        _drawFromEntites: function () {
+          var cols = ["EntityType", "Total"];
+          var rows = [];
+          var _this = this;
+          //Cycle over WorkflowStatuses
+          this.stages.forEach(function (ws) {
+            var status = _this.localize(ws.WorkflowStatus[0].toUpperCase() + ws.WorkflowStatus.substring(1));
 
-        var row = rows.find(r => r[0] === status);
-        if(!row){
-          row = [status, ws.Total];
-          rows.push(row);
+            var row = rows.find(r => r[0] === status);
+            if (!row) {
+              row = [status, ws.Total];
+              rows.push(row);
+            }
+          });
+
+          var data = [cols];
+          rows.forEach(function (r) {
+            data.push(r);
+          });
+          var _this = this;
+          google.charts.load('current', { 'packages': ['corechart', 'controls'] });
+          google.charts.setOnLoadCallback(function () {
+            _this.$.workflowNumberPieChart.data = google.visualization.arrayToDataTable(data);
+          });
+        },
+        _onIronResize: function () {
+          this.$.workflowNumberPieChart.redraw();
+        },
+        _onLanguageChange: function () {
+          this._drawFromEntites();
         }
       });
 
-      var data = [cols];
-      rows.forEach(function(r){
-        data.push(r);
-      });
-      var _this = this;
-      google.charts.load('current', {'packages':['corechart', 'controls']});
-      google.charts.setOnLoadCallback(function() {
-        _this.$.workflowNumberPieChart.data = google.visualization.arrayToDataTable(data);
-      });
-    },
-    _onIronResize: function() {
-      this.$.workflowNumberPieChart.redraw();
-    },
-    _onLanguageChange: function() {
-      this._drawFromEntites();
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>
