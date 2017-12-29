@@ -1,0 +1,177 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<dom-module id="forge-behavior-last-relations-on-top">
+
+	<style>
+		.suggestion-container {
+			padding: 8px;
+			display: block;
+
+			@apply --layout-horizontal;
+			@apply --layout-justified;
+		}
+		.suggestion-container .message{
+			line-height: 39.5938px;
+
+			@apply --layout-flex;
+			@apply --layout-center;
+		}
+	</style>
+
+	<template>
+
+		<forge-entity-behavior-container text="[[text]]" notification="[[notification]]">
+			<template is="dom-if" if="[[_relationsFromPreviousEvent]]">
+			<div class="suggestion-container">
+				<div class="message">
+					[[_relationsFromPreviousEvent]] new relation(s) have been added
+				</div>
+				<div>
+					<paper-button on-tap="_moveLastRelationsOnTop">Move on top</paper-button>
+				</div>
+			</div>
+			</template>
+		</forge-entity-behavior-container>
+
+	</template>
+
+	<script>
+		(function () {
+			var commands = ForgeWebComponents.Commands;
+			var api = ForgeWebComponents.Api;
+			addMissingCommands(commands);
+
+			function moveRelations($injector, entity, relations, startPosition) {
+				var position = startPosition || 0;
+
+				var cmds =
+					(relations || [])
+					.map(function (rel, index) {
+						var relatedItem = new commands.AddEntityRelationCommand.RelatedItem(rel.type, rel.entityId);
+
+						var relationPosition = position + index;
+						var cmd = new commands.MoveEntityRelationCommand(entity.aggregateId, entity.aggregateType, relatedItem,
+							relationPosition);
+
+						return {
+							name: cmd.getCommandName(),
+							body: cmd
+						}
+					});
+
+				if (cmds.length) {
+					$injector.invoke(function (commandQueue) {
+						commandQueue.sendAll(cmds);
+					});
+				}
+			}
+
+			function addMissingCommands(commands) {
+				if (!commands.MoveEntityRelationCommand) {
+					commands.MoveEntityRelationCommand = function (aggregateId, aggregateType, relatedItem, position) {
+						this.aggregateId = aggregateId;
+						this.aggregateType = aggregateType;
+						this.relatedItem = relatedItem;
+						this.position = position;
+					};
+
+					commands.MoveEntityRelationCommand.prototype.getCommandName = function () {
+						return "MoveEntityRelationCommand"
+					};
+
+				}
+
+				if (!commands.BatchCommand) {
+					commands.BatchCommand = function (commands) {
+						this.commands = (commands || []).map(c => {
+							var commandName = c.getCommandName();
+							return {
+								name: commandName,
+								bodyObject: c
+							};
+						});
+					};
+					commands.BatchCommand.prototype.getCommandName = function () {
+						return "BatchCommand"
+					};
+				}
+			}
+
+			Polymer({
+				is: 'forge-behavior-last-relations-on-top',
+				properties: {
+					entity: {
+						type: Object,
+						observer: '_entityChanged'
+					}
+				},
+				text: '(no suggestions)',
+				notification: false,
+				_$injector: null,
+				_entity: null,
+				_relationsCount: 0,
+				_newRelations: null,
+				_relationsFromPreviousEvent: 0,
+				_moveLastRelationsOnTop: function () {
+					moveRelations(this._$injector, this._entity, this._newRelations, 0);
+				},
+				_entityChanged: function (newEntity, oldEntity) {
+					if (typeof newEntity === 'string') return;
+
+					this._entity = {
+						aggregateId: newEntity.entityId,
+						aggregateType: newEntity.type
+					};
+					var relationsInfo = this._getEntityRelationFromLastEvent(this._relationsCount, newEntity);
+
+					this._relationsCount = relationsInfo.count;
+					this._relationsFromPreviousEvent = relationsInfo.fromPreviousEvent;
+					this._newRelations = relationsInfo.newRelations;
+
+					if (relationsInfo.fromPreviousEvent > 0) {
+						this.notification = true;
+						this.text = '(one suggestion available)'
+					} else {
+						this.text = '';
+					}
+
+					if (!this.text || !this.text.length) {
+						this.notification = false;
+						this.text = '(no suggestions)';
+					}
+				},
+				_getEntityRelationFromLastEvent: function (oldRelationsCount, newEntity) {
+					var relations = newEntity ? (newEntity.relations || []) : [];
+
+					if (relations.length === 0) {
+						return {
+							count: 0,
+							fromPreviousEvent: 0,
+							newRelations: []
+						}
+					}
+
+					if (!oldRelationsCount || oldRelationsCount >= relations.length) {
+						return {
+							count: relations.length,
+							fromPreviousEvent: 0,
+							newRelations: []
+						}
+					}
+
+					return {
+						count: relations.length,
+						fromPreviousEvent: relations.length - oldRelationsCount,
+						newRelations: relations.slice(oldRelationsCount - relations.length)
+					}
+				},
+				created: function () {
+					var $body = angular.element(document.body);
+					this._$injector = $body.injector();
+				}
+			});
+
+		})();
+	</script>
+
+</dom-module>
