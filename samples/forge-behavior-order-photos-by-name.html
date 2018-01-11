@@ -1,0 +1,175 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<dom-module id="forge-behavior-order-photos-by-name">
+
+	<style>
+		.suggestion-container {
+			padding: 8px;
+			display: block;
+
+			@apply --layout-horizontal;
+			@apply --layout-justified;
+		}
+		.suggestion-container .message{
+			line-height: 39.5938px;
+
+			@apply --layout-flex;
+			@apply --layout-center;
+		}
+	</style>
+
+	<template>
+
+		<forge-entity-behavior-container text="[[text]]" notification="[[notification]]">
+			<template is="dom-if" if="[[_photosFromPreviousEvent]]">
+			<div class="suggestion-container">
+				<div class="message">
+					[[_photosFromPreviousEvent]] new photo(s) have been added
+				</div>
+				<div>
+					<paper-button on-tap="_reorderPhotos">Reorder by filename</paper-button>
+				</div>
+			</div>
+			</template>
+		</forge-entity-behavior-container>
+
+	</template>
+
+	<script>
+		(function () {
+			var commands = ForgeWebComponents.Commands;
+			var api = ForgeWebComponents.Api;
+			var http = ForgeWebComponents.Http;
+
+			addMissingCommands(commands);
+
+			function reorderPhotos($injector, entityId, items) {
+				var cmds =
+					(items || [])
+					.map(function (itm, index) {
+						var cmd = new commands.MoveAlbumItemCommand(entityId, itm.id ,index);
+
+						return {
+							name: cmd.getCommandName(),
+							body: cmd
+						}
+					});
+
+				if (cmds.length) {
+					$injector.invoke(function (commandQueue) {
+						commandQueue.sendAll(cmds);
+					});
+				}
+			}
+
+			function getAlbumItems(entityId){
+				var url = `deltatre.forge.wcm/api/albums/working/culture/nd-nd/entityid/${entityId}`;
+				var request = http.get(api.addRootUrl(url));
+
+				var items = 
+					request
+						.then(function(res){
+							return (res.Items || []).map(function(itm){
+								return {
+									fileName: (((itm || {}).Element || {}).NeutralPhoto || {}).OriginalFileName,
+									id: (itm || {}).Id
+									};
+							});
+						});
+
+					return items;
+			}
+
+			function addMissingCommands(commands) {
+				if (!commands.MoveAlbumItemCommand) {
+					commands.MoveAlbumItemCommand = function (albumId, albumItemId, position) {
+						this.albumId = albumId;
+						this.albumItemId = albumItemId;
+						this.position = position;
+					};
+
+					commands.MoveAlbumItemCommand.prototype.getCommandName = function () {
+						return "MoveAlbumItemCommand"
+					};
+
+				}
+
+				if (!commands.BatchCommand) {
+					commands.BatchCommand = function (commands) {
+						this.commands = (commands || []).map(c => {
+							var commandName = c.getCommandName();
+							return {
+								name: commandName,
+								bodyObject: c
+							};
+						});
+					};
+					commands.BatchCommand.prototype.getCommandName = function () {
+						return "BatchCommand"
+					};
+				}
+			}
+
+			Polymer({
+				is: 'forge-behavior-order-photos-by-name',
+				properties: {
+					entity: {
+						type: Object,
+						observer: '_entityChanged'
+					}
+				},
+				text: '(no suggestions)',
+				notification: false,
+				_$injector: null,
+				_photosFromPreviousEvent: 0,
+				_entityId: null,
+				_reorderPhotos: function () {
+					var entityId = this._entityId;
+					var $injector = this._$injector;
+					var res = getAlbumItems(entityId);
+					
+					res.then(function(items){
+						var orderedItems = (items || []).sort(function(a,b){
+							var fa = (a.fileName || "").toLowerCase();
+							var fb = (b.fileName || "").toLowerCase();
+							if (fa < fb) return -1;
+							if (fa > fb) return 1;
+							return 0;
+						});
+						reorderPhotos($injector, entityId, orderedItems);
+					});					
+				},
+				_entityChanged: function (newEntity, oldEntity) {
+					
+					if (typeof newEntity === 'string') 
+					return;
+					
+					if(newEntity.items && 
+						oldEntity.items &&
+						newEntity.items.length > oldEntity.items.length){
+						
+						this.notification = true;
+						this.text = '(one suggestion available)'
+						this._entityId = newEntity.entityId;
+						this._photosFromPreviousEvent = newEntity.items.length - oldEntity.items.length;
+						
+					} else {
+						this._photosFromPreviousEvent = 0;
+						this.text = '';
+					}
+
+					if (!this.text || !this.text.length) {
+						this.notification = false;
+						this.text = '(no suggestions)';
+					}
+				},
+				created: function () {
+					var $body = angular.element(document.body);
+					this._$injector = $body.injector();
+				}
+			});
+
+		})();
+	</script>
+
+</dom-module>
