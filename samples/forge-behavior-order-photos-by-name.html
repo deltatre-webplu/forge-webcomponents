@@ -21,13 +21,21 @@
 	<template>
 
 		<forge-entity-behavior-container text="[[text]]" notification="[[notification]]">
-			<template is="dom-if" if="[[_photosFromPreviousEvent]]">
+			<template is="dom-if" if="[[_photosCount]]">
 			<div class="suggestion-container">
 				<div class="message">
-					[[_photosFromPreviousEvent]] new photo(s) have been added
+					
+					<template is="dom-if" if="[[_newPhotosCount]]">
+							[[_newPhotosCount]] new photo(s) have been added
+					</template>
+
+					<template is="dom-if" if="[[!_newPhotosCount]]">
+							This album contains [[_photosCount]] photo(s)
+					</template>
+
 				</div>
 				<div>
-					<paper-button on-tap="_reorderPhotos">Reorder by filename</paper-button>
+					<paper-button on-tap="_reorderPhotos">Arrange by filename</paper-button>
 				</div>
 			</div>
 			</template>
@@ -121,7 +129,8 @@
 				text: '(no suggestions)',
 				notification: false,
 				_$injector: null,
-				_photosFromPreviousEvent: 0,
+				_photosCount: 0,
+				_newPhotosCount: 0,
 				_entityId: null,
 				_reorderPhotos: function () {
 					var entityId = this._entityId;
@@ -144,17 +153,17 @@
 					if (typeof newEntity === 'string') 
 					return;
 					
-					if(newEntity.items && 
-						oldEntity.items &&
-						newEntity.items.length > oldEntity.items.length){
-						
+					this._photosCount = (newEntity.items || []).length;
+					this._entityId = newEntity.entityId;
+
+					if(oldEntity.items && this._photosCount > oldEntity.items.length)
+					{
 						this.notification = true;
 						this.text = '(one suggestion available)'
-						this._entityId = newEntity.entityId;
-						this._photosFromPreviousEvent = newEntity.items.length - oldEntity.items.length;
-						
+
+						this._newPhotosCount = this._photosCount - oldEntity.items.length;
 					} else {
-						this._photosFromPreviousEvent = 0;
+						this._newPhotosCount = 0;
 						this.text = '';
 					}
 
