@@ -20,12 +20,10 @@
   }
 
   function createQueryUrl(queryUrl) {
-
-    var rootUrl = "#/vsm/dataexplorer/search/";
-
-    if (!queryUrl.startsWith("~")) queryUrl = "~" + queryUrl;
-
-    return rootUrl + queryUrl;
+   
+    var rootUrl = "#/vsm/analysis/dataexplorer?path=";
+   
+    return rootUrl + queryUrl.replace("~", "");
 
   }
 
