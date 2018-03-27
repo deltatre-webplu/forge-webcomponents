@@ -27,6 +27,48 @@
     this.entityType = entityType;
     this.entityId = entityId;
   };
+	
+  commands.CreateCustomEntityTagCommand = function (entityCode, entityTranslationId, title, tagId, translationId) {
+    this.entityCode = entityCode;
+	this.entityTranslationId = entityTranslationId;
+	this.title = title;
+	this.tagId = tagId;
+	this.translationId = translationId;
+  };
+  commands.CreateCustomEntityTagCommand.prototype.getCommandName = function () {
+	return "CreateCustomEntityTagCommand";
+  };
+  
+  commands.SyncTagCommand = function (aggregateId, sourceType, aggregateType) {
+	this.aggregateId = aggregateId;
+	this.sourceType = sourceType;
+	this.aggregateType = aggregateType;
+  };
+  commands.SyncTagCommand.prototype.getCommandName = function () {
+	return "SyncTagCommand";
+  };
+  
+  commands.PublishCommand = function (aggregateId, aggregateType, translationId) {
+	this.aggregateId = aggregateId;
+	this.aggregateType = aggregateType;
+	this.translationId = translationId;
+  };
+  commands.PublishCommand.prototype.getCommandName = function () {
+	return "PublishCommand";
+  };
+  
+  commands.BatchCommand = function (commands) {
+	this.commands = (commands || []).map(c => {
+	    var commandName = c.getCommandName();
+		return {
+			name: commandName,
+            bodyObject: c
+		};
+	});
+  };
+  commands.BatchCommand.prototype.getCommandName = function () {
+	return "BatchCommand";
+  };
 
   api.sendCommand = function(command, commandName) {
 
