@@ -2,86 +2,99 @@
 <link rel="import" href="api-core.html">
 
 <script>
-(function() {
+  (function () {
 
-  var http = window.ForgeWebComponents.Http;
-  var api = window.ForgeWebComponents.Api;
+    var http = window.ForgeWebComponents.Http;
+    var api = window.ForgeWebComponents.Api;
 
-  var commands = window.ForgeWebComponents.Commands = window.ForgeWebComponents.Commands || {};
+    var commands = window.ForgeWebComponents.Commands = window.ForgeWebComponents.Commands || {};
 
-  commands.CreateTagCommand = function(tagEntityId, tagTranslationId, title, slug) {
-    this.tagId = tagEntityId || uuid.v4();
-    this.translationId = tagTranslationId || uuid.v4();
-    this.title = title;
-    this.slug = slug;
-  };
-  commands.CreateTagCommand.prototype.getCommandName = function() { return "CreateTagCommand" };
+    commands.CreateTagCommand = function (tagEntityId, tagTranslationId, title, slug) {
+      this.tagId = tagEntityId || uuid.v4();
+      this.translationId = tagTranslationId || uuid.v4();
+      this.title = title;
+      this.slug = slug;
+    };
+    commands.CreateTagCommand.prototype.getCommandName = function () {
+      return "CreateTagCommand"
+    };
 
-  commands.AddEntityRelationCommand = function(relatedItem, aggregateId, aggregateType) {
-    this.aggregateId = aggregateId;
-    this.aggregateType = aggregateType;
-    this.relatedItem = relatedItem;
-  };
-  commands.AddEntityRelationCommand.prototype.getCommandName = function() { return "AddEntityRelationCommand" };
-  commands.AddEntityRelationCommand.RelatedItem = function(entityType, entityId) {
-    this.entityType = entityType;
-    this.entityId = entityId;
-  };
-	
-  commands.CreateCustomEntityTagCommand = function (entityCode, entityTranslationId, title, tagId, translationId) {
-    this.entityCode = entityCode;
-	this.entityTranslationId = entityTranslationId;
-	this.title = title;
-	this.tagId = tagId;
-	this.translationId = translationId;
-  };
-  commands.CreateCustomEntityTagCommand.prototype.getCommandName = function () {
-	return "CreateCustomEntityTagCommand";
-  };
-  
-  commands.SyncTagCommand = function (aggregateId, sourceType, aggregateType) {
-	this.aggregateId = aggregateId;
-	this.sourceType = sourceType;
-	this.aggregateType = aggregateType;
-  };
-  commands.SyncTagCommand.prototype.getCommandName = function () {
-	return "SyncTagCommand";
-  };
-  
-  commands.PublishCommand = function (aggregateId, aggregateType, translationId) {
-	this.aggregateId = aggregateId;
-	this.aggregateType = aggregateType;
-	this.translationId = translationId;
-  };
-  commands.PublishCommand.prototype.getCommandName = function () {
-	return "PublishCommand";
-  };
-  
-  commands.BatchCommand = function (commands) {
-	this.commands = (commands || []).map(c => {
-	    var commandName = c.getCommandName();
-		return {
-			name: commandName,
-            bodyObject: c
-		};
-	});
-  };
-  commands.BatchCommand.prototype.getCommandName = function () {
-	return "BatchCommand";
-  };
+    commands.AddEntityRelationCommand = function (relatedItem, aggregateId, aggregateType) {
+      this.aggregateId = aggregateId;
+      this.aggregateType = aggregateType;
+      this.relatedItem = relatedItem;
+    };
+    commands.AddEntityRelationCommand.prototype.getCommandName = function () {
+      return "AddEntityRelationCommand"
+    };
+    commands.AddEntityRelationCommand.RelatedItem = function (entityType, entityId) {
+      this.entityType = entityType;
+      this.entityId = entityId;
+    };
 
-  api.sendCommand = function(command, commandName) {
+    commands.CreateCustomEntityTagCommand = function (entityCode, entityTranslationId, title, tagId, translationId) {
+      this.entityCode = entityCode;
+      this.entityTranslationId = entityTranslationId;
+      this.title = title;
+      this.tagId = tagId;
+      this.translationId = translationId;
+    };
+    commands.CreateCustomEntityTagCommand.prototype.getCommandName = function () {
+      return "CreateCustomEntityTagCommand";
+    };
 
-    commandName = commandName || command.getCommandName();
+    commands.SyncTagCommand = function (aggregateId, sourceType, aggregateType) {
+      this.aggregateId = aggregateId;
+      this.sourceType = sourceType;
+      this.aggregateType = aggregateType;
+    };
+    commands.SyncTagCommand.prototype.getCommandName = function () {
+      return "SyncTagCommand";
+    };
 
-    var cmd = {
-      name: commandName,
-      bodyObject: command
-    }
+    commands.PublishCommand = function (aggregateId, aggregateType, translationId) {
+      this.aggregateId = aggregateId;
+      this.aggregateType = aggregateType;
+      this.translationId = translationId;
+    };
+    commands.PublishCommand.prototype.getCommandName = function () {
+      return "PublishCommand";
+    };
 
-    return http.post(api.addRootUrl('/api/command'), cmd);
+    commands.BatchCommand = function (commands) {
+      this.commands = (commands || []).map(c => {
+        var commandName = c.getCommandName();
+        return {
+          name: commandName,
+          bodyObject: c
+        };
+      });
+    };
+    commands.BatchCommand.prototype.getCommandName = function () {
+      return "BatchCommand";
+    };
 
-  };
+    api.sendCommand = function (command, commandName) {
 
-})();
+      commandName = commandName || command.getCommandName();
+
+      var cmd = {
+        name: commandName,
+        bodyObject: command
+      }
+      return http.post(api.addRootUrl('/api/command'), cmd);
+    };
+
+    api.sendCommandAck = function (command, commandName) {
+      commandName = commandName || command.getCommandName();
+
+      var cmd = {
+        name: commandName,
+        bodyObject: command
+      }
+
+      return http.post(api.addRootUrl('/api/command/ack'), cmd);
+    };
+
+  })();
 </script>
