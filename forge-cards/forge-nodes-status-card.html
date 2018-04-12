@@ -55,7 +55,7 @@
     }
 
     .group-title {
-      @apply(--paper-font-title);
+      @apply --paper-font-title;
     }
 
     .paper-item-group {
@@ -68,7 +68,7 @@
     }
 
     .heartbeat-last-update {
-      @apply(--paper-font-body-1);
+      @apply --paper-font-body-1;
       margin-top: 8px;
     }
   </style>
@@ -182,7 +182,7 @@
 
         },
         toggle: function (e) {
-          var collapse = this.$$("#collapse-" + e.model.group.Key);
+          var collapse = this.shadowRoot.querySelector("#collapse-" + e.model.group.Key);
           var opened = !collapse.opened;
           collapse.toggle();
           if (opened) {

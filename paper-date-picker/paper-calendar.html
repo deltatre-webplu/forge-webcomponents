@@ -19,8 +19,8 @@
         -webkit-tap-highlight-color: rgba(0,0,0,0);
         --ease-in-sine: cubic-bezier(0.47, 0, 0.745, 0.715);
         --ease-out-sine: cubic-bezier(0.39, 0.575, 0.565, 1);
-        @apply(--paper-font-body1);
-        @apply(--paper-calendar);
+        @apply --paper-font-body1;
+        @apply --paper-calendar;
         overflow: hidden;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
@@ -29,17 +29,17 @@
         -ms-user-select: none;
         user-select: none;
 
-        @apply(--paper-calendar);
+        @apply --paper-calendar;
       }
       #calendar {
         position: relative;
         width: 100%;
         height: 100%;
-        @apply(--layout-horizontal);
+        @apply --layout-horizontal;
       }
       #months {
         height: 100%;
-        @apply(--layout-horizontal);
+        @apply --layout-horizontal;
       }
       #months.animating .month-nav {
         opacity: 1;
@@ -58,9 +58,9 @@
       }
       .month {
         height: 100%;
-        @apply(--layout-vertical);
-        @apply(--layout-justified);
-        @apply(--layout-flex);
+        @apply --layout-vertical;
+        @apply --layout-justified;
+        @apply --layout-flex;
       }
 
       .month-row, .month-nav {
@@ -71,8 +71,8 @@
 
       .month-col {
         position: relative;
-        @apply(--layout-vertical);
-        @apply(--layout-flex);
+        @apply --layout-vertical;
+        @apply --layout-flex;
       }
 
       .month-nav {
@@ -81,13 +81,13 @@
         left: 0;
         width: 100%;
         opacity: 1;
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
+        @apply --layout-horizontal;
+        @apply --layout-center;
       }
       .month-nav .col {
         position: relative;
-        @apply(--layout-vertical);
-        @apply(--layout-center-center);
+        @apply --layout-vertical;
+        @apply --layout-center-center;
       }
       .month-nav .btn .icon {
         cursor: pointer;
@@ -108,35 +108,35 @@
         vertical-align: middle;
         text-align: center;
         font-weight: bold;
-        @apply(--paper-font-body2);
-        @apply(--layout-horizontal);
-        @apply(--layout-center);
-        @apply(--layout-center-justified);
-        @apply(--layout-flex);
+        @apply --paper-font-body2;
+        @apply --layout-horizontal;
+        @apply --layout-center;
+        @apply --layout-center-justified;
+        @apply --layout-flex;
       }
       .month-weekdays {
         color: var(--secondary-text-color);
-        @apply(--layout-horizontal);
-        @apply(--layout-justified);
-        @apply(--layout-flex);
+        @apply --layout-horizontal;
+        @apply --layout-justified;
+        @apply --layout-flex;
       }
       .month-days {
-        @apply(--layout-horizontal);
-        @apply(--layout-justified);
-        @apply(--layout-flex);
+        @apply --layout-horizontal;
+        @apply --layout-justified;
+        @apply --layout-flex;
       }
       .month-col .day {
         cursor: default;
         pointer-events: none;
-        @apply(--layout-fit);
-        @apply(--layout-vertical);
-        @apply(--layout-center-center);
+        @apply --layout-fit;
+        @apply --layout-vertical;
+        @apply --layout-center-center;
       }
       .month-col {
         position: relative;
         width: 100%;
         height: 100%;
-        @apply(--layout-center-center);
+        @apply --layout-center-center;
       }
       .day-item {
         border-radius: 100%;
@@ -165,10 +165,10 @@
         color: var(--text-primary-color);
       }
       .flex {
-        @apply(--layout-flex);
+        @apply --layout-flex;
       }
       .flex-5 {
-        @apply(--layout-flex-5);
+        @apply --layout-flex-5;
       }
     </style>
     <div id="calendar">
@@ -665,7 +665,7 @@
       },
       _updateSelection: function() {
         // Force the day selection circle to maintain a 1:1 ratio
-        var selected = this.$$('.day-item.selected');
+        var selected = this.shadowRoot.querySelector('.day-item.selected');
         if (!selected) {
           return;
         }

@@ -415,8 +415,8 @@
 
         _redrawCharts: function () {
 
-          var trendChart = this.$$('#trendChart');
-          var geoChart = this.$$('#geoChart');
+          var trendChart = this.shadowRoot.querySelector('#trendChart');
+          var geoChart = this.shadowRoot.querySelector('#geoChart');
 
           if (trendChart) {
             trendChart.redraw();
@@ -430,11 +430,11 @@
 
         // _openDetails: function() {
         //   this.$.detailModal.open();
-        //   this.$$("forge-itemanalytics-details").start();
+        //   this.shadowRoot.querySelector("forge-itemanalytics-details").start();
         // },
 
         // onDetailClosed: function() {
-        //   this.$$("forge-itemanalytics-details").stop();
+        //   this.shadowRoot.querySelector("forge-itemanalytics-details").stop();
         // }
 
       });
