@@ -6,18 +6,18 @@
     <style>
     :host {
       display: inline-block;
-			background-color: var(--forge-chip-background, --paper-grey-300);
+			background-color: var(--forge-chip-background, var(--paper-grey-300));
 			height: 32px;
 			line-height: 32px!important;
 			padding: 0 4px 0 12px;
 			border-radius: 16px;
-			color: var(--forge-chip-color, --primary-text-color);
+			color: var(--forge-chip-color, var(--primary-text-color));
 			font-size: 13px!important;
-			@apply(--paper-font-body1);
+			@apply --paper-font-body1;
     }
     </style>
 
-    <content></content>
+    <slot></slot>
 
   </template>
 
