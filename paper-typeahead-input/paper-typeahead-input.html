@@ -303,8 +303,8 @@ Polymer({
         ptinput._setSuggestions([]);
       }
     });
-    var input = Polymer.dom(this.root).querySelector('paper-input');
-    input.$.input.autocomplete = 'address-level4';
+    //var input = Polymer.dom(this.root).querySelector('paper-input');
+    //input.$.input.autocomplete = 'address-level4';
   },
 
   attached: function() {
@@ -314,6 +314,8 @@ Polymer({
     // This is a good place to perform any work related to your element's
     // visual state or active behavior (measuring sizes, beginning animations,
     // loading resources, etc).
+    var input = Polymer.dom(this.root).querySelector('paper-input');
+    input.$.input.autocomplete = 'address-level4';
   },
 
   detached: function() {

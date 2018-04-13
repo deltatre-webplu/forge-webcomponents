@@ -1,0 +1,13 @@
+{
+  "name": "cors-upload-sample",
+  "homepage": "https://github.com/googledrive/cors-upload-sample",
+  "_release": "38131d1512",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "38131d151266bab71806c8873a469469389d0bd2"
+  },
+  "_source": "https://github.com/googledrive/cors-upload-sample.git",
+  "_target": "master",
+  "_originalSource": "googledrive/cors-upload-sample"
+}
