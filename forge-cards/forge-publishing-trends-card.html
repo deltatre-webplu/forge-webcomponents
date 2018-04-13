@@ -6,28 +6,29 @@
 
 <dom-module id="forge-publishing-trends-card">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    google-chart {
-      height: auto;
-      width: 100%;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      google-chart {
+        height: auto;
+        width: 100%;
+      }
+    </style>
+
     <!-- type="area" || type="line" || type="column" -->
     <paper-card heading="[[localize(heading)]]">
       <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>

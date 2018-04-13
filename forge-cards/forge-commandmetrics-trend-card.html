@@ -8,34 +8,32 @@
 
 <dom-module id="forge-commandmetrics-trend-card">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    .card-disclaimer {}
-
-    .card-last-updated {
-      text-align: right;
-    }
-
-    google-chart {
-      height: auto;
-      width: 100%;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      .card-last-updated {
+        text-align: right;
+      }
+
+      google-chart {
+        height: auto;
+        width: 100%;
+      }
+    </style>
 
     <paper-card heading="[[localize('Incoming Commands Trend')]]">
 

@@ -5,29 +5,20 @@
 
 <dom-module id="forge-array-input">
 
-  <style>
-    :host {
-      display: block;
-      padding: 0 2px;
-    }
-  </style>
-
   <template>
 
+    <style>
+      :host {
+        display: block;
+        padding: 0 2px;
+      }
+    </style>
+
     <template is="dom-if" if="[[ !schema.items.enum ]]">
-      <paper-input
-        placeholder="[[placeholder]]"
-        disabled=[[disabled]]
-        label="[[label]]"
-        on-keypress="_keyPressed"
-        value="{{inputValue}}"></paper-input>
+      <paper-input placeholder="[[placeholder]]" disabled=[[disabled]] label="[[label]]" on-keypress="_keyPressed" value="{{inputValue}}"></paper-input>
     </template>
     <template is="dom-if" if="[[ schema.items.enum ]]">
-      <paper-typeahead-input
-        label="[[label]]"
-        disabled=[[disabled]]
-        placeholder="[[placeholder]]"
-        local-candidates="{{_computeAllowedValues(schema, value.*)}}"
+      <paper-typeahead-input label="[[label]]" disabled=[[disabled]] placeholder="[[placeholder]]" local-candidates="{{_computeAllowedValues(schema, value.*)}}"
         input-value={{inputValue}}></paper-typeahead-input>
     </template>
     <forge-chips list="[[value]]" disabled=[[disabled]]></forge-chips>
@@ -35,67 +26,67 @@
   </template>
 
   <script>
-  Polymer({
-    is: 'forge-array-input',
-    behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldArrayBehavior],
+    Polymer({
+      is: 'forge-array-input',
+      behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldArrayBehavior],
 
-    properties: {
-      placeholder: {
-        type: String,
-        value: '(type a new entry)'
+      properties: {
+        placeholder: {
+          type: String,
+          value: '(type a new entry)'
+        },
+        inputValue: {
+          type: String
+        }
       },
-      inputValue: {
-        type: String
-      }
-    },
 
-    listeners: {
-      'chip-removed': 'onChipRemoved',
-      'pt-item-confirmed': 'onAutocompleteItemConfirmed'
-    },
+      listeners: {
+        'chip-removed': 'onChipRemoved',
+        'pt-item-confirmed': 'onAutocompleteItemConfirmed'
+      },
 
-    _computeAllowedValues: function(schema, value) {
+      _computeAllowedValues: function (schema, value) {
 
-      var insertedValues = value.base || [];
-      var allValues = schema.items.enum || [];
+        var insertedValues = value.base || [];
+        var allValues = schema.items.enum || [];
 
-      var result = allValues.filter(function(v) {
-        return insertedValues.indexOf(v) < 0;
-      });
+        var result = allValues.filter(function (v) {
+          return insertedValues.indexOf(v) < 0;
+        });
 
-      return result;
+        return result;
 
-    },
+      },
 
-    onChipRemoved: function(e) {
-      this.splice('value', e.detail, 1);
-      this.onChange();
-    },
+      onChipRemoved: function (e) {
+        this.splice('value', e.detail, 1);
+        this.onChange();
+      },
 
-    onAutocompleteItemConfirmed: function(e) {
-      this._inputValueChanged();
-    },
-
-    onChange: function() {
-      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
-    },
-
-    _keyPressed: function(e) {
-      if (13 === e.charCode && this.inputValue && this.inputValue.length > 0) {
+      onAutocompleteItemConfirmed: function (e) {
         this._inputValueChanged();
-      }
-    },
+      },
 
-    _inputValueChanged() {
-      if (!this.value){
-        this.value = [];
-      }
-      this.push('value', this.inputValue + '');
-      this.inputValue = '';
-      this.onChange();
-    }
+      onChange: function () {
+        this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+      },
 
-  });
+      _keyPressed: function (e) {
+        if (13 === e.charCode && this.inputValue && this.inputValue.length > 0) {
+          this._inputValueChanged();
+        }
+      },
+
+      _inputValueChanged() {
+        if (!this.value) {
+          this.value = [];
+        }
+        this.push('value', this.inputValue + '');
+        this.inputValue = '';
+        this.onChange();
+      }
+
+    });
   </script>
 
 </dom-module>

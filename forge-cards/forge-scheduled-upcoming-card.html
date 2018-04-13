@@ -6,79 +6,79 @@
 
 <dom-module id="forge-scheduled-upcoming-card">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    paper-icon-item {
-      cursor: pointer;
-      cursor: hand;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    .header {
-      font-weight: 400;
-      font-size: 16px;
-    }
-
-    .strong {
-      font-weight: 700;
-    }
-
-    .entity-icon-wrapper {
-      display: inline-block;
-      box-sizing: border-box;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--google-grey-300);
-    }
-
-    .entity-icon {
-      margin: 8px;
-      width: 24px;
-      height: 24px;
-      --iron-icon-fill-color: white;
-    }
-
-    .schedule-group {
-      margin-bottom: 16px;
-    }
-
-    .schedule-group:last-child {
-      margin-bottom: 0;
-    }
-
-    .date {
-      width: 72px;
-    }
-
-    .date .big-day {
-      font-size: 48px;
-      line-height: 56px;
-    }
-
-    .date .week-day {
-      font-size: 24px;
-      line-height: 24px;
-    }
-
-    .schedule-content {
-      overflow-y: hidden;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      paper-icon-item {
+        cursor: pointer;
+        cursor: hand;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      .header {
+        font-weight: 400;
+        font-size: 16px;
+      }
+
+      .strong {
+        font-weight: 700;
+      }
+
+      .entity-icon-wrapper {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--google-grey-300);
+      }
+
+      .entity-icon {
+        margin: 8px;
+        width: 24px;
+        height: 24px;
+        --iron-icon-fill-color: white;
+      }
+
+      .schedule-group {
+        margin-bottom: 16px;
+      }
+
+      .schedule-group:last-child {
+        margin-bottom: 0;
+      }
+
+      .date {
+        width: 72px;
+      }
+
+      .date .big-day {
+        font-size: 48px;
+        line-height: 56px;
+      }
+
+      .date .week-day {
+        font-size: 24px;
+        line-height: 24px;
+      }
+
+      .schedule-content {
+        overflow-y: hidden;
+      }
+    </style>
 
     <paper-card heading="[[localize('Upcoming Schedules')]]">
       <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>

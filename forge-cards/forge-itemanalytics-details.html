@@ -5,26 +5,25 @@
 
 <dom-module id="forge-itemanalytics-details">
 
-  <style is="custom-style" include="iron-flex iron-flex-alignment" />
-  <style>
-     :host {
-      display: block;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    .card-disclaimer {}
-  </style>
-
   <template>
+
+
+    <style is="custom-style" include="iron-flex iron-flex-alignment" />
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+    </style>
 
     <div class="layout horizontal">
 
@@ -125,12 +124,12 @@
           this._polling = false;
         },
 
-        start: function() {
+        start: function () {
           this._polling = true;
           this._doPoll();
         },
 
-        stop: function() {
+        stop: function () {
           this._stopPolling(this);
           this._polling = false;
         },
@@ -165,19 +164,19 @@
 
         },
 
-        _filterEntityIdChanged: function(value, oldValue) {
+        _filterEntityIdChanged: function (value, oldValue) {
 
           if (!value) return;
 
           if (this._polling) this._doPoll(null, value);
-          
-        },
-
-        _filterLanguageChanged: function() {
 
         },
 
-        _doPoll: function(filterTime, entityId) {
+        _filterLanguageChanged: function () {
+
+        },
+
+        _doPoll: function (filterTime, entityId) {
 
           if (!filterTime) filterTime = this.filterTime;
           if (!entityId) entityId = this.entityId;

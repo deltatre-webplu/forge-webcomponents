@@ -2,48 +2,43 @@
 
 <dom-module id="forge-image-preview">
 
-  <style>
-    :host {
-      display: block;
-      padding: 0 2px;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+        padding: 0 2px;
+      }
+    </style>
 
     <paper-input value="{{value}}" label="[[label]]" on-input="onInput" on-change="onChange"></paper-input>
     <template is="dom-if" if="[[show]]">
-      <iron-image src="{{value}}"
-        fade="true"
-        style="width:100%; height:400px;"
-        sizing="contain"
-        position="top left"
-        on-loaded-changed="_onLoadedChanged"></iron-image>
+      <iron-image src="{{value}}" fade="true" style="width:100%; height:400px;" sizing="contain" position="top left" on-loaded-changed="_onLoadedChanged"></iron-image>
     </template>
 
   </template>
 
   <script>
-  Polymer({
-    is: 'forge-image-preview',
-    behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
-    properties: {
-      show: {
-        type: Boolean,
-        value: true,
-        readOnly: true
+    Polymer({
+      is: 'forge-image-preview',
+      behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
+      properties: {
+        show: {
+          type: Boolean,
+          value: true,
+          readOnly: true
+        }
+      },
+      _onLoadedChanged: function (e) {
+        this._setShow(e.detail.value);
+      },
+      onInput: function () {
+        this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+      },
+      onChange: function () {
+        this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
       }
-    },
-    _onLoadedChanged: function(e) {
-      this._setShow(e.detail.value);
-    },
-    onInput: function() {
-      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
-    },
-    onChange: function() {
-      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
-    }
-  });
+    });
   </script>
 
 </dom-module>

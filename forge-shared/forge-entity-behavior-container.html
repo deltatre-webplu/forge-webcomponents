@@ -4,49 +4,44 @@
 
 <dom-module id="forge-entity-behavior-container">
 
-  <style>
-    .header {
-      display: flex;
-      flex-direction: row;
-      cursor: pointer;
-      height: 44px;
-      padding: 4px 0;
-      background: #eee;
-      position: relative;
-    }
-
-    .behavior-icon {
-      display: block;
-      margin: 6px 16px;
-    }
-
-    .behavior-text {
-      padding: 8px;
-      flex: 1;
-    }
-
-    .behavior-notification {
-      position: absolute;
-      top: 6px;
-      left: 32px;
-      height: 12px;
-      width: 12px;
-      background: red;
-      border-radius: 50%;
-      display: none;
-    }
-
-    .behavior-notification.visible-true {
-      display: block;
-    }
-
-    .content {
-
-    }
-
-  </style>
-
   <template>
+
+    <style>
+      .header {
+        display: flex;
+        flex-direction: row;
+        cursor: pointer;
+        height: 44px;
+        padding: 4px 0;
+        background: #eee;
+        position: relative;
+      }
+
+      .behavior-icon {
+        display: block;
+        margin: 6px 16px;
+      }
+
+      .behavior-text {
+        padding: 8px;
+        flex: 1;
+      }
+
+      .behavior-notification {
+        position: absolute;
+        top: 6px;
+        left: 32px;
+        height: 12px;
+        width: 12px;
+        background: red;
+        border-radius: 50%;
+        display: none;
+      }
+
+      .behavior-notification.visible-true {
+        display: block;
+      }
+    </style>
 
     <div class="header" on-tap="handleTap">
 
@@ -75,10 +70,10 @@
             value: 'image:assistant'
           },
           text: String,
-          notification:Boolean
+          notification: Boolean
         },
         open: false,
-        handleTap: function() {
+        handleTap: function () {
           this.open = !this.open;
           this.fire('behaviorToggle', this.open);
         }

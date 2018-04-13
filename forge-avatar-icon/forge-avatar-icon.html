@@ -3,19 +3,19 @@
 
 <dom-module id="forge-avatar-icon">
 
-  <style>
-    .icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 40px;
-      font-size: 20px;
-      font-weight: 600;
-    }
-  </style>
-
   <template>
+
+    <style>
+      .icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+        font-size: 20px;
+        font-weight: 600;
+      }
+    </style>
 
     <div class="icon" style$="background-color:[[color.background]];color:[[color.foreground]]">
       [[initials]]
@@ -24,40 +24,40 @@
   </template>
 
   <script>
-  (function() {
-    "use strict";
+    (function () {
+      "use strict";
 
-    Polymer({
-      is: 'forge-avatar-icon',
-      properties: {
-        avatarName: {
-          type: String
+      Polymer({
+        is: 'forge-avatar-icon',
+        properties: {
+          avatarName: {
+            type: String
+          },
+          avatarId: {
+            type: String,
+          },
+          color: {
+            type: Object,
+            notify: true,
+            computed: '_computeColor(avatarId)'
+          },
+          initials: {
+            type: String,
+            notify: true,
+            computed: '_computeInitials(avatarName)'
+          },
         },
-        avatarId: {
-          type: String,
+        _computeColor: function (avatarId) {
+          return ForgeWebComponents.Helpers.ColorHelper.colorFromGuid(avatarId);
         },
-        color: {
-          type: Object,
-          notify: true,
-          computed: '_computeColor(avatarId)'
-        },
-        initials: {
-          type: String,
-          notify: true,
-          computed: '_computeInitials(avatarName)'
-        },
-      },
-      _computeColor: function(avatarId) {
-        return ForgeWebComponents.Helpers.ColorHelper.colorFromGuid(avatarId);
-      },
-      _computeInitials: function(avatarName) {
-        return avatarName
-          ? avatarName.split(' ').map(function (s) { return s.charAt(0); }).join('').substr(0, 2).toUpperCase()
-          : '?';
-      }
-    });
+        _computeInitials: function (avatarName) {
+          return avatarName
+            ? avatarName.split(' ').map(function (s) { return s.charAt(0); }).join('').substr(0, 2).toUpperCase()
+            : '?';
+        }
+      });
 
-  })();
+    })();
   </script>
 
 </dom-module>

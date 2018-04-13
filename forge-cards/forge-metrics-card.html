@@ -4,101 +4,100 @@
 
 <dom-module id="forge-metrics-card">
 
-<style>
-:root {
+  <template>
 
-}
 
-:host {
-  display: block;
-}
-:host ::content forge-metrics-panel {
-  margin-bottom: 16px;
-}
-:host ::content forge-metrics-panel:last-child {
-  margin-bottom: 0;
-}
-
-.metrics-card {
-  display: block;
-}
-
-.card-header {
-  padding: 16px;
-  font-size: 24px;
-  font-weight: 400;
-  color: #000;
-}
-
-.icon {
-  width: 32px;
-  height: 32px;
-  background: grey;
-  border-radius:50%;
-  --iron-icon-fill-color: white;
-  margin-right: 12px;
-}
-
-.title {
-  @apply(--paper-font-headline);
-  vertical-align: middle;
-}
-
-.card-actions {
-  display: flex;
-  justify-content: space-between;
-}
-
-.timeRange {
-  @apply(--paper-font-body-1);
-  vertical-align: middle;
-  margin-top: 8px;
-}
-</style>
-
-<template>
-
-  <paper-card class="metrics-card">
-
-    <div class="card-header">
-      <iron-icon class="icon" icon="[[icon]]"></iron-icon>
-      <span class="title">[[localize(heading)]]</span>
-    </div>
-
-    <div class="card-content">
-      <content></content>
-    </div>
-
-    <div class="card-actions">
-      <paper-link-button href="[[moreInfoUrl]]">[[localize("More Info")]]</paper-link-button>
-      <span class="timeRange">[[localize('TimeRange')]]: [[localize('pastHour')]]</span>
-    </div>
-
-  </paper-card>
-
-</template>
-
-<script>
-(function() {
-  "use strict";
-
-  Polymer({
-    is: 'forge-metrics-card',
-    behaviors: [ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      heading: {
-        type: String
-      },
-      icon:{
-        type: String
-      },
-      moreInfoUrl: {
-        type: String
+    <style>
+      :host {
+        display: block;
       }
-    }
-  });
 
-})();
-</script>
+      :host ::content forge-metrics-panel {
+        margin-bottom: 16px;
+      }
+
+      :host ::content forge-metrics-panel:last-child {
+        margin-bottom: 0;
+      }
+
+      .metrics-card {
+        display: block;
+      }
+
+      .card-header {
+        padding: 16px;
+        font-size: 24px;
+        font-weight: 400;
+        color: #000;
+      }
+
+      .icon {
+        width: 32px;
+        height: 32px;
+        background: grey;
+        border-radius: 50%;
+        --iron-icon-fill-color: white;
+        margin-right: 12px;
+      }
+
+      .title {
+        @apply --paper-font-headline;
+        vertical-align: middle;
+      }
+
+      .card-actions {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .timeRange {
+        @apply --paper-font-body-1;
+        vertical-align: middle;
+        margin-top: 8px;
+      }
+    </style>
+
+    <paper-card class="metrics-card">
+
+      <div class="card-header">
+        <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+        <span class="title">[[localize(heading)]]</span>
+      </div>
+
+      <div class="card-content">
+        <content></content>
+      </div>
+
+      <div class="card-actions">
+        <paper-link-button href="[[moreInfoUrl]]">[[localize("More Info")]]</paper-link-button>
+        <span class="timeRange">[[localize('TimeRange')]]: [[localize('pastHour')]]</span>
+      </div>
+
+    </paper-card>
+
+  </template>
+
+  <script>
+    (function () {
+      "use strict";
+
+      Polymer({
+        is: 'forge-metrics-card',
+        behaviors: [ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          heading: {
+            type: String
+          },
+          icon: {
+            type: String
+          },
+          moreInfoUrl: {
+            type: String
+          }
+        }
+      });
+
+    })();
+  </script>
 
 </dom-module>

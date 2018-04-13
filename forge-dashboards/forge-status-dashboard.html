@@ -4,38 +4,37 @@
 
 <dom-module id="forge-status-dashboard">
 
-  <style>
-
-    .dashboard-container {
-      position: absolute;
-      top: -8px;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: row;
-    }
-    forge-nodes-status-card{
-      max-width: 40%;
-    }
-
-    @media (max-width: 1500px) {
-      .dashboard-container {
-        display: block;
-      }
-      forge-nodes-status-card{
-        max-width: 100%;
-      }
-    }
-
-    .padded {
-      padding: 8px;
-    }
-
-  </style>
-
   <template>
+
+    <style>
+      .dashboard-container {
+        position: absolute;
+        top: -8px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: row;
+      }
+
+      forge-nodes-status-card {
+        max-width: 40%;
+      }
+
+      @media (max-width: 1500px) {
+        .dashboard-container {
+          display: block;
+        }
+        forge-nodes-status-card {
+          max-width: 100%;
+        }
+      }
+
+      .padded {
+        padding: 8px;
+      }
+    </style>
 
     <div class="dashboard-container">
 
@@ -53,44 +52,24 @@
 
         <div class="layout horizontal">
 
-          <forge-metrics-card class="padded flex"
-                              heading="DistributionApi"
-                              icon="icons:cloud-circle"
-                              more-info-url="#/performance">
-            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distReqSec"
-                                 icon="icons:assessment"
-                                 title="Distribution Requests/sec">
+          <forge-metrics-card class="padded flex" heading="DistributionApi" icon="icons:cloud-circle" more-info-url="#/performance">
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distReqSec" icon="icons:assessment" title="Distribution Requests/sec">
             </forge-metrics-panel>
-            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distExecTime"
-                                 icon="image:timer"
-                                 title="Distribution Execution Time (ms)"
-                                 threshold-warning="500"
-                                 threshold-danger="1000">
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distExecTime" icon="image:timer" title="Distribution Execution Time (ms)"
+              threshold-warning="500" threshold-danger="1000">
             </forge-metrics-panel>
           </forge-metrics-card>
 
-          <forge-metrics-card class="padded flex"
-                              heading="FrontEnd"
-                              icon="social:public"
-                              more-info-url="#/performance">
-            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=reqSec"
-                                 icon="icons:assessment"
-                                 title="Requests/sec">
+          <forge-metrics-card class="padded flex" heading="FrontEnd" icon="social:public" more-info-url="#/performance">
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=reqSec" icon="icons:assessment" title="Requests/sec">
             </forge-metrics-panel>
-            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=execTime"
-                                 icon="image:timer"
-                                 title="Execution Time (ms)"
-                                 threshold-warning="1000"
-                                 threshold-danger="3000">
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=execTime" icon="image:timer" title="Execution Time (ms)"
+              threshold-warning="1000" threshold-danger="3000">
             </forge-metrics-panel>
-            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=dataReqSec"
-                                 icon="icons:dns"
-                                 title="Data queries/sec">
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=dataReqSec" icon="icons:dns" title="Data queries/sec">
             </forge-metrics-panel>
-            <forge-exceeding-threshold-panel url="/api/extensions/query/statistics?queryId=itemsExceeding"
-                                 icon="icons:alarm"
-                                 title="Items exceeding threshold"
-                                 threshold-danger="1">
+            <forge-exceeding-threshold-panel url="/api/extensions/query/statistics?queryId=itemsExceeding" icon="icons:alarm" title="Items exceeding threshold"
+              threshold-danger="1">
             </forge-exceeding-threshold-panel>
           </forge-metrics-card>
 
@@ -104,14 +83,14 @@
   </template>
 
   <script>
-  (function() {
-    "use strict";
+    (function () {
+      "use strict";
 
-    Polymer({
-      is: 'forge-status-dashboard'
-    });
+      Polymer({
+        is: 'forge-status-dashboard'
+      });
 
-  })();
+    })();
   </script>
 
 </dom-module>

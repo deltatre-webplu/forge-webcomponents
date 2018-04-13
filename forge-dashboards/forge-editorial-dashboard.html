@@ -4,38 +4,37 @@
 
 <dom-module id="forge-editorial-dashboard">
 
-  <style>
+  <template>
 
-    .dashboard-container {
-      position: absolute;
-      top: -8px;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: row;
-    }
 
-    .padded-card {
-      box-sizing: border-box;
-      padding: 8px;
-      width: 33%;
-    }
-
-    @media (max-width: 1000px) {
+    <style>
       .dashboard-container {
-        display: block;
+        position: absolute;
+        top: -8px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: row;
       }
 
       .padded-card {
-        width: 100%;
+        box-sizing: border-box;
+        padding: 8px;
+        width: 33%;
       }
-    }
 
-  </style>
+      @media (max-width: 1000px) {
+        .dashboard-container {
+          display: block;
+        }
 
-  <template>
+        .padded-card {
+          width: 100%;
+        }
+      }
+    </style>
 
     <div class="dashboard-container">
       <forge-active-entities-card class="padded-card"></forge-active-entities-card>
@@ -45,14 +44,14 @@
   </template>
 
   <script>
-  (function() {
-    "use strict";
+    (function () {
+      "use strict";
 
-    Polymer({
-      is: 'forge-editorial-dashboard'
-    });
+      Polymer({
+        is: 'forge-editorial-dashboard'
+      });
 
-  })();
+    })();
   </script>
 
 </dom-module>

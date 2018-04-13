@@ -7,32 +7,32 @@
 
 <dom-module id="forge-active-editors-card">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    .header {
-      font-weight: 400;
-      font-size: 16px;
-    }
-
-    .strong {
-      font-weight: 700;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      .header {
+        font-weight: 400;
+        font-size: 16px;
+      }
+
+      .strong {
+        font-weight: 700;
+      }
+    </style>
 
     <paper-card heading="[[localize('Last Active Editors')]]">
 

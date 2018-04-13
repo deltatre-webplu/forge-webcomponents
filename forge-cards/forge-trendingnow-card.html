@@ -5,122 +5,122 @@
 
 <dom-module id="forge-trendingnow-card">
 
-  <style include="iron-flex iron-flex-alignment">
-     :host {
-      display: block;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    .items-table {
-      border: 0;
-      border-collapse: collapse;
-    }
-
-    .items-table th {
-      color: gray;
-      font-weight: normal;
-      text-align: center;
-    }
-
-    .items-table .col-title {
-      width: 100%;
-      text-align: left;
-    }
-
-    .items-table tr {
-      border-bottom: 1px solid var(--paper-grey-300);
-    }
-
-    .items-table tbody tr:last-of-type {
-      border-bottom: 0;
-    }
-
-    .items-table tbody tr {
-      cursor: pointer;
-    }
-
-    .items-table tbody tr:hover {
-      background: var(--paper-grey-200);
-    }
-
-    .items-table .cell-padded {
-      padding: 4px 16px;
-      text-align: center;
-    }
-
-    .items-table .cell-index {
-      font-size: 32px;
-      font-weight: 500;
-      color: var(--paper-light-blue-500);
-    }
-
-    .items-table .cell-title {
-      font-size: 14px;
-      text-align: left;
-    }
-
-    .items-table .cell-icon {
-      padding-right: 32px;
-      padding-left: 32px;
-    }
-
-    .items-table .cell-views {
-      font-weight: 500;
-      font-size: 24px;
-    }
-
-    .entity-icon {
-      --forge-entity-icon-size: 42px;
-    }
-
-    .card-header {
-      padding: 16px;
-    }
-
-    .card-header paper-dropdown-menu {
-      margin: 0 4px;
-    }
-
-    .card-header .card-header-title {
-      font-size: 24px;
-      padding-top: 10px;
-    }
-
-    google-chart {
-      height: 60px;
-      width: 200px;
-    }
-
-    .trend-label {
-      padding-top: 4px;
-      background: transparent;
-      font-style: italic;
-      font-size: 12px;
-      color: var(--paper-grey-500);
-    }
-
-    .no-data-available {
-      padding: 16px 0;
-      color: gray;
-    }
-
-    .no-data-available iron-icon {
-      width: 128px;
-      height: 128px;
-      margin: 8px;
-    }
-  </style>
-
   <template>
+
+    <style include="iron-flex iron-flex-alignment">
+      :host {
+        display: block;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      .items-table {
+        border: 0;
+        border-collapse: collapse;
+      }
+
+      .items-table th {
+        color: gray;
+        font-weight: normal;
+        text-align: center;
+      }
+
+      .items-table .col-title {
+        width: 100%;
+        text-align: left;
+      }
+
+      .items-table tr {
+        border-bottom: 1px solid var(--paper-grey-300);
+      }
+
+      .items-table tbody tr:last-of-type {
+        border-bottom: 0;
+      }
+
+      .items-table tbody tr {
+        cursor: pointer;
+      }
+
+      .items-table tbody tr:hover {
+        background: var(--paper-grey-200);
+      }
+
+      .items-table .cell-padded {
+        padding: 4px 16px;
+        text-align: center;
+      }
+
+      .items-table .cell-index {
+        font-size: 32px;
+        font-weight: 500;
+        color: var(--paper-light-blue-500);
+      }
+
+      .items-table .cell-title {
+        font-size: 14px;
+        text-align: left;
+      }
+
+      .items-table .cell-icon {
+        padding-right: 32px;
+        padding-left: 32px;
+      }
+
+      .items-table .cell-views {
+        font-weight: 500;
+        font-size: 24px;
+      }
+
+      .entity-icon {
+        --forge-entity-icon-size: 42px;
+      }
+
+      .card-header {
+        padding: 16px;
+      }
+
+      .card-header paper-dropdown-menu {
+        margin: 0 4px;
+      }
+
+      .card-header .card-header-title {
+        font-size: 24px;
+        padding-top: 10px;
+      }
+
+      google-chart {
+        height: 60px;
+        width: 200px;
+      }
+
+      .trend-label {
+        padding-top: 4px;
+        background: transparent;
+        font-style: italic;
+        font-size: 12px;
+        color: var(--paper-grey-500);
+      }
+
+      .no-data-available {
+        padding: 16px 0;
+        color: gray;
+      }
+
+      .no-data-available iron-icon {
+        width: 128px;
+        height: 128px;
+        margin: 8px;
+      }
+    </style>
 
     <paper-card>
 
@@ -344,10 +344,10 @@
 
         },
 
-        _onPollingStart: function() {
+        _onPollingStart: function () {
           this._message = messages.loading;
         },
-        _onPollingError: function() {
+        _onPollingError: function () {
           this._forceSelectedValues();
           this._message = messages.error;
         },

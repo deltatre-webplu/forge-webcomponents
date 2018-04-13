@@ -6,245 +6,243 @@
 
 <dom-module id="forge-statistics-chart-card">
 
-<style>
-:host {
-  display: block;
-}
+  <template>
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    <style>
+      :host {
+        display: block;
+      }
 
-paper-card {
-  display: block;
-}
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
 
-google-chart {
-  height: 450;
-  width:100%;
-}
+      paper-card {
+        display: block;
+      }
 
-.card-header {
-  padding: 16px;
-  font-size: 24px;
-  color: #000;
-}
+      google-chart {
+        height: 450;
+        width: 100%;
+      }
 
-.icon {
-  width: 32px;
-  height: 32px;
-  margin-right: 12px;
-}
+      .card-header {
+        padding: 16px;
+        font-size: 24px;
+        color: #000;
+      }
 
-.title {
-  @apply(--paper-font-headline);
-  vertical-align: middle;
-}
+      .icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 12px;
+      }
 
-.card-content{
-  height: 340px;
-  text-align: center;
-}
+      .title {
+        @apply --paper-font-headline;
+        vertical-align: middle;
+      }
 
-.card-content span {
-  line-height: 340px;
-}
+      .card-content {
+        height: 340px;
+        text-align: center;
+      }
 
-.hidden{
-  display: none !important;
-}
+      .card-content span {
+        line-height: 340px;
+      }
 
-</style>
+      .hidden {
+        display: none !important;
+      }
+    </style>
 
-<template>
+    <paper-card>
+      <div class="card-header">
+        <iron-icon class="icon" icon="[[icon]]"></iron-icon>
+        <span class="title">[[localize(heading)]]</span>
+      </div>
 
-  <paper-card>
-    <div class="card-header">
-      <iron-icon class="icon" icon="[[icon]]"></iron-icon>
-      <span class="title">[[localize(heading)]]</span>
-    </div>
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
-
-    <div class="card-content">
-      <template is="dom-if" if="[[_missingResults]]">
+      <div class="card-content">
+        <template is="dom-if" if="[[_missingResults]]">
           <span>[[localize('wcm.cardStatisticsEmptyState')]]</span>
-      </template>
-      <google-chart class$="{{_getChartClasses(_missingResults)}}" id="statisticsChart" type="line" options=[[_chartOptions]]></google-chart>
-    </div>
-  </paper-card>
+        </template>
+        <google-chart class$="{{_getChartClasses(_missingResults)}}" id="statisticsChart" type="line" options=[[_chartOptions]]></google-chart>
+      </div>
+    </paper-card>
 
-</template>
-<script>
-(function() {
-  "use strict";
+  </template>
+  <script>
+    (function () {
+      "use strict";
 
-  Polymer({
-    is: 'forge-statistics-chart-card',
-    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: ""
-      },
-      interval: {
-        type: Number,
-        value: 60000
-      },
-      heading: {
-        type: String
-      },
-      icon: {
-        type: String
-      }
-    },
-    listeners: {
-      'iron-resize': '_onIronResize',
-      'forge-language-changed': '_onLanguageChange'
-    },
-    _chartOptions: null,
-    _result: null,
-    _missingResults: false,
-    _colors: [],
-    ready: function() {
-      this._colors = [{
-        target: "200",
-        color : "#4CAF50"
-      },{
-        target: "301",
-        color : "#00E5FF"
-      },{
-        target: "400",
-        color : "#7B1FA2"
-      },{
-        target: "404",
-        color : "#512DA8"
-      },{
-        target: "500",
-        color : "#D50000"
-      }];
-    },
-    _onPollingUpdate: function(result) {
-      this._result = result;
-      this._drawChart();
-    },
-    _onPollingError: function() {
-      this._missingResults = true;
-    },
-    _drawChart: function(){
-      if(!this._result || !this._result.dataPointsCount){
-        this._missingResults = true;
-        return;
-      }
-      this._missingResults = false;
-
-      var data = this._result.data;
-      var createColors = this._colors.some(function(c){
-        return data.some(function(d){return d.target === c.target})
-      });
-
-      var chartData = {
-        cols: [{
-          id: "time",
-          label: this.localize("Time"),
-          type: "datetime"
-        }],
-        rows: []
-      };
-
-      for(var i = 0; i < data.length; i++){
-        var obj = data[i];
-
-        var col = {
-          id: obj.target,
-          label: obj.target.replace("DataProvider","").replace("Provider", ""),
-          type: "number"
-        }
-        if(obj.target && createColors)
-        {
-          var color = this._colors.find(function(o){
-            return o.target === obj.target;
-          });
-          if(color){
-            color.index = i;
-          }else{
-            this._colors.push({
-              target: obj.target,
-              index: i,
-              color: obj.color || ForgeWebComponents.Helpers.ColorHelper.generateRandomColor()
-            });
+      Polymer({
+        is: 'forge-statistics-chart-card',
+        behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: ""
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          },
+          heading: {
+            type: String
+          },
+          icon: {
+            type: String
           }
-        }
-        chartData.cols.push(col);
-      }
-
-      for(var i = 0; i <  this._result.dataPointsCount; i++){
-        var row = [];
-        row.push({v: new Date(data[0].dataPoints[i].timestamp)});
-
-        for(var obj of data){
-          var value = obj.dataPoints[i].value || 0;
-          row.push({v: value});
-        }
-        chartData.rows.push({c: row});
-      }
-
-      var seriesColors = createColors ? {} : null;
-      if(createColors){
-        for(var color of this._colors.sort(function(a, b){return a.index - b.index})){
-          seriesColors[color.index] = {color: color.color};
-        }
-      }
-      this._chartOptions = this._getChartOptions(chartData.cols[1].label !== "", seriesColors);
-
-      this.$.statisticsChart.data = chartData;
-    },
-    _onIronResize: function() {
-      if(this.$.statisticsChart)
-        this.$.statisticsChart.redraw();
-    },
-    _onLanguageChange: function() {
-      var data = _.cloneDeep(this.$.incomingCommandsTrend.data);
-      data.cols[0] = {
-        id: "time",
-        label: this.localize("Time"),
-        type: "datetime"
-      };
-      this.$.incomingCommandsTrend.data = data;
-    },
-    _getChartOptions(showLegend, seriesColors){
-      var ret = {
-        legend: {
-          position: "top",
-          alignment: "center",
-          maxLines: 3
         },
-        vAxis: {
-          //scaleType: 'mirrorLog',
-          format: "short",
-          viewWindow: {
-             min: 0
-           }
+        listeners: {
+          'iron-resize': '_onIronResize',
+          'forge-language-changed': '_onLanguageChange'
         },
-        chartArea: {
-          width: "85%"
+        _chartOptions: null,
+        _result: null,
+        _missingResults: false,
+        _colors: [],
+        ready: function () {
+          this._colors = [{
+            target: "200",
+            color: "#4CAF50"
+          }, {
+            target: "301",
+            color: "#00E5FF"
+          }, {
+            target: "400",
+            color: "#7B1FA2"
+          }, {
+            target: "404",
+            color: "#512DA8"
+          }, {
+            target: "500",
+            color: "#D50000"
+          }];
+        },
+        _onPollingUpdate: function (result) {
+          this._result = result;
+          this._drawChart();
+        },
+        _onPollingError: function () {
+          this._missingResults = true;
+        },
+        _drawChart: function () {
+          if (!this._result || !this._result.dataPointsCount) {
+            this._missingResults = true;
+            return;
+          }
+          this._missingResults = false;
+
+          var data = this._result.data;
+          var createColors = this._colors.some(function (c) {
+            return data.some(function (d) { return d.target === c.target })
+          });
+
+          var chartData = {
+            cols: [{
+              id: "time",
+              label: this.localize("Time"),
+              type: "datetime"
+            }],
+            rows: []
+          };
+
+          for (var i = 0; i < data.length; i++) {
+            var obj = data[i];
+
+            var col = {
+              id: obj.target,
+              label: obj.target.replace("DataProvider", "").replace("Provider", ""),
+              type: "number"
+            }
+            if (obj.target && createColors) {
+              var color = this._colors.find(function (o) {
+                return o.target === obj.target;
+              });
+              if (color) {
+                color.index = i;
+              } else {
+                this._colors.push({
+                  target: obj.target,
+                  index: i,
+                  color: obj.color || ForgeWebComponents.Helpers.ColorHelper.generateRandomColor()
+                });
+              }
+            }
+            chartData.cols.push(col);
+          }
+
+          for (var i = 0; i < this._result.dataPointsCount; i++) {
+            var row = [];
+            row.push({ v: new Date(data[0].dataPoints[i].timestamp) });
+
+            for (var obj of data) {
+              var value = obj.dataPoints[i].value || 0;
+              row.push({ v: value });
+            }
+            chartData.rows.push({ c: row });
+          }
+
+          var seriesColors = createColors ? {} : null;
+          if (createColors) {
+            for (var color of this._colors.sort(function (a, b) { return a.index - b.index })) {
+              seriesColors[color.index] = { color: color.color };
+            }
+          }
+          this._chartOptions = this._getChartOptions(chartData.cols[1].label !== "", seriesColors);
+
+          this.$.statisticsChart.data = chartData;
+        },
+        _onIronResize: function () {
+          if (this.$.statisticsChart)
+            this.$.statisticsChart.redraw();
+        },
+        _onLanguageChange: function () {
+          var data = _.cloneDeep(this.$.incomingCommandsTrend.data);
+          data.cols[0] = {
+            id: "time",
+            label: this.localize("Time"),
+            type: "datetime"
+          };
+          this.$.incomingCommandsTrend.data = data;
+        },
+        _getChartOptions(showLegend, seriesColors) {
+          var ret = {
+            legend: {
+              position: "top",
+              alignment: "center",
+              maxLines: 3
+            },
+            vAxis: {
+              //scaleType: 'mirrorLog',
+              format: "short",
+              viewWindow: {
+                min: 0
+              }
+            },
+            chartArea: {
+              width: "85%"
+            }
+          }
+          if (!showLegend)
+            ret.legend = { position: "none" };
+
+          if (seriesColors)
+            ret.series = seriesColors;
+
+          return ret;
+        },
+        _getChartClasses: function (missing) {
+          return missing ? "hidden" : "";
         }
-      }
-      if(!showLegend)
-        ret.legend = { position : "none" };
-
-      if(seriesColors)
-        ret.series = seriesColors;
-
-      return ret;
-    },
-    _getChartClasses: function(missing){
-      return missing ? "hidden" : "";
-    }
-  });
-})();
-</script>
+      });
+    })();
+  </script>
 
 </dom-module>

@@ -6,133 +6,128 @@
 
 <dom-module id="forge-commandmetrics-current-card">
 
-<style>
-:host {
-  display: block;
-}
+  <template>
 
-paper-card {
-  display: block;
-}
+    <style>
+      :host {
+        display: block;
+      }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+      paper-card {
+        display: block;
+      }
 
-.card-disclaimer {
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
 
-}
+      .card-panels-container {
+        margin-top: 8px;
+        display: flex;
+        flex-direction: row;
+      }
 
-.card-panels-container {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: row;
-}
+      .card-panel {
+        text-align: center;
+        box-sizing: border-box;
+        width: 33%;
+        padding: 0 4px;
+      }
 
-.card-panel {
-  text-align: center;
-  box-sizing: border-box;
-  width: 33%;
-  padding: 0 4px;
-}
+      .card-panel:first-child {
+        padding: 0 4px 0 0;
+      }
 
-.card-panel:first-child {
-  padding: 0 4px 0 0;
-}
+      .card-panel:last-child {
+        padding: 0 0 0 4px;
+      }
 
-.card-panel:last-child {
-  padding: 0 0 0 4px;
-}
+      .card-panel-title {
+        font-size: 32px;
+        text-transform: uppercase;
+      }
 
-.card-panel-title {
-  font-size: 32px;
-  text-transform: uppercase;
-}
+      .card-panel-content {
+        font-size: 72px;
+      }
+    </style>
 
-.card-panel-content {
-  font-size: 72px;
-}
+    <paper-card heading="[[localize('Command Queue')]]">
 
-</style>
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-<template>
+      <div class="card-content">
 
-  <paper-card heading="[[localize('Command Queue')]]">
+        <div class="card-disclaimer">[[localize('wcm.cardCurrentCommandQueueDisclaimer')]]</div>
 
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
-
-    <div class="card-content">
-
-      <div class="card-disclaimer">[[localize('wcm.cardCurrentCommandQueueDisclaimer')]]</div>
-
-      <div class="card-panels-container">
-        <div class="card-panel">
-          <div class="card-panel-title">[[localize('new')]]</div>
-          <div class="card-panel-content">[[_data.added]]</div>
+        <div class="card-panels-container">
+          <div class="card-panel">
+            <div class="card-panel-title">[[localize('new')]]</div>
+            <div class="card-panel-content">[[_data.added]]</div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-title">[[localize('remaining')]]</div>
+            <div class="card-panel-content">[[_data.remaining]]</div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-title">[[localize('failed')]]</div>
+            <div class="card-panel-content">[[_data.failed]]</div>
+          </div>
         </div>
-        <div class="card-panel">
-          <div class="card-panel-title">[[localize('remaining')]]</div>
-          <div class="card-panel-content">[[_data.remaining]]</div>
-        </div>
-        <div class="card-panel">
-          <div class="card-panel-title">[[localize('failed')]]</div>
-          <div class="card-panel-content">[[_data.failed]]</div>
-        </div>
+
       </div>
 
-    </div>
+    </paper-card>
 
-  </paper-card>
+  </template>
 
-</template>
+  <script>
+    (function () {
+      "use strict";
 
-<script>
-(function() {
-  "use strict";
-
-  function Data(added, remaining, failed) {
-    remaining = remaining || 0;
-    this.added = added || 0;
-    this.remaining = remaining >= 0 ? remaining : 0;
-    this.failed = failed || 0;
-  }
-
-  Polymer({
-    is: 'forge-commandmetrics-current-card',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "/api/extensions/query/dashboards-servicebus-commands?query=currentqueue"
-      },
-      interval: {
-        type: Number,
-        value: 60000
-      },
-      _data: {
-        type: Object,
-        value: new Data()
-      }
-    },
-    _onPollingUpdate: function(result) {
-
-      if (!(result && result.length)) {
-        return;
+      function Data(added, remaining, failed) {
+        remaining = remaining || 0;
+        this.added = added || 0;
+        this.remaining = remaining >= 0 ? remaining : 0;
+        this.failed = failed || 0;
       }
 
-      var added = result.find(function(e) {return e.action === "sb:Send"}) || { count: 0 };
-      var handled = result.find(function(e) {return e.action === "sb:Handle"}) || { count: 0 };
-      var failed = result.find(function(e) {return e.action === "sb:HandleFail"}) || { count: 0 };
+      Polymer({
+        is: 'forge-commandmetrics-current-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/dashboards-servicebus-commands?query=currentqueue"
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          },
+          _data: {
+            type: Object,
+            value: new Data()
+          }
+        },
+        _onPollingUpdate: function (result) {
 
-      var remaining = handled.count - added.count;
-      this._data = new Data(added.count, remaining, failed.count);
+          if (!(result && result.length)) {
+            return;
+          }
 
-    }
-  });
+          var added = result.find(function (e) { return e.action === "sb:Send" }) || { count: 0 };
+          var handled = result.find(function (e) { return e.action === "sb:Handle" }) || { count: 0 };
+          var failed = result.find(function (e) { return e.action === "sb:HandleFail" }) || { count: 0 };
 
-})();
-</script>
+          var remaining = handled.count - added.count;
+          this._data = new Data(added.count, remaining, failed.count);
+
+        }
+      });
+
+    })();
+  </script>
 
 </dom-module>

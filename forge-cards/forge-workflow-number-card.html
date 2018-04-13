@@ -6,257 +6,256 @@
 
 <dom-module id="forge-workflow-number-card">
 
-<style>
-:host {
-  display: block;
-}
+  <template>
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+    <style>
+      :host {
+        display: block;
+      }
 
-paper-card {
-  display: block;
-}
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
 
-google-chart {
-  height: 400;
-  width:100%;
-}
+      paper-card {
+        display: block;
+      }
 
-.card-content{
-  height: 360px;
-  text-align: center;
-}
+      google-chart {
+        height: 400;
+        width: 100%;
+      }
 
-.card-content span {
-  line-height: 300px;
-}
+      .card-content {
+        height: 360px;
+        text-align: center;
+      }
 
-.hidden{
-  display: none !important;
-}
+      .card-content span {
+        line-height: 300px;
+      }
 
-</style>
+      .hidden {
+        display: none !important;
+      }
+    </style>
 
-<template>
+    <paper-card heading="[[localize('Entities by workflow stage')]]">
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-  <paper-card heading="[[localize('Entities by workflow stage')]]">
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
-
-    <div class="card-content">
-      <template is="dom-if" if="[[_missingResults]]">
+      <div class="card-content">
+        <template is="dom-if" if="[[_missingResults]]">
           <span>[[localize('wcm.cardWorkflowNumberEmptyState')]]</span>
-      </template>
-      <div id="workflowNumberDashboard">
-        <div id="workflowNumberFilter"></div>
-         <google-chart id="workflowNumberChart"></google-chart>
-       </div>
-    </div>
-  </paper-card>
+        </template>
+        <div id="workflowNumberDashboard">
+          <div id="workflowNumberFilter"></div>
+          <google-chart id="workflowNumberChart"></google-chart>
+        </div>
+      </div>
+    </paper-card>
 
-</template>
-<script>
-(function() {
-  "use strict";
+  </template>
+  <script>
+    (function () {
+      "use strict";
 
-  Polymer({
-    is: 'forge-workflow-number-card',
-    behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "/api/extensions/query/dashboards-wcm-stages-totals"
-      },
-      interval: {
-        type: Number,
-        value: 600000
-      }
-    },
-    listeners: {
-      'iron-resize': '_onIronResize',
-      'forge-language-changed': '_onLanguageChange'
-    },
-    _dashboard: null,
-    _hrefStatuses: [],
-    _hrefData: [],
-    _result: null,
-    _missingResults: false,
-    _onPollingUpdate: function(result) {
-      this._result = result;
-      this._drawFromEntites();
-    },
-    _drawFromEntites :function(){
-      if(!this._result || !this._result.length){
-        this._missingResults = true;
-        return;
-      }
-      var chartsData = this._getChartData(this._result);
-
-      this._data = chartsData.data;
-      var _this = this;
-
-      google.charts.load('current', {'packages':['corechart', 'controls']});
-      google.charts.setOnLoadCallback(function() {
-        _this._createChart(chartsData.colors);
-      });
-    },
-    _getChartData: function(data){
-      var _this = this;
-      var maxColIndex = 1;
-      var cols = ["EntityStatus"];
-      var rows = [];
-      var colors = [];
-
-      //Cycle over WorkflowStatuses
-      data.forEach(function(ws) {
-        var status = _this.localize(ws.WorkflowStatus[0].toUpperCase() + ws.WorkflowStatus.substring(1));
-
-        var row = rows.find(r => r[0] === status);
-        if(!row){
-          row = [status];
-
-          rows.push(row);
-
-          var rowIndex = rows.length - 1;
-          _this._hrefStatuses[rowIndex] = ws.WorkflowStatus;
-        }
-
-        ws.ByEntity.forEach(function(e) {
-          var friendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
-          var entityType = _this.localize(friendlyName);
-          var colIndex = cols.indexOf(entityType);
-
-          if(colIndex == -1){
-            cols.push(entityType);
-
-            colIndex = cols.indexOf(entityType);
-
-            _this._hrefData[colIndex] = e.EntityType;
-            maxColIndex+= 1;
-
-            var color = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
-            if(color)
-              colors[colIndex - 1] = color.color;
-          }
-
-          row[colIndex] = e.Count;
-        });
-      });
-
-      rows.forEach(function(r){
-        for (var i = 1; i < maxColIndex; i++) {
-          r[i] = r[i] || 0;
-        }
-      });
-      var res = [cols];
-      rows.forEach(function(r){
-        res.push(r);
-      });
-
-      return {data: res, colors: colors}
-    },
-    _onIronResize: function() {
-      if(this._dashboard && this._data){
-        var _this = this;
-        this.debounce( '_redrawChart', _this._redrawChart , 1000);
-      }
-    },
-    _createChart: function(chartColors){
-      var chartOptions = {
-        "isStacked" : true,
-        "bar" : {
-          "groupWidth" : "70%"
-        },
-        "legend": {
-          "position" : "bottom"
-        },
-        "vAxis": {
-          "viewWindow": {
-            "min": 0
+      Polymer({
+        is: 'forge-workflow-number-card',
+        behaviors: [Polymer.IronResizableBehavior, ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/dashboards-wcm-stages-totals"
+          },
+          interval: {
+            type: Number,
+            value: 600000
           }
         },
-        "colors": chartColors
-      };
+        listeners: {
+          'iron-resize': '_onIronResize',
+          'forge-language-changed': '_onLanguageChange'
+        },
+        _dashboard: null,
+        _hrefStatuses: [],
+        _hrefData: [],
+        _result: null,
+        _missingResults: false,
+        _onPollingUpdate: function (result) {
+          this._result = result;
+          this._drawFromEntites();
+        },
+        _drawFromEntites: function () {
+          if (!this._result || !this._result.length) {
+            this._missingResults = true;
+            return;
+          }
+          var chartsData = this._getChartData(this._result);
 
-      this._columnFilter = new google.visualization.ControlWrapper({
-          controlType: 'CategoryFilter',
-          containerId: 'workflowNumberFilter',
-          options: {
+          this._data = chartsData.data;
+          var _this = this;
+
+          google.charts.load('current', { 'packages': ['corechart', 'controls'] });
+          google.charts.setOnLoadCallback(function () {
+            _this._createChart(chartsData.colors);
+          });
+        },
+        _getChartData: function (data) {
+          var _this = this;
+          var maxColIndex = 1;
+          var cols = ["EntityStatus"];
+          var rows = [];
+          var colors = [];
+
+          //Cycle over WorkflowStatuses
+          data.forEach(function (ws) {
+            var status = _this.localize(ws.WorkflowStatus[0].toUpperCase() + ws.WorkflowStatus.substring(1));
+
+            var row = rows.find(r => r[0] === status);
+            if (!row) {
+              row = [status];
+
+              rows.push(row);
+
+              var rowIndex = rows.length - 1;
+              _this._hrefStatuses[rowIndex] = ws.WorkflowStatus;
+            }
+
+            ws.ByEntity.forEach(function (e) {
+              var friendlyName = ForgeWebComponents.Helpers.EntityHelper.getFriendlyName(e.EntityType);
+              var entityType = _this.localize(friendlyName);
+              var colIndex = cols.indexOf(entityType);
+
+              if (colIndex == -1) {
+                cols.push(entityType);
+
+                colIndex = cols.indexOf(entityType);
+
+                _this._hrefData[colIndex] = e.EntityType;
+                maxColIndex += 1;
+
+                var color = ForgeWebComponents.Helpers.EntityHelper.getEntityIcon(e.EntityType);
+                if (color)
+                  colors[colIndex - 1] = color.color;
+              }
+
+              row[colIndex] = e.Count;
+            });
+          });
+
+          rows.forEach(function (r) {
+            for (var i = 1; i < maxColIndex; i++) {
+              r[i] = r[i] || 0;
+            }
+          });
+          var res = [cols];
+          rows.forEach(function (r) {
+            res.push(r);
+          });
+
+          return { data: res, colors: colors }
+        },
+        _onIronResize: function () {
+          if (this._dashboard && this._data) {
+            var _this = this;
+            this.debounce('_redrawChart', _this._redrawChart, 1000);
+          }
+        },
+        _createChart: function (chartColors) {
+          var chartOptions = {
+            "isStacked": true,
+            "bar": {
+              "groupWidth": "70%"
+            },
+            "legend": {
+              "position": "bottom"
+            },
+            "vAxis": {
+              "viewWindow": {
+                "min": 0
+              }
+            },
+            "colors": chartColors
+          };
+
+          this._columnFilter = new google.visualization.ControlWrapper({
+            controlType: 'CategoryFilter',
+            containerId: 'workflowNumberFilter',
+            options: {
               filterColumnLabel: 'EntityStatus',
               ui: {
                 label: 'Stages',
-                  allowTyping: false,
-                  allowMultiple: true
+                allowTyping: false,
+                allowMultiple: true
               }
+            }
+          });
+
+          this._chart = new google.visualization.ChartWrapper({
+            'chartType': 'ColumnChart',
+            'containerId': 'workflowNumberChart',
+            'options': chartOptions
+          });
+
+          this._drawChart();
+        },
+        _drawChart: function () {
+          google.charts.load('current', { 'packages': ['corechart', 'controls'] });
+          var _this = this;
+
+          google.charts.setOnLoadCallback(function () {
+            _this._dashboard = new google.visualization.Dashboard(_this.$.workflowNumberDashboard);
+            _this._dashboard.bind(_this._columnFilter, _this._chart);
+            _this._dashboard.draw(_this._data);
+
+            google.visualization.events.addListener(_this._chart, 'select', function () { _this._chartSelect() });
+          });
+        },
+        _redrawChart: function () {
+          this._dashboard.dispose();
+          this._drawChart();
+        },
+        _chartSelect: function () {
+          if (this._dashboard) {
+            var selectedItem = this._dashboard.getSelection()[0];
+            if (selectedItem && selectedItem.row != null && selectedItem.column != null) {
+
+              var workflowStatus = this._hrefStatuses[selectedItem.row];
+              var entityType = this._hrefData[selectedItem.column];
+              if (workflowStatus && entityType)
+                this._openItem(entityType, workflowStatus);
+            }
           }
-      });
+        },
+        _openItem: function (entityType, workflowStatus) {
+          var query = this._workflowStatusQueryString(workflowStatus);
 
-      this._chart = new google.visualization.ChartWrapper({
-        'chartType': 'ColumnChart',
-        'containerId': 'workflowNumberChart',
-        'options': chartOptions
-      });
+          var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(entityType, query);
+          if (href) location.href = href;
+        },
+        _workflowStatusQueryString(workflowStatus) {
+          var result = {};
+          var forgeStages = ["published", "unpublished", "reviewed"];
+          var forgeStatuses = ["archived"];
 
-      this._drawChart();
-    },
-    _drawChart: function(){
-      google.charts.load('current', {'packages':['corechart', 'controls']});
-      var _this = this;
+          if (forgeStages.indexOf(workflowStatus) > -1) {
+            result.stage = workflowStatus;
+          } else if (forgeStatuses.indexOf(workflowStatus) > -1) {
+            result.status = workflowStatus;
+          } else if (workflowStatus) {
+            result["WorkflowFields.approvalStatus"] = workflowStatus;
+          }
 
-      google.charts.setOnLoadCallback(function() {
-          _this._dashboard = new google.visualization.Dashboard(_this.$.workflowNumberDashboard);
-          _this._dashboard.bind(_this._columnFilter, _this._chart);
-          _this._dashboard.draw(_this._data);
-
-          google.visualization.events.addListener(_this._chart, 'select', function(){ _this._chartSelect()});
-      });
-    },
-    _redrawChart: function(){
-      this._dashboard.dispose();
-      this._drawChart();
-    },
-    _chartSelect: function(){
-      if(this._dashboard){
-        var selectedItem = this._dashboard.getSelection()[0];
-        if (selectedItem && selectedItem.row != null && selectedItem.column != null) {
-
-          var workflowStatus = this._hrefStatuses[selectedItem.row];
-          var entityType = this._hrefData[selectedItem.column];
-          if(workflowStatus && entityType)
-          this._openItem(entityType, workflowStatus);
+          return result;
+        },
+        _onLanguageChange: function () {
+          this._drawFromEntites();
         }
-      }
-    },
-    _openItem: function(entityType, workflowStatus) {
-      var query = this._workflowStatusQueryString(workflowStatus);
+      });
 
-      var href = ForgeWebComponents.Helpers.EntityHelper.createSearchLink(entityType, query);
-      if (href) location.href = href;
-    },
-    _workflowStatusQueryString(workflowStatus){
-      var result = {};
-      var forgeStages =["published", "unpublished", "reviewed"];
-      var forgeStatuses = ["archived"];
-
-      if(forgeStages.indexOf(workflowStatus) > -1) {
-        result.stage = workflowStatus;
-      } else if(forgeStatuses.indexOf(workflowStatus) > -1){
-        result.status = workflowStatus;
-      }else if(workflowStatus){
-        result["WorkflowFields.approvalStatus"] = workflowStatus;
-      }
-
-      return result;
-    },
-    _onLanguageChange: function() {
-      this._drawFromEntites();
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>

@@ -4,67 +4,66 @@
 
 <dom-module id="forge-performance-dashboard">
 
-  <style>
-
-    .dashboard-container {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-    }
-
-    .padded-card {
-      box-sizing: border-box;
-      padding: 8px;
-    }
-
-    .padded-card-33 {
-      width: calc(100% / 3);
-    }
-
-    .padded-card-50 {
-      width: 50%;
-    }
-
-    @media (max-width: 1000px) {
-      .padded-card {
-        width: 100%;
-      }
-      .dashboard-container > .dashboard-row {
-        display: block;
-      }
-    }
-
-    .icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      margin-right: 12px;
-    }
-
-    .role {
-      @apply(--paper-font-title);
-      font-size: 20px;
-      font-weight: 400;
-      vertical-align: middle;
-    }
-
-    .grey {
-      color: var(--paper-grey-600);
-    }
-
-    .timeRange {
-      @apply(--paper-font-body-1);
-      vertical-align: middle;
-      float: right;
-      margin-top: 8px;
-    }
-  </style>
-
   <template>
 
+      <style>
+          .dashboard-container {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            overflow-y: auto;
+          }
+      
+          .padded-card {
+            box-sizing: border-box;
+            padding: 8px;
+          }
+      
+          .padded-card-33 {
+            width: calc(100% / 3);
+          }
+      
+          .padded-card-50 {
+            width: 50%;
+          }
+      
+          @media (max-width: 1000px) {
+            .padded-card {
+              width: 100%;
+            }
+            .dashboard-container > .dashboard-row {
+              display: block;
+            }
+          }
+      
+          .icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 12px;
+          }
+      
+          .role {
+            @apply --paper-font-title;
+            font-size: 20px;
+            font-weight: 400;
+            vertical-align: middle;
+          }
+      
+          .grey {
+            color: var(--paper-grey-600);
+          }
+      
+          .timeRange {
+            @apply --paper-font-body-1;
+            vertical-align: middle;
+            float: right;
+            margin-top: 8px;
+          }
+        </style>
+      
     <div class="dashboard-container">
       <div class="padded-card">
         <iron-icon class="icon grey" icon="social:public"></iron-icon>

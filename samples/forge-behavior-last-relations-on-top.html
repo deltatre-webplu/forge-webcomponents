@@ -2,34 +2,35 @@
 
 <dom-module id="forge-behavior-last-relations-on-top">
 
-	<style>
-		.suggestion-container {
-			padding: 8px;
-			display: block;
-
-			@apply --layout-horizontal;
-			@apply --layout-justified;
-		}
-		.suggestion-container .message{
-			line-height: 39.5938px;
-
-			@apply --layout-flex;
-			@apply --layout-center;
-		}
-	</style>
-
 	<template>
+
+		<style>
+			.suggestion-container {
+				padding: 8px;
+				display: block;
+
+				@apply --layout-horizontal;
+				@apply --layout-justified;
+			}
+
+			.suggestion-container .message {
+				line-height: 39.5938px;
+
+				@apply --layout-flex;
+				@apply --layout-center;
+			}
+		</style>
 
 		<forge-entity-behavior-container text="[[text]]" notification="[[notification]]">
 			<template is="dom-if" if="[[_relationsFromPreviousEvent]]">
-			<div class="suggestion-container">
-				<div class="message">
-					[[_relationsFromPreviousEvent]] new relation(s) have been added
+				<div class="suggestion-container">
+					<div class="message">
+						[[_relationsFromPreviousEvent]] new relation(s) have been added
+					</div>
+					<div>
+						<paper-button on-tap="_moveLastRelationsOnTop">Move on top</paper-button>
+					</div>
 				</div>
-				<div>
-					<paper-button on-tap="_moveLastRelationsOnTop">Move on top</paper-button>
-				</div>
-			</div>
 			</template>
 		</forge-entity-behavior-container>
 
@@ -46,18 +47,18 @@
 
 				var cmds =
 					(relations || [])
-					.map(function (rel, index) {
-						var relatedItem = new commands.AddEntityRelationCommand.RelatedItem(rel.type, rel.entityId);
+						.map(function (rel, index) {
+							var relatedItem = new commands.AddEntityRelationCommand.RelatedItem(rel.type, rel.entityId);
 
-						var relationPosition = position + index;
-						var cmd = new commands.MoveEntityRelationCommand(entity.aggregateId, entity.aggregateType, relatedItem,
-							relationPosition);
+							var relationPosition = position + index;
+							var cmd = new commands.MoveEntityRelationCommand(entity.aggregateId, entity.aggregateType, relatedItem,
+								relationPosition);
 
-						return {
-							name: cmd.getCommandName(),
-							body: cmd
-						}
-					});
+							return {
+								name: cmd.getCommandName(),
+								body: cmd
+							}
+						});
 
 				if (cmds.length) {
 					$injector.invoke(function (commandQueue) {

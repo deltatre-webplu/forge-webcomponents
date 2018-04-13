@@ -2,138 +2,142 @@
 
 <dom-module id="forge-metrics-panel">
 
-<style>
-:host {
-  display: block;
-}
+  <template>
 
-.header{
-  background-color: var(--status-neutral-dark-color);
-  color: white;
-  padding: 0 4px;
-  font-weight: 600;
-  font-size: 18px;
-}
+    <style>
+      :host {
+        display: block;
+      }
 
-.icon {
-  width: 72px;
-  height: 72px;
-  opacity: 0.5;
-  float:right;
-}
+      .header {
+        background-color: var(--status-neutral-dark-color);
+        color: white;
+        padding: 0 4px;
+        font-weight: 600;
+        font-size: 18px;
+      }
 
-.item {
-  color: var(--paper-grey-900);
-  background-color: var(--status-neutral-color);
-}
+      .icon {
+        width: 72px;
+        height: 72px;
+        opacity: 0.5;
+        float: right;
+      }
 
-.metrics-values{
-  position: relative;
-  height: 72px;
-}
+      .item {
+        color: var(--paper-grey-900);
+        background-color: var(--status-neutral-color);
+      }
 
-.metrics-text {
-  position:absolute;
-  bottom: 0;
-  padding: 4px;
-}
+      .metrics-values {
+        position: relative;
+        height: 72px;
+      }
 
-.strong{
-  font-weight: 600;
-  font-size: 24px;
-}
+      .metrics-text {
+        position: absolute;
+        bottom: 0;
+        padding: 4px;
+      }
 
-.threshold-warning {
-  background-color: var(--status-yellow-color);
-}
-.threshold-warning .header {
-  background-color: var(--status-yellow-dark-color);
-}
+      .strong {
+        font-weight: 600;
+        font-size: 24px;
+      }
 
-.threshold-danger {
-  background-color: var(--status-red-color);
-}
-.threshold-danger .header {
-  background-color: var(--status-red-dark-color);
-}
+      .threshold-warning {
+        background-color: var(--status-yellow-color);
+      }
 
-.threshold-success {
-  background-color: var(--status-green-color);
-}
-.threshold-success .header {
-  background-color: var(--status-green-dark-color);
-}
+      .threshold-warning .header {
+        background-color: var(--status-yellow-dark-color);
+      }
 
-</style>
+      .threshold-danger {
+        background-color: var(--status-red-color);
+      }
 
-<template>
+      .threshold-danger .header {
+        background-color: var(--status-red-dark-color);
+      }
 
-  <paper-item-body two-line class$="item [[threshold]]">
-    <span class="header">[[localize(title)]]</span>
-    <div class="metrics-values">
-      <div class="metrics-text">
-        [[localize("Average")]]	<span class="strong">[[average]]</span>	[[localize("Peak")]] <span class="strong">[[max]]</span>
+      .threshold-success {
+        background-color: var(--status-green-color);
+      }
+
+      .threshold-success .header {
+        background-color: var(--status-green-dark-color);
+      }
+    </style>
+
+    <paper-item-body two-line class$="item [[threshold]]">
+      <span class="header">[[localize(title)]]</span>
+      <div class="metrics-values">
+        <div class="metrics-text">
+          [[localize("Average")]]
+          <span class="strong">[[average]]</span> [[localize("Peak")]]
+          <span class="strong">[[max]]</span>
+        </div>
+        <iron-icon class="icon" icon="[[icon]]"></iron-icon>
       </div>
-      <iron-icon class="icon" icon="[[icon]]"></iron-icon>
-    </div>
-  </paper-item-body>
+    </paper-item-body>
 
-</template>
+  </template>
 
-<script>
-(function() {
-  "use strict";
+  <script>
+    (function () {
+      "use strict";
 
-  Polymer({
-    is: 'forge-metrics-panel',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String
-      },
-      interval: {
-        type: Number,
-        value: 60000
-      },
-      icon: {
-        type: String
-      },
-      title:{
-        type: String
-      },
-      thresholdWarning: {
-        type: Number,
-        value: 0
-      },
-      thresholdDanger: {
-        type: Number,
-        value: 0
-      }
-    },
-    average: 0,
-    max: 0,
-    threshold: null,
-    _onPollingUpdate: function(result) {
-      if (result) {
+      Polymer({
+        is: 'forge-metrics-panel',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          },
+          icon: {
+            type: String
+          },
+          title: {
+            type: String
+          },
+          thresholdWarning: {
+            type: Number,
+            value: 0
+          },
+          thresholdDanger: {
+            type: Number,
+            value: 0
+          }
+        },
+        average: 0,
+        max: 0,
+        threshold: null,
+        _onPollingUpdate: function (result) {
+          if (result) {
 
-        this.average = (!result.average || result.average.isInfinite || result.average.isNaN) ? 0 : Math.round(result.average);
-        this.max = (!result.peak || result.peak.isInfinite || result.peak.isNaN) ? 0 : Math.round(result.peak);
+            this.average = (!result.average || result.average.isInfinite || result.average.isNaN) ? 0 : Math.round(result.average);
+            this.max = (!result.peak || result.peak.isInfinite || result.peak.isNaN) ? 0 : Math.round(result.peak);
 
-        if (this.thresholdDanger && this.average >= this.thresholdDanger) {
-          this.threshold = 'threshold-danger';
+            if (this.thresholdDanger && this.average >= this.thresholdDanger) {
+              this.threshold = 'threshold-danger';
+            }
+            else if (this.thresholdWarning && this.average >= this.thresholdWarning) {
+              this.threshold = 'threshold-warning';
+            }
+            else if (this.thresholdWarning || this.thresholdDanger) {
+              this.threshold = 'threshold-success';
+            }
+
+          }
         }
-        else if (this.thresholdWarning && this.average >= this.thresholdWarning) {
-          this.threshold = 'threshold-warning';
-        }
-        else if (this.thresholdWarning || this.thresholdDanger) {
-          this.threshold = 'threshold-success';
-        }
+      });
 
-      }
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>

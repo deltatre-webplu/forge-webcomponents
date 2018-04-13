@@ -4,41 +4,41 @@
 
 <dom-module id="forge-status-card">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    .status-card {
-      display: block;
-    }
-
-    .status-0 {
-      background-color: var(--status-green-color);
-    }
-
-    .status-1 {
-      background-color: var(--status-red-color)
-    }
-
-    .status-2 {
-      background-color: var(--status-yellow-color);
-    }
-
-    .role-icon {
-      --iron-icon-height: 96px;
-      --iron-icon-width: 96px;
-      --iron-icon-fill-color: white;
-    }
-
-    .role-name {
-      @apply(--paper-font-title);
-      text-align: right;
-      color: white;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      .status-card {
+        display: block;
+      }
+
+      .status-0 {
+        background-color: var(--status-green-color);
+      }
+
+      .status-1 {
+        background-color: var(--status-red-color)
+      }
+
+      .status-2 {
+        background-color: var(--status-yellow-color);
+      }
+
+      .role-icon {
+        --iron-icon-height: 96px;
+        --iron-icon-width: 96px;
+        --iron-icon-fill-color: white;
+      }
+
+      .role-name {
+        @apply --paper-font-title;
+        text-align: right;
+        color: white;
+      }
+    </style>
 
     <paper-card class$="status-card status-[[status]]">
       <div class="card-content">

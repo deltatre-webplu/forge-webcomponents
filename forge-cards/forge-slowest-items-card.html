@@ -6,74 +6,74 @@
 
 <dom-module id="forge-slowest-items-card">
 
-  <style include="forge-table-styles"></style>
-
-  <style>
-    :host {
-      display: block;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    paper-icon-item {
-      cursor: pointer;
-      cursor: hand;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    .card-header {
-      padding: 16px;
-      font-size: 24px;
-      font-weight: 400;
-      color: #000;
-      line-height: 32px;
-    }
-
-    .card-header .icon {
-      width: 32px;
-      height: 32px;
-      margin-right: 12px;
-    }
-
-    .table-disclaimer {
-      padding: 16px 8px;
-      font-size: 14px;
-    }
-
-    .status-danger {
-      color: var(--status-red-color);
-      font-weight: 600;
-    }
-
-    .status-warning {
-      color: var(--status-yellow-color);
-      font-weight: 600;
-    }
-
-    .missingResults {
-      text-align: center;
-    }
-
-    .forge-table td,
-    .forge-table th {
-      width: 80px;
-    }
-
-    .table-main-col {
-      width: auto !important;
-      overflow: hidden;
-      white-space: nowrap;
-    }
-  </style>
-
   <template>
+
+    <style include="forge-table-styles"></style>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      paper-icon-item {
+        cursor: pointer;
+        cursor: hand;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      .card-header {
+        padding: 16px;
+        font-size: 24px;
+        font-weight: 400;
+        color: #000;
+        line-height: 32px;
+      }
+
+      .card-header .icon {
+        width: 32px;
+        height: 32px;
+        margin-right: 12px;
+      }
+
+      .table-disclaimer {
+        padding: 16px 8px;
+        font-size: 14px;
+      }
+
+      .status-danger {
+        color: var(--status-red-color);
+        font-weight: 600;
+      }
+
+      .status-warning {
+        color: var(--status-yellow-color);
+        font-weight: 600;
+      }
+
+      .missingResults {
+        text-align: center;
+      }
+
+      .forge-table td,
+      .forge-table th {
+        width: 80px;
+      }
+
+      .table-main-col {
+        width: auto !important;
+        overflow: hidden;
+        white-space: nowrap;
+      }
+    </style>
 
     <paper-card>
 

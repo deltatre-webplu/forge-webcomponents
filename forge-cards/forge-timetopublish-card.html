@@ -6,47 +6,47 @@
 
 <dom-module id="forge-timetopublish-card">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    .entity-icon-wrapper {
-      display: inline-block;
-      box-sizing: border-box;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--google-grey-300);
-    }
-
-    .entity-icon {
-      margin: 8px;
-      width: 24px;
-      height: 24px;
-      --iron-icon-fill-color: white;
-    }
-
-    .capitalize {
-      text-transform: capitalize;
-    }
-
-    .card-disclaimer {
-      padding-bottom: 5px;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      .entity-icon-wrapper {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--google-grey-300);
+      }
+
+      .entity-icon {
+        margin: 8px;
+        width: 24px;
+        height: 24px;
+        --iron-icon-fill-color: white;
+      }
+
+      .capitalize {
+        text-transform: capitalize;
+      }
+
+      .card-disclaimer {
+        padding-bottom: 5px;
+      }
+    </style>
 
     <paper-card heading="[[localize('Time to first publish')]]">
 

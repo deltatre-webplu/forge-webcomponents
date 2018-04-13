@@ -4,17 +4,18 @@
 
 <dom-module id="forge-story-behavior-sample">
 
-  <style>
-    .word-count {
-      padding: 8px;
-      font-size: 20px;
-    }
-  </style>
-
   <template>
 
+    <style>
+      .word-count {
+        padding: 8px;
+        font-size: 20px;
+      }
+    </style>
+
     <forge-entity-behavior-container text="[[text]]" notification="[[notification]]">
-      <div class="word-count"><strong>Word Count</strong>: [[wordCount]]</div>
+      <div class="word-count">
+        <strong>Word Count</strong>: [[wordCount]]</div>
       <forge-tags-suggestion field-name="suggestedTags" label="Suggested Tags" entity="[[entity]]" on-newsuggestion="onNewSuggestion"></forge-tags-suggestion>
     </forge-entity-behavior-container>
 
@@ -37,8 +38,8 @@
         _entityChanged: function (newEntity, oldEntity) {
           if (typeof newEntity === 'string') return;
           this.onEntityChanged(newEntity);
-          
-          if(!this.text || !this.text.length){
+
+          if (!this.text || !this.text.length) {
             this.text = '(no suggestions)';
           }
         },

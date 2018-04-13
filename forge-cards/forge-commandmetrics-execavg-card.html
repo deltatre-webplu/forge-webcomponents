@@ -6,141 +6,133 @@
 
 <dom-module id="forge-commandmetrics-execavg-card">
 
-<style>
-:host {
-  display: block;
-}
+  <template>
 
-paper-card {
-  display: block;
-}
+    <style>
+      :host {
+        display: block;
+      }
 
-.loading-bar {
-  --paper-progress-active-color: var(--paper-light-blue-500);
-  width: 100%;
-  position: absolute;
-}
+      paper-card {
+        display: block;
+      }
 
-.card-disclaimer {
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
 
-}
+      .card-panels-container {
+        margin-top: 8px;
+        display: flex;
+        flex-direction: row;
+      }
 
-.card-panels-container {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: row;
-}
+      .card-panel {
+        box-sizing: border-box;
+        width: 50%;
+        padding: 0 4px 0 0;
+        text-align: center;
+      }
 
-.card-panel {
-  box-sizing: border-box;
-  width: 50%;
-  padding: 0 4px 0 0;
-  text-align: center;
-}
+      .card-panel:last-child {
+        padding: 0 0 0 4px;
+      }
 
-.card-panel:last-child {
-  padding: 0 0 0 4px;
-}
+      .card-panel-title {
+        font-size: 32px;
+        text-transform: uppercase;
+      }
 
-.card-panel-title {
-  font-size: 32px;
-  text-transform: uppercase;
-}
+      .card-panel-content {
+        font-size: 58px;
+      }
+    </style>
 
-.card-panel-content {
-  font-size: 58px;
-}
+    <paper-card heading="[[localize('Execution Average')]]">
 
-.card-panel-footer {
-}
+      <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
 
-</style>
+      <div class="card-content">
 
-<template>
+        <div class="card-disclaimer">[[localize('wcm.cardCommandExecutionAverageDisclaimer')]]</div>
 
-  <paper-card heading="[[localize('Execution Average')]]">
-
-    <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>
-
-    <div class="card-content">
-
-      <div class="card-disclaimer">[[localize('wcm.cardCommandExecutionAverageDisclaimer')]]</div>
-
-      <div class="card-panels-container">
-        <div class="card-panel">
-          <div class="card-panel-title">[[localize('global')]]</div>
-          <div class="card-panel-content">[[_data.global]]ms</div>
+        <div class="card-panels-container">
+          <div class="card-panel">
+            <div class="card-panel-title">[[localize('global')]]</div>
+            <div class="card-panel-content">[[_data.global]]ms</div>
+          </div>
+          <div class="card-panel">
+            <div class="card-panel-title">[[localize('slowest')]]</div>
+            <div class="card-panel-content">[[_data.slowest]]ms</div>
+            <div class="card-panel-footer">[[_data.slowestName]]</div>
+          </div>
         </div>
-        <div class="card-panel">
-          <div class="card-panel-title">[[localize('slowest')]]</div>
-          <div class="card-panel-content">[[_data.slowest]]ms</div>
-          <div class="card-panel-footer">[[_data.slowestName]]</div>
-        </div>
+
       </div>
 
-    </div>
+    </paper-card>
 
-  </paper-card>
+  </template>
 
-</template>
+  <script>
+    (function () {
+      "use strict";
 
-<script>
-(function() {
-  "use strict";
-
-  function Data(glob, slow, slowName) {
-    this.global = glob || 0;
-    this.slowest = slow || 0;
-    this.slowestName = slowName || "-";
-  }
-
-  function compareAverages(a, b) {
-    return a.avg - b.avg;
-  }
-
-  Polymer({
-    is: 'forge-commandmetrics-execavg-card',
-    behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
-    properties: {
-      url: {
-        type: String,
-        value: "/api/extensions/query/dashboards-servicebus-commands?query=averageexecutiontime"
-      },
-      interval: {
-        type: Number,
-        value: 60000
-      },
-      _data: {
-        type: Object,
-        value: new Data()
-      }
-    },
-    _onPollingUpdate: function(result) {
-
-      if (!(result && result.length)) {
-        return;
+      function Data(glob, slow, slowName) {
+        this.global = glob || 0;
+        this.slowest = slow || 0;
+        this.slowestName = slowName || "-";
       }
 
-      result.sort(compareAverages);
+      function compareAverages(a, b) {
+        return a.avg - b.avg;
+      }
 
-      var totalExec = 0;
-      var totalCommands = 0;
+      Polymer({
+        is: 'forge-commandmetrics-execavg-card',
+        behaviors: [ForgeWebComponents.Behaviors.PollingBehavior, ForgeWebComponents.Behaviors.ForgeLocalizeBehavior],
+        properties: {
+          url: {
+            type: String,
+            value: "/api/extensions/query/dashboards-servicebus-commands?query=averageexecutiontime"
+          },
+          interval: {
+            type: Number,
+            value: 60000
+          },
+          _data: {
+            type: Object,
+            value: new Data()
+          }
+        },
+        _onPollingUpdate: function (result) {
 
-      result.forEach(function(entry) {
-        totalCommands += entry.count;
-        totalExec += (entry.avg * entry.count)
+          if (!(result && result.length)) {
+            return;
+          }
+
+          result.sort(compareAverages);
+
+          var totalExec = 0;
+          var totalCommands = 0;
+
+          result.forEach(function (entry) {
+            totalCommands += entry.count;
+            totalExec += (entry.avg * entry.count)
+          });
+
+          var avg = Math.round(totalExec / totalCommands);
+
+          var slowest = result[result.length - 1];
+
+          this._data = new Data(avg, Math.round(slowest.avg), slowest.command);
+
+        }
       });
 
-      var avg = Math.round(totalExec / totalCommands);
-
-      var slowest = result[result.length - 1];
-
-      this._data = new Data(avg, Math.round(slowest.avg), slowest.command);
-
-    }
-  });
-
-})();
-</script>
+    })();
+  </script>
 
 </dom-module>
