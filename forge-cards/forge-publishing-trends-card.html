@@ -2,32 +2,33 @@
 
 <link rel="import" href="../forge-shared/forge-shared.html">
 
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/2.0.1/lib/google-chart/google-chart.html">
+<link rel="import" href="../_lib/google-chart/google-chart.html">
 
 <dom-module id="forge-publishing-trends-card">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    google-chart {
-      height: auto;
-      width: 100%;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      google-chart {
+        height: auto;
+        width: 100%;
+      }
+    </style>
+
     <!-- type="area" || type="line" || type="column" -->
     <paper-card heading="[[localize(heading)]]">
       <paper-progress hidden$="[[_hideLoading]]" class="loading-bar" indeterminate></paper-progress>

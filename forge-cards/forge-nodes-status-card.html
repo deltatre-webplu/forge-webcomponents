@@ -5,75 +5,75 @@
 
 <dom-module id="forge-nodes-status-card">
 
-  <style>
-    :root {
+  <template>
 
-      --paper-item-focused-before: {
-        background-color: transparent;
+    <style>
+      :root {
+
+        --paper-item-focused-before: {
+          background-color: transparent;
+        }
+
       }
 
-    }
+      :host {
+        display: block;
+      }
 
-    :host {
-      display: block;
-    }
+      .nodes-status-card {
+        display: block;
+      }
 
-    .nodes-status-card {
-      display: block;
-    }
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
 
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
+      .status {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--google-grey-300);
+      }
 
-    .status {
-      display: inline-block;
-      box-sizing: border-box;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--google-grey-300);
-    }
+      .status-0 {
+        background: var(--status-green-color);
+      }
 
-    .status-0 {
-      background: var(--status-green-color);
-    }
+      .status-1 {
+        background: var(--status-red-color)
+      }
 
-    .status-1 {
-      background: var(--status-red-color)
-    }
+      .status-2 {
+        background: var(--status-yellow-color);
+      }
 
-    .status-2 {
-      background: var(--status-yellow-color);
-    }
+      .role-icon {
+        margin: 4px;
+        --iron-icon-fill-color: white;
+      }
 
-    .role-icon {
-      margin: 4px;
-      --iron-icon-fill-color: white;
-    }
+      .group-title {
+        @apply --paper-font-title;
+      }
 
-    .group-title {
-      @apply(--paper-font-title);
-    }
+      .paper-item-group {
+        background: var(--google-grey-100);
+      }
 
-    .paper-item-group {
-      background: var(--google-grey-100);
-    }
+      .card-actions {
+        display: flex;
+        justify-content: space-between;
+      }
 
-    .card-actions {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .heartbeat-last-update {
-      @apply(--paper-font-body-1);
-      margin-top: 8px;
-    }
-  </style>
-
-  <template>
+      .heartbeat-last-update {
+        @apply --paper-font-body-1;
+        margin-top: 8px;
+      }
+    </style>
 
     <paper-card class="nodes-status-card" heading="[[localize('Nodes')]]">
 

@@ -4,39 +4,37 @@
 
 <dom-module id="forge-commands-dashboard">
 
-  <style>
-
-    .dashboard-container {
-      position: absolute;
-      top: -8px;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .padded-card {
-      box-sizing: border-box;
-      padding: 8px;
-    }
-
-    @media (max-width: 1000px) {
-      .dashboard-container {
-        display: block;
-      }
-    }
-
-    @media (max-width: 1300px) {
-      .dashboard-container > .dashboard-row {
-        display: block;
-      }
-    }
-
-  </style>
-
   <template>
+
+    <style>
+      .dashboard-container {
+        position: absolute;
+        top: -8px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .padded-card {
+        box-sizing: border-box;
+        padding: 8px;
+      }
+
+      @media (max-width: 1000px) {
+        .dashboard-container {
+          display: block;
+        }
+      }
+
+      @media (max-width: 1300px) {
+        .dashboard-container>.dashboard-row {
+          display: block;
+        }
+      }
+    </style>
 
     <div class="dashboard-container">
       <forge-commandmetrics-trend-card class="padded-card"></forge-commandmetrics-trend-card>
@@ -48,14 +46,14 @@
   </template>
 
   <script>
-  (function() {
-    "use strict";
+    (function () {
+      "use strict";
 
-    Polymer({
-      is: 'forge-commands-dashboard'
-    });
+      Polymer({
+        is: 'forge-commands-dashboard'
+      });
 
-  })();
+    })();
   </script>
 
 </dom-module>

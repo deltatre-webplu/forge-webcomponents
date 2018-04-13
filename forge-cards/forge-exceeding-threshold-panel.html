@@ -2,73 +2,73 @@
 
 <dom-module id="forge-exceeding-threshold-panel">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    .header {
-      background-color: var(--status-neutral-dark-color);
-      color: white;
-      padding: 0 4px;
-      font-weight: 600;
-      font-size: 18px;
-    }
-
-    .icon {
-      width: 72px;
-      height: 72px;
-      opacity: 0.5;
-      float: right;
-    }
-
-    .item {
-      color: var(--paper-grey-900);
-      background-color: var(--status-neutral-color);
-    }
-
-    .metrics-values {
-      position: relative;
-      height: 72px;
-    }
-
-    .metrics-text {
-      position: absolute;
-      bottom: 0;
-      padding: 4px;
-    }
-
-    .strong {
-      font-weight: 600;
-      font-size: 24px;
-    }
-
-    .threshold-warning {
-      background-color: var(--status-yellow-color);
-    }
-
-    .threshold-warning .header {
-      background-color: var(--status-yellow-dark-color);
-    }
-
-    .threshold-danger {
-      background-color: var(--status-red-color);
-    }
-
-    .threshold-danger .header {
-      background-color: var(--status-red-dark-color);
-    }
-
-    .threshold-success {
-      background-color: var(--status-green-color);
-    }
-
-    .threshold-success .header {
-      background-color: var(--status-green-dark-color);
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      .header {
+        background-color: var(--status-neutral-dark-color);
+        color: white;
+        padding: 0 4px;
+        font-weight: 600;
+        font-size: 18px;
+      }
+
+      .icon {
+        width: 72px;
+        height: 72px;
+        opacity: 0.5;
+        float: right;
+      }
+
+      .item {
+        color: var(--paper-grey-900);
+        background-color: var(--status-neutral-color);
+      }
+
+      .metrics-values {
+        position: relative;
+        height: 72px;
+      }
+
+      .metrics-text {
+        position: absolute;
+        bottom: 0;
+        padding: 4px;
+      }
+
+      .strong {
+        font-weight: 600;
+        font-size: 24px;
+      }
+
+      .threshold-warning {
+        background-color: var(--status-yellow-color);
+      }
+
+      .threshold-warning .header {
+        background-color: var(--status-yellow-dark-color);
+      }
+
+      .threshold-danger {
+        background-color: var(--status-red-color);
+      }
+
+      .threshold-danger .header {
+        background-color: var(--status-red-dark-color);
+      }
+
+      .threshold-success {
+        background-color: var(--status-green-color);
+      }
+
+      .threshold-success .header {
+        background-color: var(--status-green-dark-color);
+      }
+    </style>
 
     <paper-item-body two-line class$="item [[threshold]]">
       <span class="header">[[localize(title)]]</span>

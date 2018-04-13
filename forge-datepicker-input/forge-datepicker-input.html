@@ -1,33 +1,33 @@
-
 <link rel="import" href="../forge-shared/polymer.html">
 <link rel="import" href="../paper-date-picker/paper-date-picker.html">
 
 
 <dom-module id="forge-datepicker-input">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    .datepicker-input-container {
-      display: flex;
-      flex-direction: row;
-    }
-
-    .datepicker-input-container .datepicker-input {
-      flex-grow: 1;
-      --paper-input-container-disabled: {
-        opacity: 1;
-      };
-    }
-
-    .datepicker-input-container .datepicker-button {
-      margin: 8px;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      .datepicker-input-container {
+        display: flex;
+        flex-direction: row;
+      }
+
+      .datepicker-input-container .datepicker-input {
+        flex-grow: 1;
+        --paper-input-container-disabled: {
+          opacity: 1;
+        }
+        ;
+      }
+
+      .datepicker-input-container .datepicker-button {
+        margin: 8px;
+      }
+    </style>
 
     <div class="datepicker-input-container">
       <paper-input class="datepicker-input" value="{{formattedValue}}" label="[[label]]" disabled="true"></paper-input>
@@ -37,9 +37,7 @@
       </template>
     </div>
 
-    <paper-dialog id="datePicker"
-      modal
-      on-iron-overlay-closed="onDatePickerClosed">
+    <paper-dialog id="datePicker" modal on-iron-overlay-closed="onDatePickerClosed">
 
       <paper-date-picker id="picker" date="[[_evalDate(value)]]"></paper-date-picker>
 
@@ -53,53 +51,53 @@
   </template>
 
   <script>
-  Polymer({
+    Polymer({
 
-    is: 'forge-datepicker-input',
-    behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
+      is: 'forge-datepicker-input',
+      behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
 
-    properties: {
-      formattedValue: {
-        type: String,
-        computed: 'computeFormattedValue(value)'
-      }
-    },
+      properties: {
+        formattedValue: {
+          type: String,
+          computed: 'computeFormattedValue(value)'
+        }
+      },
 
-    openDatepicker: function() {
-      this.$.datePicker.open();
-    },
+      openDatepicker: function () {
+        this.$.datePicker.open();
+      },
 
-    computeFormattedValue: function(value) {
+      computeFormattedValue: function (value) {
 
-      if (!value) {
-        return null;
-      }
+        if (!value) {
+          return null;
+        }
 
-      return moment(value).format('LL');
+        return moment(value).format('LL');
 
-    },
+      },
 
-    _evalDate: function(value) {
-      if (!value) {
-        return new Date();
-      }
-      return moment(value).toDate();
-    },
+      _evalDate: function (value) {
+        if (!value) {
+          return new Date();
+        }
+        return moment(value).toDate();
+      },
 
-    deleteDate: function() {
-      this.value = null;
-      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
-    },
-
-    onDatePickerClosed: function() {
-      if (event.detail.confirmed) {
-        var date = moment(this.$.picker.date);
-        this.value = date.format('YYYY-MM-DD');
+      deleteDate: function () {
+        this.value = null;
         this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
-      }
-    }
+      },
 
-  });
+      onDatePickerClosed: function () {
+        if (event.detail.confirmed) {
+          var date = moment(this.$.picker.date);
+          this.value = date.format('YYYY-MM-DD');
+          this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+        }
+      }
+
+    });
   </script>
 
 </dom-module>

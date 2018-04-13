@@ -1,34 +1,34 @@
 <link rel="import" href="../forge-shared/polymer.html">
 
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/2.0.1/lib/google-youtube/google-youtube.html">
+<link rel="import" href="../_lib/google-youtube/google-youtube.html">
 
 <dom-module id="forge-youtube-video-input">
 
-  <style>
-    :host {
-      display: block;
-      padding: 0 2px;
-    }
-  </style>
-
   <template>
 
+    <style>
+      :host {
+        display: block;
+        padding: 0 2px;
+      }
+    </style>
+
     <paper-input value="{{value}}" label="[[label]]" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
-    <google-youtube id="googleYouTube" video-id="{{value}}" fluid="true"/>
+    <google-youtube id="googleYouTube" video-id="{{value}}" fluid="true" />
 
   </template>
 
   <script>
-  Polymer({
-    is: 'forge-youtube-video-input',
-    behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
-    onInput: function() {
-      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
-    },
-    onChange: function() {
-      this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
-    }
-  });
+    Polymer({
+      is: 'forge-youtube-video-input',
+      behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldStringBehavior],
+      onInput: function () {
+        this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+      },
+      onChange: function () {
+        this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+      }
+    });
   </script>
 
 </dom-module>

@@ -5,61 +5,61 @@
 
 <dom-module id="forge-published-overview-card">
 
-  <style>
-    :root {
-      --paper-item-focused-before: {
-        background-color: transparent;
-      }
-    }
-
-    :host {
-      display: block;
-    }
-
-    paper-icon-item {
-      cursor: pointer;
-      cursor: hand;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    .header {
-      padding: 16px;
-      font-size: 24px;
-      font-weight: 400;
-    }
-
-    .entityTotal {
-      font-size: 16px;
-      text-transform: capitalize;
-    }
-
-    .entity-icon-wrapper {
-      display: inline-block;
-      box-sizing: border-box;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--google-grey-300);
-    }
-
-    .entity-icon {
-      margin: 8px;
-      width: 24px;
-      height: 24px;
-      --iron-icon-fill-color: white;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :root {
+        --paper-item-focused-before: {
+          background-color: transparent;
+        }
+      }
+
+      :host {
+        display: block;
+      }
+
+      paper-icon-item {
+        cursor: pointer;
+        cursor: hand;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      .header {
+        padding: 16px;
+        font-size: 24px;
+        font-weight: 400;
+      }
+
+      .entityTotal {
+        font-size: 16px;
+        text-transform: capitalize;
+      }
+
+      .entity-icon-wrapper {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--google-grey-300);
+      }
+
+      .entity-icon {
+        margin: 8px;
+        width: 24px;
+        height: 24px;
+        --iron-icon-fill-color: white;
+      }
+    </style>
 
     <paper-card heading="[[localize('wcm.chartHeadingEntitiesPublishedTotal')]]: [[grandTotal]]">
 

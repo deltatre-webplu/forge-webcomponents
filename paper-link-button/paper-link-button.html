@@ -2,43 +2,43 @@
 
 <dom-module id="paper-link-button">
 
-<style>
-:host {
-  display: block;
-}
+  <template>
 
-a {
-  text-decoration: none;
-}
-</style>
-
-<template>
-
-  <a href$="[[href]]" tabindex="-1">
-    <paper-button>
-      <content></content>
-    </paper-button>
-  </a>
-
-</template>
-
-<script>
-(function() {
-  "use strict";
-
-  Polymer({
-    is: 'paper-link-button',
-    properties: {
-      href: {
-        type: String
-      },
-      text: {
-        type: String
+    <style>
+      :host {
+        display: block;
       }
-    }
-  });
 
-})();
-</script>
+      a {
+        text-decoration: none;
+      }
+    </style>
+
+    <a href$="[[href]]" tabindex="-1">
+      <paper-button>
+        <content></content>
+      </paper-button>
+    </a>
+
+  </template>
+
+  <script>
+    (function () {
+      "use strict";
+
+      Polymer({
+        is: 'paper-link-button',
+        properties: {
+          href: {
+            type: String
+          },
+          text: {
+            type: String
+          }
+        }
+      });
+
+    })();
+  </script>
 
 </dom-module>

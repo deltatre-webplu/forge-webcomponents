@@ -2,107 +2,103 @@
 
 <dom-module id="moment-element">
 
-<style>
-</style>
+  <template>[[output]]</template>
 
-<template>[[output]]</template>
+  <script>
+    (function () {
+      "use strict";
 
-<script>
-(function() {
-  "use strict";
+      var instances = [];
+      var timeout = null;
+      var interval = 10000;
 
-  var instances = [];
-  var timeout = null;
-  var interval = 10000;
+      function update() {
 
-  function update() {
+        if (!instances.length) return;
 
-    if (!instances.length) return;
+        instances.forEach(function (me) {
+          me._updateIncrement++;
+        });
 
-    instances.forEach(function(me) {
-      me._updateIncrement++;
-    });
+        timeout = setTimeout(update, interval);
 
-    timeout = setTimeout(update, interval);
-
-  }
-
-  function start() {
-    if (timeout || !instances.length) return;
-    timeout = setTimeout(update, interval);
-  }
-
-  function register(instance) {
-    if (instance.format !== "from-now") return;
-    instances.push(instance);
-  }
-
-  function unregister(instance) {
-
-    var index = instances.indexOf(instance);
-
-    if (index >= 0) {
-      instances.splice(index, 1);
-      if (instances.length == 0 && timeout) clearTimeout(timeout);
-    }
-
-  }
-
-  Polymer({
-    is: 'moment-element',
-    behaviors: [ForgeWebComponents.Behaviors.ForgeLanguageChangeBehavior],
-    properties: {
-      dateTime: String,
-      timezone: {
-        type: String,
-        value: null
-      },
-      format: {
-        type: String,
-        value: "from-now"
-      },
-      _updateIncrement: {
-        type: Number,
-        value: 0
-      },
-      output: {
-        type: String,
-        computed: '_computeOutput(language, dateTime, format, timezone, _updateIncrement)'
       }
-    },
-    ready: function() {
-      register(this);
-    },
-    attached: function() {
-      start();
-    },
-    detached: function() {
-      unregister(this);
-    },
-    _computeOutput: function(language, datetime, format, timezone, _updateIncrement) {
 
-      if (moment.locale() !== language) moment.locale(language);
-
-      var moment_date = moment(datetime);
-      var output;
-      
-      if (this.format === "from-now") {
-        output = moment_date.fromNow();
+      function start() {
+        if (timeout || !instances.length) return;
+        timeout = setTimeout(update, interval);
       }
-      else if(this.format === "humanize"){
-        output = moment.duration(datetime).humanize();
-      }else
-      {
-        output = timezone
-          ? moment_date.tz(timezone).format(this.format)
-          : moment_date.format(this.format);
+
+      function register(instance) {
+        if (instance.format !== "from-now") return;
+        instances.push(instance);
       }
-      return output;
 
-    }
-  });
+      function unregister(instance) {
 
-})();
-</script>
+        var index = instances.indexOf(instance);
+
+        if (index >= 0) {
+          instances.splice(index, 1);
+          if (instances.length == 0 && timeout) clearTimeout(timeout);
+        }
+
+      }
+
+      Polymer({
+        is: 'moment-element',
+        behaviors: [ForgeWebComponents.Behaviors.ForgeLanguageChangeBehavior],
+        properties: {
+          dateTime: String,
+          timezone: {
+            type: String,
+            value: null
+          },
+          format: {
+            type: String,
+            value: "from-now"
+          },
+          _updateIncrement: {
+            type: Number,
+            value: 0
+          },
+          output: {
+            type: String,
+            computed: '_computeOutput(language, dateTime, format, timezone, _updateIncrement)'
+          }
+        },
+        ready: function () {
+          register(this);
+        },
+        attached: function () {
+          start();
+        },
+        detached: function () {
+          unregister(this);
+        },
+        _computeOutput: function (language, datetime, format, timezone, _updateIncrement) {
+
+          if (moment.locale() !== language) moment.locale(language);
+
+          var moment_date = moment(datetime);
+          var output;
+
+          if (this.format === "from-now") {
+            output = moment_date.fromNow();
+          }
+          else if (this.format === "humanize") {
+            output = moment.duration(datetime).humanize();
+          } else {
+            output = timezone
+              ? moment_date.tz(timezone).format(this.format)
+              : moment_date.format(this.format);
+          }
+          return output;
+
+        }
+      });
+
+    })();
+  </script>
 
 </dom-module>

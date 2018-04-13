@@ -4,32 +4,30 @@
 
 <dom-module id="forge-big-numbers-dashboard">
 
-  <style>
-
-    .dashboard-container {
-      position: absolute;
-      top: -8px;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: row;
-    }
-
-    @media (max-width: 1000px) {
-      .dashboard-container {
-        display: block;
-      }
-    }
-
-    .padded {
-      padding: 8px;
-    }
-
-  </style>
-
   <template>
+
+    <style>
+      .dashboard-container {
+        position: absolute;
+        top: -8px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: row;
+      }
+
+      @media (max-width: 1000px) {
+        .dashboard-container {
+          display: block;
+        }
+      }
+
+      .padded {
+        padding: 8px;
+      }
+    </style>
 
     <div class="dashboard-container">
       <div class="layout vertical flex">
@@ -45,14 +43,14 @@
   </template>
 
   <script>
-  (function() {
-    "use strict";
+    (function () {
+      "use strict";
 
-    Polymer({
-      is: 'forge-big-numbers-dashboard'
-    });
+      Polymer({
+        is: 'forge-big-numbers-dashboard'
+      });
 
-  })();
+    })();
   </script>
 
 </dom-module>

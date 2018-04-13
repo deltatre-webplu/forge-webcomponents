@@ -1,123 +1,121 @@
 <link rel="import" href="../forge-shared/polymer.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
 <link rel="import" href="../moment-element/moment-element.html">
-<link rel="import" href="//cdn.rawgit.com/download/polymer-cdn/2.0.1/lib/google-chart/google-chart.html">
+<link rel="import" href="../_lib/google-chart/google-chart.html">
 <!-- <link rel="import" href="forge-itemanalytics-details.html"> -->
 
 <dom-module id="forge-itemanalytics-content">
 
-  <style is="custom-style" include="iron-flex iron-flex-alignment" />
-  <style>
-    :host {
-      display: block;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    .analytics-header {
-      padding: 8px;
-    }
-
-    .analytics-header .analytics-title-wrap {
-      padding: 9px;
-    }
-
-    .analytics-header .analytics-title-wrap .analytics-title {
-      font-size: 24px;
-    }
-
-    .analytics-header .analytics-title-wrap .analytics-subtitle {
-      margin-top: 1px;
-      font-size: 12px;
-      color: var(--paper-grey-500);
-      ;
-    }
-
-    .analytics-content {}
-
-    google-chart {
-      width: 100%;
-      height: auto;
-    }
-
-    .summary {
-      border-top: 1px solid var(--paper-grey-200);
-      ;
-      border-bottom: 1px solid var(--paper-grey-200);
-      ;
-    }
-
-    .views-summary .views-count {
-      font-size: 1.6em;
-    }
-
-    .views-summary .legend {
-      font-size: 1.1em;
-    }
-
-    .views-summary {
-      padding: 24px;
-    }
-
-    .views-summary span {
-      text-align: center;
-      line-height: 0.9;
-    }
-
-    .entity-code {
-      padding: 0 24px;
-      border-left: 1px solid var(--paper-grey-200);
-    }
-
-    .entity-code .code-value {
-      margin-top: 0;
-      font-size: 0.7em;
-      color: grey;
-    }
-
-    .localized-entity-code {
-      padding: 24px;
-      border-left: 1px solid var(--paper-grey-200);
-      ;
-    }
-
-    .localized-entity-code .code-value {
-      margin-top: 0;
-      font-size: 0.7em;
-      color: grey;
-    }
-
-    #trendChart {
-      display: block;
-      border-bottom: 1px solid var(--paper-grey-200);
-    }
-
-    #geoChart {
-      display: block;
-    }
-
-    .graph-title {
-      padding: 8px;
-      font-size: 20px;
-    }
-
-    .no-data-available {
-      padding: 16px 0;
-      color: gray;
-    }
-
-    .no-data-available iron-icon {
-      width: 72px;
-      height: 72px;
-      margin: 8px;
-    }
-  </style>
-
   <template>
+
+    <style is="custom-style" include="iron-flex iron-flex-alignment" />
+    <style>
+      :host {
+        display: block;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      .analytics-header {
+        padding: 8px;
+      }
+
+      .analytics-header .analytics-title-wrap {
+        padding: 9px;
+      }
+
+      .analytics-header .analytics-title-wrap .analytics-title {
+        font-size: 24px;
+      }
+
+      .analytics-header .analytics-title-wrap .analytics-subtitle {
+        margin-top: 1px;
+        font-size: 12px;
+        color: var(--paper-grey-500);
+        ;
+      }
+
+      google-chart {
+        width: 100%;
+        height: auto;
+      }
+
+      .summary {
+        border-top: 1px solid var(--paper-grey-200);
+        ;
+        border-bottom: 1px solid var(--paper-grey-200);
+        ;
+      }
+
+      .views-summary .views-count {
+        font-size: 1.6em;
+      }
+
+      .views-summary .legend {
+        font-size: 1.1em;
+      }
+
+      .views-summary {
+        padding: 24px;
+      }
+
+      .views-summary span {
+        text-align: center;
+        line-height: 0.9;
+      }
+
+      .entity-code {
+        padding: 0 24px;
+        border-left: 1px solid var(--paper-grey-200);
+      }
+
+      .entity-code .code-value {
+        margin-top: 0;
+        font-size: 0.7em;
+        color: grey;
+      }
+
+      .localized-entity-code {
+        padding: 24px;
+        border-left: 1px solid var(--paper-grey-200);
+        ;
+      }
+
+      .localized-entity-code .code-value {
+        margin-top: 0;
+        font-size: 0.7em;
+        color: grey;
+      }
+
+      #trendChart {
+        display: block;
+        border-bottom: 1px solid var(--paper-grey-200);
+      }
+
+      #geoChart {
+        display: block;
+      }
+
+      .graph-title {
+        padding: 8px;
+        font-size: 20px;
+      }
+
+      .no-data-available {
+        padding: 16px 0;
+        color: gray;
+      }
+
+      .no-data-available iron-icon {
+        width: 72px;
+        height: 72px;
+        margin: 8px;
+      }
+    </style>
 
     <div class="analytics-header layout horizontal">
 

@@ -2,42 +2,44 @@
 
 <dom-module id="forge-behavior-order-photos-by-name">
 
-	<style>
-		.suggestion-container {
-			padding: 8px;
-			display: block;
-
-			@apply --layout-horizontal;
-			@apply --layout-justified;
-		}
-		.suggestion-container .message{
-			line-height: 39.5938px;
-
-			@apply --layout-flex;
-			@apply --layout-center;
-		}
-	</style>
-
 	<template>
+
+		<style>
+			.suggestion-container {
+				padding: 8px;
+				display: block;
+
+				@apply --layout-horizontal;
+				@apply --layout-justified;
+			}
+
+			.suggestion-container .message {
+				line-height: 39.5938px;
+
+				@apply --layout-flex;
+				@apply --layout-center;
+			}
+		</style>
+
 
 		<forge-entity-behavior-container text="[[text]]" notification="[[notification]]">
 			<template is="dom-if" if="[[_photosCount]]">
-			<div class="suggestion-container">
-				<div class="message">
-					
-					<template is="dom-if" if="[[_newPhotosCount]]">
+				<div class="suggestion-container">
+					<div class="message">
+
+						<template is="dom-if" if="[[_newPhotosCount]]">
 							[[_newPhotosCount]] new photo(s) have been added
-					</template>
+						</template>
 
-					<template is="dom-if" if="[[!_newPhotosCount]]">
+						<template is="dom-if" if="[[!_newPhotosCount]]">
 							This album contains [[_photosCount]] photo(s)
-					</template>
+						</template>
 
+					</div>
+					<div>
+						<paper-button on-tap="_reorderPhotos">Arrange by filename</paper-button>
+					</div>
 				</div>
-				<div>
-					<paper-button on-tap="_reorderPhotos">Arrange by filename</paper-button>
-				</div>
-			</div>
 			</template>
 		</forge-entity-behavior-container>
 
@@ -54,14 +56,14 @@
 			function reorderPhotos($injector, entityId, items) {
 				var cmds =
 					(items || [])
-					.map(function (itm, index) {
-						var cmd = new commands.MoveAlbumItemCommand(entityId, itm.id ,index);
+						.map(function (itm, index) {
+							var cmd = new commands.MoveAlbumItemCommand(entityId, itm.id, index);
 
-						return {
-							name: cmd.getCommandName(),
-							body: cmd
-						}
-					});
+							return {
+								name: cmd.getCommandName(),
+								body: cmd
+							}
+						});
 
 				if (cmds.length) {
 					$injector.invoke(function (commandQueue) {
@@ -70,22 +72,22 @@
 				}
 			}
 
-			function getAlbumItems(entityId){
+			function getAlbumItems(entityId) {
 				var url = `deltatre.forge.wcm/api/albums/working/culture/nd-nd/entityid/${entityId}`;
 				var request = http.get(api.addRootUrl(url));
 
-				var items = 
+				var items =
 					request
-						.then(function(res){
-							return (res.Items || []).map(function(itm){
+						.then(function (res) {
+							return (res.Items || []).map(function (itm) {
 								return {
 									fileName: (((itm || {}).Element || {}).NeutralPhoto || {}).OriginalFileName,
 									id: (itm || {}).Id
-									};
+								};
 							});
 						});
 
-					return items;
+				return items;
 			}
 
 			function addMissingCommands(commands) {
@@ -136,9 +138,9 @@
 					var entityId = this._entityId;
 					var $injector = this._$injector;
 					var res = getAlbumItems(entityId);
-					
-					res.then(function(items){
-						var orderedItems = (items || []).sort(function(a,b){
+
+					res.then(function (items) {
+						var orderedItems = (items || []).sort(function (a, b) {
 							var fa = (a.fileName || "").toLowerCase();
 							var fb = (b.fileName || "").toLowerCase();
 							if (fa < fb) return -1;
@@ -146,18 +148,17 @@
 							return 0;
 						});
 						reorderPhotos($injector, entityId, orderedItems);
-					});					
+					});
 				},
 				_entityChanged: function (newEntity, oldEntity) {
-					
-					if (typeof newEntity === 'string') 
-					return;
-					
+
+					if (typeof newEntity === 'string')
+						return;
+
 					this._photosCount = (newEntity.items || []).length;
 					this._entityId = newEntity.entityId;
 
-					if(oldEntity.items && this._photosCount > oldEntity.items.length)
-					{
+					if (oldEntity.items && this._photosCount > oldEntity.items.length) {
 						this.notification = true;
 						this.text = '(one suggestion available)'
 

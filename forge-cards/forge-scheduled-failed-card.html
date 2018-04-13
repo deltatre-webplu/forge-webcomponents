@@ -6,53 +6,53 @@
 
 <dom-module id="forge-scheduled-failed-card">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    paper-card {
-      display: block;
-    }
-
-    paper-icon-item {
-      cursor: pointer;
-      cursor: hand;
-    }
-
-    .loading-bar {
-      --paper-progress-active-color: var(--paper-light-blue-500);
-      width: 100%;
-      position: absolute;
-    }
-
-    .header {
-      font-weight: 400;
-      font-size: 16px;
-    }
-
-    .strong {
-      font-weight: 700;
-    }
-
-    .entity-icon-wrapper {
-      display: inline-block;
-      box-sizing: border-box;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--google-grey-300);
-    }
-
-    .entity-icon {
-      margin: 8px;
-      width: 24px;
-      height: 24px;
-      --iron-icon-fill-color: white;
-    }
-  </style>
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+
+      paper-card {
+        display: block;
+      }
+
+      paper-icon-item {
+        cursor: pointer;
+        cursor: hand;
+      }
+
+      .loading-bar {
+        --paper-progress-active-color: var(--paper-light-blue-500);
+        width: 100%;
+        position: absolute;
+      }
+
+      .header {
+        font-weight: 400;
+        font-size: 16px;
+      }
+
+      .strong {
+        font-weight: 700;
+      }
+
+      .entity-icon-wrapper {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--google-grey-300);
+      }
+
+      .entity-icon {
+        margin: 8px;
+        width: 24px;
+        height: 24px;
+        --iron-icon-fill-color: white;
+      }
+    </style>
 
     <paper-card heading="[[localize('Failed Schedules')]]">
 

@@ -5,61 +5,60 @@
 <dom-module id="forge-chips">
 
   <template>
-  <style is="custom-style">
-  :host {
-    display: block;
-  }
+    <style is="custom-style">
+      :host {
+        display: block;
+      }
 
-  .delete {
-    --iron-icon-height: 20px;
-    --iron-icon-width: 20px;
-    color: var(--disabled-text-color);
-    margin-bottom: 1px;
-  }
+      .delete {
+        --iron-icon-height: 20px;
+        --iron-icon-width: 20px;
+        color: var(--disabled-text-color);
+        margin-bottom: 1px;
+      }
+    </style>
 
-  </style>
-
-  <!-- local DOM goes here
+    <!-- local DOM goes here
 
   -->
-  <div class="list">
+    <div class="list">
 
-    <template is="dom-repeat" items="{{list}}">
-      <forge-chip>
-        <span>[[item]]</span>
-        <template is="dom-if" if="[[disabled]]">
-          <iron-icon icon="icons:lock-outline" class="delete"></iron-icon>
-        </template>
-        <template is="dom-if" if="[[!disabled]]">
-          <iron-icon icon="icons:cancel" class="delete" on-tap="_delete" data-index="[[index]]"></iron-icon>
-        </template>
-      </forge-chip>
-    </template>
+      <template is="dom-repeat" items="{{list}}">
+        <forge-chip>
+          <span>[[item]]</span>
+          <template is="dom-if" if="[[disabled]]">
+            <iron-icon icon="icons:lock-outline" class="delete"></iron-icon>
+          </template>
+          <template is="dom-if" if="[[!disabled]]">
+            <iron-icon icon="icons:cancel" class="delete" on-tap="_delete" data-index="[[index]]"></iron-icon>
+          </template>
+        </forge-chip>
+      </template>
 
-  </div>
+    </div>
 
-</template>
+  </template>
 
-<script>
-Polymer({
-  is: 'forge-chips',
+  <script>
+    Polymer({
+      is: 'forge-chips',
 
-  properties: {
-    list: {
-      type: Array
-    },
-    disabled: {
-      type: Boolean,
-      value: false
-    }
-  },
+      properties: {
+        list: {
+          type: Array
+        },
+        disabled: {
+          type: Boolean,
+          value: false
+        }
+      },
 
-  _delete: function(e) {
-    if (this.disabled) return;
-    this.fire('chip-removed', e.target.dataIndex);
-  }
+      _delete: function (e) {
+        if (this.disabled) return;
+        this.fire('chip-removed', e.target.dataIndex);
+      }
 
-});
-</script>
+    });
+  </script>
 
 </dom-module>
