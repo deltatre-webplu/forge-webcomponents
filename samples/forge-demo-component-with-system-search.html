@@ -1,0 +1,86 @@
+<link rel="import" href="../forge-shared/polymer.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+
+<dom-module id="forge-demo-component-with-system-search">
+  <template>
+
+    <style>
+      .profile-pictures {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .profile-picture {
+        width: 160px;
+        height: 160px;
+        margin: 8px;
+      }
+    </style>
+
+    <label>Profile Pictures</label>
+    <paper-icon-button on-click="onSearch" icon="add-circle"></paper-icon-button>
+    <div class="profile-pictures">
+      <template is="dom-repeat" items="{{value}}">
+        <img class="profile-picture" src$="/deltatre.forge.wcm/api/photos/working/[[item]]/_thumb" />
+      </template>
+    </div>
+
+  </template>
+
+  <script>
+    (function () {
+
+      const Classes = window.ForgeWebComponents.Classes;
+
+      Polymer({
+        is: 'forge-demo-component-with-system-search',
+        properties: {
+          value: {
+            type: Array,
+            observer: '_valueChanged'
+          },
+          label: {
+            type: String
+          },
+          fieldName: {
+            type: String
+          },
+          entity: {
+            type: Object
+          },
+          schema: {
+            type: Object
+          },
+          disabled: {
+            type: Boolean,
+            value: false
+          }
+        },
+        _valueChanged: function (newValue, oldValue) {
+          if (!newValue) this.value = [];
+        },
+        triggerOnValueChanged: function () {
+          if (this.disabled) return;
+          this.fire('valueChanged', this.value);
+        },
+        onSearch: function () {
+          if (!this.value) {
+            this.value = [];
+          }
+          const options = new Classes.SearchOptions(true, null, true);
+          this.fire('openSearch', new Classes.OpenSearchParams('photo', options, this.onSearchConfirm.bind(this), this.onSearchCancel.bind(this)));
+        },
+        onSearchConfirm: function (result) {
+          console.log('onSearchConfirm', result);
+          const values = result.map(r => r.Id);
+          this.value = this.value.concat(values);
+          this.fire('valueChanged', this.value);
+        },
+        onSearchCancel: function (reason) {
+          console.log('onSearchCancel', reason);
+        }
+      });
+    })();
+  </script>
+
+</dom-module>

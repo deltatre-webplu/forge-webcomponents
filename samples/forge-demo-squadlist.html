@@ -1,0 +1,233 @@
+<link rel="import" href="../forge-shared/polymer.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+
+<dom-module id="forge-demo-squadlist">
+  <template>
+
+    <style>
+      .squad-role {
+        border: 1px dashed lightgray;
+        padding: 8px;
+        margin-bottom: 8px;
+      }
+
+      .squad-members {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .squad-profile {
+        width: 176px;
+        position: relative;
+      }
+
+      .squad-profile-delete {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+        min-height: 20px;
+        background: white;
+        border-radius: 50%;
+        color: red;
+        font-weight: bold;
+      }
+
+      .squad-profile-name {
+        text-align: center;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .squad-profile-picture {
+        width: 160px;
+        height: 160px;
+        margin: 8px;
+      }
+    </style>
+
+    <label>Squad List</label>
+
+    <div class="squad-role">
+
+      <label>Front Row</label>
+
+      <div class="squad-members">
+
+        <template is="dom-repeat" items="{{value.frontRow}}">
+          <div class="squad-profile">
+            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="frontRow" data-id="[[item.id]]">X</paper-button>
+            <img class="squad-profile-picture" src$="[[item.thumbnail]]" />
+            <div class="squad-profile-name">[[item.name]]</div>
+          </div>
+        </template>
+
+        <div class="squad-profile">
+          <paper-button on-click="onSearch" data-role="frontRow">ADD</paper-button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="squad-role">
+
+      <label>Back Line</label>
+
+      <div class="squad-members">
+
+        <template is="dom-repeat" items="{{value.backLine}}">
+          <div class="squad-profile">
+            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="backLine" data-id="[[item.id]]">X</paper-button>
+            <img class="squad-profile-picture" src$="[[item.thumbnail]]" />
+            <div class="squad-profile-name">[[item.name]]</div>
+          </div>
+        </template>
+
+        <div class="squad-profile">
+          <paper-button on-click="onSearch" data-role="backLine">ADD</paper-button>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div class="squad-role">
+
+      <label>Bench</label>
+
+      <div class="squad-members">
+
+        <template is="dom-repeat" items="{{value.bench}}">
+          <div class="squad-profile">
+            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="bench" data-id="[[item.id]]">X</paper-button>
+            <img class="squad-profile-picture" src$="[[item.thumbnail]]" />
+            <div class="squad-profile-name">[[item.name]]</div>
+          </div>
+        </template>
+
+        <div class="squad-profile">
+          <paper-button on-click="onSearch" data-role="bench">ADD</paper-button>
+        </div>
+
+      </div>
+
+    </div>
+
+
+  </template>
+
+  <script>
+    (function () {
+
+      const Classes = window.ForgeWebComponents.Classes;
+
+      function SquadList() {
+
+        this.frontRow = [];
+        this.backLine = [];
+        this.bench = [];
+      }
+      SquadList.fromValue = function (value) {
+        const sl = new SquadList();
+        sl.frontRow = value.frontRow || [];
+        sl.backLine = value.backLine || [];
+        sl.bench = value.bench || [];
+        return sl;
+      };
+      SquadList.prototype.hasMember = function (member) {
+        return this.frontRow.find(m => m.id === member.id)
+          || this.backLine.find(m => m.id === member.id)
+          || this.bench.find(m => m.id === member.id);
+      }
+      SquadList.prototype.removeMember = function (role, id) {
+        const index = this[role].findIndex(m => m.id === id);
+        if (index > -1) {
+          this[role].splice(index, 1);
+        }
+      }
+
+      function SquadMember() {
+        this.name;
+        this.id;
+        this.thumbnail;
+      }
+      SquadMember.fromSearch = function (result) {
+
+        const m = new SquadMember();
+        m.name = result.Title;
+        m.id = result.Id;
+        m.thumbnail = '/deltatre.forge.wcm/api/customEntities/player/working/' + result.Id + '/thumbnail/_thumb';
+        return m;
+
+      };
+
+      Polymer({
+        is: 'forge-demo-squadlist',
+        properties: {
+          value: {
+            type: Object,
+            observer: '_valueChanged'
+          },
+          label: {
+            type: String
+          },
+          fieldName: {
+            type: String
+          },
+          entity: {
+            type: Object
+          },
+          schema: {
+            type: Object
+          },
+          disabled: {
+            type: Boolean,
+            value: false
+          }
+        },
+        _valueChanged: function (newValue, oldValue) {
+          if (!newValue) this.value = new SquadList();
+        },
+        triggerOnValueChanged: function () {
+          if (this.disabled) return;
+          this.fire('valueChanged', this.value);
+        },
+        onSearch: function (e) {
+          if (!this.value) {
+            this.value = new SquadList();
+          }
+          const role = e.target.dataset.role;
+          console.log(role, e);
+          const options = new Classes.SearchOptions(false, null, true);
+          this.fire('openSearch', new Classes.OpenSearchParams('customentity.player', options, this.onSearchConfirm.bind(this, role), this.onSearchCancel.bind(this)));
+        },
+        onSearchConfirm: function (role, result) {
+          console.log('onSearchConfirm', role, result);
+          const member = SquadMember.fromSearch(result[0]);
+          const squad = SquadList.fromValue(this.value);
+          if (!squad.hasMember(member)) {
+            squad[role].push(member);
+            this.value = squad;
+            this.fire('valueChanged', this.value);
+          }
+        },
+        onSearchCancel: function (reason) {
+          console.log('onSearchCancel', reason);
+        },
+        removePlayer: function (e) {
+          const role = e.target.dataset.role;
+          const id = e.target.dataId;
+          const squad = SquadList.fromValue(this.value);
+          squad.removeMember(role, id);
+          this.value = squad;
+          this.fire('valueChanged', this.value);
+        }
+      });
+    })();
+  </script>
+
+</dom-module>
