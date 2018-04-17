@@ -1,0 +1,30 @@
+<script>
+    (function () {
+
+        function noop() { }
+
+        function SearchOptions(multiSelect, defaultSearch, disableCreation) {
+
+            this.multiSelect = !!multiSelect;
+            this.defaultSearch = defaultSearch || null;
+            this.disableCreation = !!disableCreation;
+
+        };
+
+        function OpenSearchParams(entityType, searchOptions, onSearchConfirm, onSearchCancel) {
+
+            this.entityType = entityType;
+            this.searchOptions = searchOptions || new SearchOptions(false, null, true);
+            this.onSearchConfirm = onSearchConfirm;
+            this.onSearchCancel = onSearchCancel || noop;
+
+        };
+
+        window.ForgeWebComponents = window.ForgeWebComponents || {};
+        window.ForgeWebComponents.Classes = window.ForgeWebComponents.Classes || {};
+
+        window.ForgeWebComponents.Classes.SearchOptions = SearchOptions;
+        window.ForgeWebComponents.Classes.OpenSearchParams = OpenSearchParams;
+
+    })();
+</script>

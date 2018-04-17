@@ -1,4 +1,5 @@
 <link rel="import" href="../forge-shared/polymer.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
 
 <dom-module id="forge-demo-component-with-system-search">
   <template>
@@ -29,14 +30,7 @@
   <script>
     (function () {
 
-      function noop() { }
-
-      function OpenSearchParams(entityType, multiSelect, onSearchConfirm, onSearchCancel) {
-        this.entityType = entityType;
-        this.multiSelect = !!multiSelect;
-        this.onSearchConfirm = onSearchConfirm || noop;
-        this.onSearchCancel = onSearchCancel || noop;
-      }
+      const Classes = window.ForgeWebComponents.Classes;
 
       Polymer({
         is: 'forge-demo-component-with-system-search',
@@ -73,7 +67,8 @@
           if (!this.value) {
             this.value = [];
           }
-          this.fire('openSearch', new OpenSearchParams('photo', true, this.onSearchConfirm.bind(this), this.onSearchCancel.bind(this)));
+          const options = new Classes.SearchOptions(true, null, true);
+          this.fire('openSearch', new Classes.OpenSearchParams('photo', options, this.onSearchConfirm.bind(this), this.onSearchCancel.bind(this)));
         },
         onSearchConfirm: function (result) {
           console.log('onSearchConfirm', result);
