@@ -158,9 +158,9 @@
       SquadMember.fromSearch = function (result) {
 
         const m = new SquadMember();
-        m.name = result.Title;
-        m.id = result.Id;
-        m.thumbnail = '/deltatre.forge.wcm/api/customEntities/player/working/' + result.Id + '/thumbnail/_thumb';
+        m.name = result.title;
+        m.id = result.id;
+        m.thumbnail = '/deltatre.forge.wcm/api/customEntities/player/working/' + result.id + '/thumbnail/_thumb';
         return m;
 
       };

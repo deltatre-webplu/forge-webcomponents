@@ -10,6 +10,7 @@
         flex-direction: row;
         flex-wrap: wrap;
       }
+
       .profile-picture {
         width: 160px;
         height: 160px;
@@ -20,8 +21,8 @@
     <label>Profile Pictures</label>
     <paper-icon-button on-click="onSearch" icon="add-circle"></paper-icon-button>
     <div class="profile-pictures">
-      <template is="dom-repeat" items="{{value}}">
-        <img class="profile-picture" src$="/deltatre.forge.wcm/api/photos/working/[[item]]/_thumb" />
+      <template is="dom-repeat" items="{{profiles}}">
+        <img class="profile-picture" src$="[[item]]" />
       </template>
     </div>
 
@@ -31,6 +32,13 @@
     (function () {
 
       const Classes = window.ForgeWebComponents.Classes;
+
+      function createThumbUrl(guid) {
+        if (ForgeWebComponents.IsMobile) {
+          return '/api/photos/' + guid + '/thumbnail';
+        }
+        return '/deltatre.forge.wcm/api/photos/working/' + guid + '/_thumb';
+      }
 
       Polymer({
         is: 'forge-demo-component-with-system-search',
@@ -54,10 +62,14 @@
           disabled: {
             type: Boolean,
             value: false
-          }
+          },
+          profiles: Array
         },
         _valueChanged: function (newValue, oldValue) {
-          if (!newValue) this.value = [];
+          if (!newValue) {
+            this.value = [];
+          }
+          this.profiles = this.value.map(createThumbUrl);
         },
         triggerOnValueChanged: function () {
           if (this.disabled) return;
@@ -67,17 +79,26 @@
           if (!this.value) {
             this.value = [];
           }
+          this.profiles = this.value.map(createThumbUrl);
           const options = new Classes.SearchOptions(true, null, true);
           this.fire('openSearch', new Classes.OpenSearchParams('photo', options, this.onSearchConfirm.bind(this), this.onSearchCancel.bind(this)));
         },
         onSearchConfirm: function (result) {
+          
           console.log('onSearchConfirm', result);
-          const values = result.map(r => r.Id);
+
+          const values = result.map(r => r.translationId);
+          
           this.value = this.value.concat(values);
+          this.profiles = this.value.map(createThumbUrl);
+
           this.fire('valueChanged', this.value);
+
         },
         onSearchCancel: function (reason) {
+
           console.log('onSearchCancel', reason);
+
         }
       });
     })();
