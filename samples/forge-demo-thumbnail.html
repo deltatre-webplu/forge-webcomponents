@@ -1,0 +1,60 @@
+<link rel="import" href="../forge-shared/polymer.html">
+<link rel="import" href="../forge-shared/entity-helper.html">
+
+<dom-module id="forge-demo-thumbnail">
+
+  <style>
+    :host {
+      display: block;
+    }
+
+    img {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+
+  <template>
+    <img src$="[[thumbnailUrl]]" />
+  </template>
+
+  <script>
+    Polymer({
+      is: 'forge-demo-thumbnail',
+      properties: {
+        forgeId: String,
+        entityType: {
+          type: String,
+          value: 'photo'
+        },
+        entityCode: {
+          type: String,
+          value: null
+        },
+        thumbnailUrl: {
+          type: String,
+          computed: 'computeThumbnailUrl(entityType, entityCode, forgeId)'
+        }
+      },
+      computeThumbnailUrl: function (entityType, entityCode, forgeId) {
+
+        if (!entityType || !forgeId) {
+          return null;
+        }
+
+        var endpoint = entityCode ? 'customEntities/' + entityCode : ForgeWebComponents.Helpers.EntityHelper.pluralize(entityType);
+
+        if (ForgeWebComponents.IsMobile) {
+          return '/api/' + endpoint + '/' + forgeId + '/thumbnail';
+        }
+        else {
+          var endPath = entityType.toLowerCase() === 'photo' ? '/_thumb' : '/thumbnail/_thumb';
+          return '/deltatre.forge.wcm/api/' + endpoint + '/working/' + forgeId + endPath;
+        }
+
+      }
+    });
+  </script>
+
+</dom-module>

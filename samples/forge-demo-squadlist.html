@@ -1,5 +1,6 @@
 <link rel="import" href="../forge-shared/polymer.html">
 <link rel="import" href="../forge-shared/forge-shared.html">
+<link rel="import" href="forge-demo-thumbnail.html">
 
 <dom-module id="forge-demo-squadlist">
   <template>
@@ -60,7 +61,7 @@
         <template is="dom-repeat" items="{{value.frontRow}}">
           <div class="squad-profile">
             <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="frontRow" data-id="[[item.id]]">X</paper-button>
-            <img class="squad-profile-picture" src$="[[item.thumbnail]]" />
+            <forge-demo-thumbnail class="squad-profile-picture" entity-type="customentity" entity-code="player" forge-id="[[item.id]]"></forge-demo-thumbnail>
             <div class="squad-profile-name">[[item.name]]</div>
           </div>
         </template>
@@ -82,7 +83,7 @@
         <template is="dom-repeat" items="{{value.backLine}}">
           <div class="squad-profile">
             <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="backLine" data-id="[[item.id]]">X</paper-button>
-            <img class="squad-profile-picture" src$="[[item.thumbnail]]" />
+            <forge-demo-thumbnail class="squad-profile-picture" entity-type="customentity" entity-code="player" forge-id="[[item.id]]"></forge-demo-thumbnail>
             <div class="squad-profile-name">[[item.name]]</div>
           </div>
         </template>
@@ -104,7 +105,7 @@
         <template is="dom-repeat" items="{{value.bench}}">
           <div class="squad-profile">
             <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="bench" data-id="[[item.id]]">X</paper-button>
-            <img class="squad-profile-picture" src$="[[item.thumbnail]]" />
+            <forge-demo-thumbnail class="squad-profile-picture" entity-type="customentity" entity-code="player" forge-id="[[item.id]]"></forge-demo-thumbnail>
             <div class="squad-profile-name">[[item.name]]</div>
           </div>
         </template>
@@ -126,7 +127,6 @@
       const Classes = window.ForgeWebComponents.Classes;
 
       function SquadList() {
-
         this.frontRow = [];
         this.backLine = [];
         this.bench = [];
@@ -153,14 +153,14 @@
       function SquadMember() {
         this.name;
         this.id;
-        this.thumbnail;
       }
       SquadMember.fromSearch = function (result) {
 
         const m = new SquadMember();
+        
         m.name = result.title;
-        m.id = result.id;
-        m.thumbnail = '/deltatre.forge.wcm/api/customEntities/player/working/' + result.id + '/thumbnail/_thumb';
+        m.id = result.translationId;
+
         return m;
 
       };
@@ -201,7 +201,6 @@
             this.value = new SquadList();
           }
           const role = e.target.dataset.role;
-          console.log(role, e);
           const options = new Classes.SearchOptions(false, null, true);
           this.fire('openSearch', new Classes.OpenSearchParams('customentity.player', options, this.onSearchConfirm.bind(this, role), this.onSearchCancel.bind(this)));
         },

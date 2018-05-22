@@ -21,8 +21,8 @@
     <label>Profile Pictures</label>
     <paper-icon-button on-click="onSearch" icon="add-circle"></paper-icon-button>
     <div class="profile-pictures">
-      <template is="dom-repeat" items="{{profiles}}">
-        <img class="profile-picture" src$="[[item]]" />
+      <template is="dom-repeat" items="[[value]]">
+        <forge-demo-thumbnail class="profile-picture" entity-type="photo" forge-id="[[item]]"></forge-demo-thumbnail>
       </template>
     </div>
 
@@ -66,7 +66,7 @@
           profiles: Array
         },
         _valueChanged: function (newValue, oldValue) {
-          if (!newValue) {
+          if (!newValue || !Array.isArray(newValue)) {
             this.value = [];
           }
           this.profiles = this.value.map(createThumbUrl);
