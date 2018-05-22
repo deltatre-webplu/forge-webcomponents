@@ -60,14 +60,14 @@
 
         <template is="dom-repeat" items="{{value.frontRow}}">
           <div class="squad-profile">
-            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="frontRow" data-id="[[item.id]]">X</paper-button>
+            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="frontRow" data-id="[[item.id]]" disabled="[[disabled]]">X</paper-button>
             <forge-demo-thumbnail class="squad-profile-picture" entity-type="customentity" entity-code="player" forge-id="[[item.id]]"></forge-demo-thumbnail>
             <div class="squad-profile-name">[[item.name]]</div>
           </div>
         </template>
 
         <div class="squad-profile">
-          <paper-button on-click="onSearch" data-role="frontRow">ADD</paper-button>
+          <paper-button on-click="onSearch" data-role="frontRow" disabled="[[disabled]]">ADD</paper-button>
         </div>
 
       </div>
@@ -82,14 +82,14 @@
 
         <template is="dom-repeat" items="{{value.backLine}}">
           <div class="squad-profile">
-            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="backLine" data-id="[[item.id]]">X</paper-button>
+            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="backLine" data-id="[[item.id]]" disabled="[[disabled]]">X</paper-button>
             <forge-demo-thumbnail class="squad-profile-picture" entity-type="customentity" entity-code="player" forge-id="[[item.id]]"></forge-demo-thumbnail>
             <div class="squad-profile-name">[[item.name]]</div>
           </div>
         </template>
 
         <div class="squad-profile">
-          <paper-button on-click="onSearch" data-role="backLine">ADD</paper-button>
+          <paper-button on-click="onSearch" data-role="backLine" disabled="[[disabled]]">ADD</paper-button>
         </div>
 
       </div>
@@ -104,14 +104,14 @@
 
         <template is="dom-repeat" items="{{value.bench}}">
           <div class="squad-profile">
-            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="bench" data-id="[[item.id]]">X</paper-button>
+            <paper-button class="squad-profile-delete" on-click="removePlayer" data-role="bench" data-id="[[item.id]]" disabled="[[disabled]]">X</paper-button>
             <forge-demo-thumbnail class="squad-profile-picture" entity-type="customentity" entity-code="player" forge-id="[[item.id]]"></forge-demo-thumbnail>
             <div class="squad-profile-name">[[item.name]]</div>
           </div>
         </template>
 
         <div class="squad-profile">
-          <paper-button on-click="onSearch" data-role="bench">ADD</paper-button>
+          <paper-button on-click="onSearch" data-role="bench" disabled="[[disabled]]">ADD</paper-button>
         </div>
 
       </div>

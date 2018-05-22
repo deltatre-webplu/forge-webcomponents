@@ -19,7 +19,7 @@
     </style>
 
     <label>Profile Pictures</label>
-    <paper-icon-button on-click="onSearch" icon="add-circle"></paper-icon-button>
+    <paper-icon-button on-click="onSearch" icon="add-circle" disabled="[[disabled]]"></paper-icon-button>
     <div class="profile-pictures">
       <template is="dom-repeat" items="[[value]]">
         <forge-demo-thumbnail class="profile-picture" entity-type="photo" forge-id="[[item]]"></forge-demo-thumbnail>
