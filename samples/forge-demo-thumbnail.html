@@ -3,20 +3,21 @@
 
 <dom-module id="forge-demo-thumbnail">
 
-  <style>
-    :host {
-      display: block;
-    }
-
-    img {
-      height: 100%;
-      width: 100%;
-    }
-  </style>
-
-
   <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+  
+      img {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+  
     <img src$="[[thumbnailUrl]]" />
+    
   </template>
 
   <script>
