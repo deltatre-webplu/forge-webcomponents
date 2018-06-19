@@ -1,0 +1,60 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<dom-module id="key-numbers-input">
+    <template>
+
+        <style is="custom-style">
+        </style>
+
+        <paper-card heading="Some Data">
+
+            <paper-input value="{{value.name}}" label="Name" data-field="name" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+            <paper-input value="{{value.surname}}" label="Surname" data-field="surname" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+            <paper-input value="{{value.points}}" label="Points" data-field="points" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+
+        </paper-card>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'key-numbers-input',
+            properties: {
+                value: {
+                    type: Object,
+                    observer: '_valueChanged'
+                },
+                label: {
+                    type: String
+                },
+                fieldName: {
+                    type: String
+                },
+                entity: {
+                    type: Object
+                },
+                schema: {
+                    type: Object
+                },
+                disabled: {
+                    type: Boolean,
+                    value: false
+                }
+            },
+            _valueChanged: function (newValue, oldValue) {
+                if (!newValue) this.value = {};
+            },
+            triggerOnValueChanged: function () {
+                if (this.disabled) return;
+                this.fire('valueChanged', this.value);
+            },
+            onInput: function (e) {
+                this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+            },
+            onChange: function (e) {
+                this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+            }
+        });
+    </script>
+
+</dom-module>
