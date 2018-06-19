@@ -1,16 +1,22 @@
-<link rel="import" href="../forge-shared/polymer.html">
-
 <dom-module id="key-numbers-input">
     <template>
 
         <style is="custom-style">
         </style>
 
-        <paper-card heading="Some Data">
+        <paper-card>
+            <p>Key numbers</p>
 
-            <paper-input value="{{value.name}}" label="Name" data-field="name" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
-            <paper-input value="{{value.surname}}" label="Surname" data-field="surname" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
-            <paper-input value="{{value.points}}" label="Points" data-field="points" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+            <paper-input value="{{value.key}}" label="Key" data-field="Key" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+            <paper-input value="{{value.value}}" label="Value" data-field="value" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+            <div>
+                <div>
+                    <paper-button on-tap="_addSeason">
+                        <iron-icon icon="add"></iron-icon>
+                        Add New Key number
+                    </paper-button>
+                </div>
+            </div>
 
         </paper-card>
 
