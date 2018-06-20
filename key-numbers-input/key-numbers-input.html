@@ -4,66 +4,89 @@
         <style is="custom-style">
         </style>
 
-        <paper-card>
-            <p>Key numbers</p>
+        <label>
+            [[label]]
+            <paper-icon-button on-click="onAdd" icon="add-circle"></paper-icon-button>
+        </label>
 
-            <paper-input value="{{value.key}}" label="Key" data-field="Key" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
-            <paper-input value="{{value.value}}" label="Value" data-field="value" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+        <div>
+            <iron-list items="[[value]]">
+                <template>
+                    <div>
+                        <h5>{{item.key}}</h5>
+                        <span>value {{item.value}}</span>
+
+                        <paper-icon-button on-click="onEdit" icon="editor:mode-edit"></paper-icon-button>
+                        <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
+                    </div>
+                </template>
+            </iron-list>
+        </div>
+
+        <paper-dialog id="editModal" modal on-iron-overlay-closed="onEditModalClose">
+            <h2>Edit key number</h2>
+            <paper-input value="{{_editingItem.key}}" label="Key" type="string"></paper-input>
+            <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
+
             <div>
-                <div>
-                    <paper-button on-tap="addKeyNumber">
-                        <iron-icon icon="add"></iron-icon>
-                        Add New Key number
-                    </paper-button>
-                </div>
+                <paper-button dialog-confirm autofocus>Close</paper-button>
             </div>
-
-        </paper-card>
-
+        </paper-dialog>
     </template>
 
     <script>
         Polymer({
             is: 'key-numbers-input',
-            properties: {
-                value: {
-                    type: Object,
-                    observer: '_valueChanged'
-                },
-                label: {
-                    type: String
-                },
-                fieldName: {
-                    type: String
-                },
-                entity: {
-                    type: Object
-                },
-                schema: {
-                    type: Object
-                },
-                disabled: {
-                    type: Boolean,
-                    value: false
-                }
+            behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldArrayBehavior],
+
+            listeners: {
             },
-            _valueChanged: function (newValue, oldValue) {
-                if (!newValue) this.value = {};
-            },
-            triggerOnValueChanged: function () {
-                if (this.disabled) return;
-                this.fire('valueChanged', this.value);
-            },
-            onInput: function (e) {
+
+            onInput: function () {
                 this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
             },
-            onChange: function (e) {
+            onChange: function () {
                 this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
             },
-            addKeyNumber: function (e) {
-                console.log('Add New Key number');                
+
+            onAdd: function () {
+                if (!this.value) {
+                    this.value = [];
+                }
+
+                var entry = {};
+                this._isNewEntry = true;
+                this.set('_editingItem', entry);
+
+                this.$.editModal.open();
+            },
+
+            onEdit: function (e) {
+                this._isNewEntry = false;
+                this.set('_editingItem', e.model.item);
+
+                this.$.editModal.open();
+            },
+
+            onRemove: function (e) {
+                var entry = e.model.item;
+                var index = this.value.indexOf(entry);
+                this.splice('value', index, 1);
+
+                this.onChange();
+            },
+
+            onEditModalClose: function (e) {
+                var entry = this._editingItem;
+                if (entry.value) entry.value = Number(entry.value);                
+
+                if (this._isNewEntry) {
+                    this.push('value', entry);
+                }
+
+                this.onChange();
             }
-        });
+        });        
     </script>
 
 </dom-module>
