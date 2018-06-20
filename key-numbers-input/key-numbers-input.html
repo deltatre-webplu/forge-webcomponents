@@ -24,7 +24,7 @@
         </div>
 
         <paper-dialog id="editModal" modal on-iron-overlay-closed="onEditModalClose">
-            <h2>Edit key number</h2>
+            <h2>{{modalTitle}}</h2>
             <paper-input value="{{_editingItem.key}}" label="Key" type="string"></paper-input>
             <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
 
@@ -39,6 +39,13 @@
             is: 'key-numbers-input',
             behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldArrayBehavior],
 
+            properties: {
+                modalTitle: {
+                    type: String,
+                    value: "modalTitle"
+                }
+            },
+
             listeners: {
             },
 
@@ -50,6 +57,7 @@
             },
 
             onAdd: function () {
+                this.modalTitle = "Add Key Number";
                 if (!this.value) {
                     this.value = [];
                 }
@@ -62,6 +70,7 @@
             },
 
             onEdit: function (e) {
+                this.modalTitle = "Edit Key Number";
                 this._isNewEntry = false;
                 this.set('_editingItem', e.model.item);
 
@@ -78,24 +87,37 @@
 
             onEditModalClose: function (e) {
                 var entry = this._editingItem;
+                var seq = this.alreadyExist(entry.key);
                 if (entry.value) entry.value = Number(entry.value);
-                console.log(isEmpty(entry));
+                console.log('entry: ' + JSON.stringify(entry));
 
-                if (this._isNewEntry && !isEmpty(entry)) {
+                if (!this.isEmpty(entry)) {
                     this.push('value', entry);
                     this.onChange();
-                }                
-            }
-        });
+                }
+            },
 
-        isEmpty = function (obj) {
-            for (var prop in obj) {
-                if (obj.hasOwnProperty(prop))
-                    return false;
+            alreadyExist: function (key) {
+                var alreadyExist;
+                this.value.forEach(function (item) {
+                    if (key === item.key) {
+                        alreadyExist = true;
+                    };
+                });
+                return alreadyExist;
+            },
+
+            isEmpty: function (obj) {
+                for (var prop in obj) {
+                    if (obj.hasOwnProperty(prop))
+                        return false;
+                };
+
+                return JSON.stringify(obj) === JSON.stringify({});
             }
 
-            return JSON.stringify(obj) === JSON.stringify({});
-        };        
+        });        
+        //# sourceURL=somename.js        
     </script>
 
 </dom-module>
