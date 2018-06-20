@@ -78,15 +78,24 @@
 
             onEditModalClose: function (e) {
                 var entry = this._editingItem;
-                if (entry.value) entry.value = Number(entry.value);                
+                if (entry.value) entry.value = Number(entry.value);
+                console.log(isEmpty(entry));
 
-                if (this._isNewEntry) {
+                if (this._isNewEntry && !isEmpty(entry)) {
                     this.push('value', entry);
-                }
-
-                this.onChange();
+                    this.onChange();
+                }                
             }
-        });        
+        });
+
+        isEmpty = function (obj) {
+            for (var prop in obj) {
+                if (obj.hasOwnProperty(prop))
+                    return false;
+            }
+
+            return JSON.stringify(obj) === JSON.stringify({});
+        };        
     </script>
 
 </dom-module>
