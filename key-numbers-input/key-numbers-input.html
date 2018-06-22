@@ -102,8 +102,7 @@
                         this.push('value', entry);
                         this.onChange();
                     };
-                }else{
-                    this.push('value', entry);
+                }else{                    
                     this.onChange();
                 };
             },
@@ -125,12 +124,7 @@
                     };
                 });
                 return alreadyExist;
-            },
-
-            hasTheSameValue: function (params) {
-                var hasTheSameValue;
-
-            },
+            },            
 
             isEmpty: function (obj) {
                 for (var prop in obj) {
@@ -142,7 +136,7 @@
             },
 
             isEditView: function () {
-                return a = this.modalButtonLabel == 'Edit';
+                return this.modalButtonLabel == 'Edit';
             }
 
         });
