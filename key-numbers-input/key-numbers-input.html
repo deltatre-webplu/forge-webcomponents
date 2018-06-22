@@ -29,6 +29,7 @@
             <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
 
             <div>
+                <paper-button dialog-confirm autofocus>[[modalButtonLabel]]</paper-button>
                 <paper-button dialog-confirm autofocus>Close</paper-button>
             </div>
         </paper-dialog>
@@ -41,8 +42,11 @@
 
             properties: {
                 modalTitle: {
-                    type: String,
-                    value: "modalTitle"
+                    type: String
+                },
+
+                modalButtonLabel: {
+                    type: String
                 }
             },
 
@@ -58,6 +62,7 @@
 
             onAdd: function () {
                 this.modalTitle = "Add Key Number";
+                this.modalButtonLabel = "Add";
                 if (!this.value) {
                     this.value = [];
                 }
@@ -71,6 +76,7 @@
 
             onEdit: function (e) {
                 this.modalTitle = "Edit Key Number";
+                this.modalButtonLabel = "Edit";
                 this._isNewEntry = false;
                 this.set('_editingItem', e.model.item);
 
@@ -87,7 +93,8 @@
 
             onEditModalClose: function (e) {
                 var entry = this._editingItem;
-                var seq = this.alreadyExist(entry.key);
+                var areKeyNumbersChanged = this.areKeyNumbersChanged(entry);
+                
                 if (entry.value) entry.value = Number(entry.value);
                 console.log('entry: ' + JSON.stringify(entry));
 
@@ -95,6 +102,15 @@
                     this.push('value', entry);
                     this.onChange();
                 }
+            },
+
+            areKeyNumbersChanged: function (entry) {
+                var areKeyNumbersChanged;
+                if (this.isEmpty(entry)) {
+                    return areKeyNumbersChanged;
+                }
+                var alreadyExist = this.alreadyExist(entry.key);
+                return areKeyNumbersChanged
             },
 
             alreadyExist: function (key) {
@@ -105,6 +121,11 @@
                     };
                 });
                 return alreadyExist;
+            },
+
+            hasTheSameValue: function (params) {
+                var hasTheSameValue;
+
             },
 
             isEmpty: function (obj) {
