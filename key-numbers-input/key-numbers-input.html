@@ -25,10 +25,10 @@
 
         <paper-dialog id="editModal" modal on-iron-overlay-closed="onEditModalClose">
             <h2>{{modalTitle}}</h2>
-            <paper-input value="{{_editingItem.key}}" label="Key" type="string"></paper-input>
+            <paper-input value="{{_editingItem.key}}" label="Key" type="string" disabled="[[isEditView]]"></paper-input>
             <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
 
-            <div>
+            <div>                
                 <paper-button dialog-confirm autofocus>[[modalButtonLabel]]</paper-button>
                 <paper-button dialog-confirm autofocus>Close</paper-button>
             </div>
@@ -47,6 +47,10 @@
 
                 modalButtonLabel: {
                     type: String
+                },
+
+                isEditView : {
+                    type: Boolean
                 }
             },
 
@@ -65,8 +69,9 @@
                 this.modalButtonLabel = "Add";
                 if (!this.value) {
                     this.value = [];
-                }
-
+                };
+                this.isEditView = false;
+                
                 var entry = {};
                 this._isNewEntry = true;
                 this.set('_editingItem', entry);
@@ -79,6 +84,7 @@
                 this.modalButtonLabel = "Edit";
                 this._isNewEntry = false;
                 this.set('_editingItem', e.model.item);
+                this.isEditView = true;
 
                 this.$.editModal.open();
             },
@@ -135,6 +141,10 @@
                 };
 
                 return JSON.stringify(obj) === JSON.stringify({});
+            },
+
+            isEditView: function () {                
+                return a = this.modalButtonLabel == 'Edit';
             }
 
         });        
