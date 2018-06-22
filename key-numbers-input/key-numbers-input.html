@@ -1,3 +1,5 @@
+<link rel="import" href="../paper-typeahead-input/paper-typeahead-input.html">
+
 <dom-module id="key-numbers-input">
     <template>
 
@@ -25,7 +27,7 @@
 
         <paper-dialog id="editModal" modal>
             <h2>{{modalTitle}}</h2>
-            <paper-input value="{{_editingItem.key}}" label="Key" type="string" disabled="[[!_isNewEntry]]"></paper-input>
+            <paper-typeahead-input value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" local-candidates="{{_candidates}}"></"></paper-typeahead-input>
             <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
 
             <div>
@@ -47,6 +49,10 @@
 
                 modalButtonLabel: {
                     type: String
+                },
+                _candidates: {
+                    type: Array,
+                    value: ['one', 'two']
                 }
             },
 
@@ -78,7 +84,7 @@
                 this.modalTitle = "Edit Key Number";
                 this.modalButtonLabel = "Edit";
                 this._isNewEntry = false;
-                this._oldValue = e.model.item.value;                
+                this._oldValue = e.model.item.value;
                 this.set('_editingItem', e.model.item);
 
                 this.$.editModal.open();
@@ -97,13 +103,13 @@
                 var areKeyNumbersChanged = this.areKeyNumbersChanged(entry);
                 if (entry.value) entry.value = Number(entry.value);
 
-                if (this._isNewEntry) {                    
+                if (this._isNewEntry) {
 
                     if (!this.isEmpty(entry)) {
                         this.push('value', entry);
                         this.onChange();
                     };
-                }else if(this._oldValue != entry.value){
+                } else if (this._oldValue != entry.value) {
                     this.onChange();
                 };
                 this.$.editModal.close();
@@ -126,7 +132,7 @@
                     };
                 });
                 return alreadyExist;
-            },            
+            },
 
             isEmpty: function (obj) {
                 for (var prop in obj) {
