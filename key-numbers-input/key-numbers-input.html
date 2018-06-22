@@ -25,7 +25,7 @@
 
         <paper-dialog id="editModal" modal on-iron-overlay-closed="onEditModalClose">
             <h2>{{modalTitle}}</h2>
-            <paper-input value="{{_editingItem.key}}" label="Key" type="string" disabled="[[isEditView]]"></paper-input>
+            <paper-input value="{{_editingItem.key}}" label="Key" type="string" disabled="[[!_isNewEntry]]"></paper-input>
             <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
 
             <div>                
@@ -47,10 +47,6 @@
 
                 modalButtonLabel: {
                     type: String
-                },
-
-                isEditView : {
-                    type: Boolean
                 }
             },
 
@@ -70,7 +66,6 @@
                 if (!this.value) {
                     this.value = [];
                 };
-                this.isEditView = false;
                 
                 var entry = {};
                 this._isNewEntry = true;
@@ -84,7 +79,6 @@
                 this.modalButtonLabel = "Edit";
                 this._isNewEntry = false;
                 this.set('_editingItem', e.model.item);
-                this.isEditView = true;
 
                 this.$.editModal.open();
             },
