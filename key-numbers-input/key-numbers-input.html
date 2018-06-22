@@ -78,6 +78,7 @@
                 this.modalTitle = "Edit Key Number";
                 this.modalButtonLabel = "Edit";
                 this._isNewEntry = false;
+                this._oldValue = e.model.item.value;                
                 this.set('_editingItem', e.model.item);
 
                 this.$.editModal.open();
@@ -102,7 +103,7 @@
                         this.push('value', entry);
                         this.onChange();
                     };
-                }else{
+                }else if(this._oldValue != entry.value){
                     this.onChange();
                 };
                 this.$.editModal.close();
