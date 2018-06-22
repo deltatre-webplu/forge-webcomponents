@@ -23,14 +23,14 @@
             </iron-list>
         </div>
 
-        <paper-dialog id="editModal" modal on-iron-overlay-closed="onEditModalClose">
+        <paper-dialog id="editModal" modal>
             <h2>{{modalTitle}}</h2>
             <paper-input value="{{_editingItem.key}}" label="Key" type="string" disabled="[[!_isNewEntry]]"></paper-input>
             <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
 
             <div>
-                <paper-button dialog-confirm autofocus>[[modalButtonLabel]]</paper-button>
-                <paper-button dialog-confirm autofocus>Close</paper-button>
+                <paper-button on-tap="onEditModalClose">[[modalButtonLabel]]</paper-button>
+                <paper-button dialog-dismiss>Close</paper-button>
             </div>
         </paper-dialog>
     </template>
@@ -102,9 +102,10 @@
                         this.push('value', entry);
                         this.onChange();
                     };
-                }else{                    
+                }else{
                     this.onChange();
                 };
+                this.$.editModal.close();
             },
 
             areKeyNumbersChanged: function (entry) {
@@ -137,6 +138,10 @@
 
             isEditView: function () {
                 return this.modalButtonLabel == 'Edit';
+            },
+
+            closeModal: function () {
+                this.$.editModal.close();
             }
 
         });
