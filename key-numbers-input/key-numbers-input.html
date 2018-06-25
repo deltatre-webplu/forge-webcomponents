@@ -28,7 +28,7 @@
         <paper-dialog id="editModal" modal>
             <h2>{{modalTitle}}</h2>
             <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]"></paper-typeahead-input>
-            <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
+            <paper-input value="{{_editingItem.value}}" label="Value"></paper-input>
 
             <div>
                 <paper-button on-tap="onEditModalClose">[[modalButtonLabel]]</paper-button>
@@ -50,8 +50,7 @@
                     type: String
                 },
                 _candidates: {
-                    type: Array,
-                    value: ['one', 'two']
+                    type: Array
                 }
             },
 
@@ -103,7 +102,6 @@
             onEditModalClose: function (e) {
                 var entry = this._editingItem;
                 var areKeyNumbersChanged = this.areKeyNumbersChanged(entry);
-                if (entry.value) entry.value = Number(entry.value);
 
                 if (this._isNewEntry) {
 
