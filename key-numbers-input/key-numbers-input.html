@@ -27,7 +27,7 @@
 
         <paper-dialog id="editModal" modal>
             <h2>{{modalTitle}}</h2>
-            <paper-typeahead-input value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" local-candidates="{{_candidates}}"></"></paper-typeahead-input>
+            <paper-input value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" ></paper-input>
             <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
 
             <div>
@@ -46,7 +46,6 @@
                 modalTitle: {
                     type: String
                 },
-
                 modalButtonLabel: {
                     type: String
                 },
@@ -69,6 +68,7 @@
             onAdd: function () {
                 this.modalTitle = "Add Key Number";
                 this.modalButtonLabel = "Add";
+
                 if (!this.value) {
                     this.value = [];
                 };
