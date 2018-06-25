@@ -101,7 +101,7 @@
 
             onEditModalClose: function (e) {
                 var entry = this._editingItem;
-                if (!entry.key || !entry.value) {
+                if (!this._candidates.includes(entry.key) || !entry.value) {
                     return;
                 };
                 var areKeyNumbersChanged = this.areKeyNumbersChanged(entry);
