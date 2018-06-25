@@ -27,7 +27,7 @@
 
         <paper-dialog id="editModal" modal>
             <h2>{{modalTitle}}</h2>
-            <paper-input value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" ></paper-input>
+            <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]"></paper-typeahead-input>
             <paper-input value="{{_editingItem.value}}" label="Value" type="number"></paper-input>
 
             <div>
@@ -68,6 +68,8 @@
             onAdd: function () {
                 this.modalTitle = "Add Key Number";
                 this.modalButtonLabel = "Add";
+                this._candidates = this._computeAllowedValues(this.schema);
+                console.log('this.schema: ' + JSON.stringify(this.schema.items.properties.key.enum));
 
                 if (!this.value) {
                     this.value = [];
@@ -149,8 +151,23 @@
 
             closeModal: function () {
                 this.$.editModal.close();
-            }
+            },
 
+            _computeAllowedValues: function (schema) {
+
+                var allValues = schema.items.properties.key.enum || [];
+                var insertedValues = [];
+
+                this.value.forEach(function (item) {
+                    insertedValues.push(item.key)
+                });
+
+                var result = allValues.filter(function (v) {
+                    return insertedValues.indexOf(v) < 0;
+                });
+                return result;
+
+            }
         });
         //# sourceURL=somename.js        
     </script>
