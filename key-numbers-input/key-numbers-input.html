@@ -102,13 +102,11 @@
                 var entry = this._editingItem;
                 if (!this._inputValidation(entry)) {
                     return;
-                };                
+                };
 
                 if (this._isNewEntry) {
-                    if (!this.isEmpty(entry)) {
-                        this.push('value', entry);
-                        this.onChange();
-                    };
+                    this.push('value', entry);
+                    this.onChange();
                 } else if (this._oldValue != entry.value) {
                     this.onChange();
                 };
@@ -118,9 +116,9 @@
             _inputValidation: function (entry) {
                 var areImputsValid;
 
-                if (this._isNewEntry && entry.value && this._candidates.includes(entry.key)) {
+                if (this._isNewEntry && !isNaN(entry.value) && this._candidates.includes(entry.key)) {
                     areImputsValid = true;
-                }else if ((!this._isNewEntry && entry.value)){
+                } else if ((!this._isNewEntry && !isNaN(entry.value))) {
                     areImputsValid = true;
                 }
                 return areImputsValid;
