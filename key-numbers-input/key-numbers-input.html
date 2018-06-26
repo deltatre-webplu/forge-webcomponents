@@ -64,6 +64,10 @@
                 this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
             },
 
+            ready: function () {
+                this.$.modal.noCancelOnEscKey = false;
+            },
+
             onAdd: function () {
                 this.modalTitle = "Add Key Number";
                 this.modalButtonLabel = "Add";
