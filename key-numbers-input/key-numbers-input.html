@@ -27,8 +27,10 @@
 
         <paper-dialog id="modal" modal>
             <h2>{{modalTitle}}</h2>
-            <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]" on-keydown="_checkForEnter"></paper-typeahead-input>
-            <paper-input value="{{_editingItem.value}}" label="Value" on-keydown="_checkForEnter"></paper-input>
+            <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key*" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]" on-keydown="_checkForEnter" placeholder=""></paper-typeahead-input>
+            <span>Press space bar for suggestions</span>
+            <paper-input value="{{_editingItem.value}}" label="Value*" on-keydown="_checkForEnter"></paper-input>
+            <span>Example: 2.3</span>
 
             <div>
                 <paper-button on-tap="onModalClose">[[modalButtonLabel]]</paper-button>
@@ -146,7 +148,7 @@
             _checkForEnter: function (e) {                
                 if (e.keyCode === 13) {
                     this.onModalClose(e);
-                }
+                };
             }
         });
         //# sourceURL=somename.js        
