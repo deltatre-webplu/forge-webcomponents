@@ -85,7 +85,7 @@
             },
 
             onEdit: function (e) {
-                this.modalTitle = "Edit Key Number";
+                this.modalTitle = "Edit " + e.model.item.key;
                 this.modalButtonLabel = "Edit";
                 this._isNewEntry = false;
                 this._oldValue = e.model.item.value;
@@ -126,24 +126,7 @@
                     areImputsValid = true;
                 }
                 return areImputsValid;
-            },
-
-            isEmpty: function (obj) {
-                for (var prop in obj) {
-                    if (obj.hasOwnProperty(prop))
-                        return false;
-                };
-
-                return JSON.stringify(obj) === JSON.stringify({});
-            },
-
-            isEditView: function () {
-                return this.modalButtonLabel == 'Edit';
-            },
-
-            closeModal: function () {
-                this.$.modal.close();
-            },
+            },            
 
             _computeAllowedValues: function (schema) {
 
