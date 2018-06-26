@@ -123,13 +123,11 @@
             },
 
             _inputValidation: function (entry) {
-                var areImputsValid;
+                var areImputsValid;                
 
-                var keysEnum = this.schema.items.properties.key.enum;
-
-                if (this._isNewEntry && !isNaN(parseInt(entry.value)) && (this._candidates.includes(entry.key) || !keysEnum)) {
+                if (this._isNewEntry && this._isValidValue(entry.value) && this._isValidKey(entry.key)) {
                     areImputsValid = true;
-                } else if ((!this._isNewEntry && !isNaN(parseInt(entry.value)))) {
+                } else if ((!this._isNewEntry && this._isValidValue(entry.value))) {
                     areImputsValid = true;
                 }
                 return areImputsValid;
@@ -154,6 +152,23 @@
                 if (e.keyCode === 13) {
                     this.onModalClose(e);
                 };
+            },
+
+            _isValidKey: function (key) {
+                var isValid;
+                var keysEnum = this.schema.items.properties.key.enum;
+                if (this._candidates.includes(key) || !keysEnum) {
+                    isValid = true;
+                };
+                return isValid;
+            },
+
+            _isValidValue: function (value) {
+                var isValid;
+                if (!isNaN(parseInt(value))) {
+                    isValid = true;
+                }
+                return isValid;
             }
         });
         //# sourceURL=somename.js        
