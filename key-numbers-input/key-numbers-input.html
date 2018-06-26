@@ -16,7 +16,7 @@
                 <template>
                     <div>
                         <h5>{{item.key}}</h5>
-                        <span>value {{item.value}}</span>
+                        <span>Value: {{item.value}}</span>
 
                         <paper-icon-button on-click="onEdit" icon="editor:mode-edit"></paper-icon-button>
                         <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
@@ -25,13 +25,13 @@
             </iron-list>
         </div>
 
-        <paper-dialog id="editModal" modal>
+        <paper-dialog id="modal" modal>
             <h2>{{modalTitle}}</h2>
             <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]"></paper-typeahead-input>
             <paper-input value="{{_editingItem.value}}" label="Value"></paper-input>
 
             <div>
-                <paper-button on-tap="onEditModalClose">[[modalButtonLabel]]</paper-button>
+                <paper-button on-tap="onModalClose">[[modalButtonLabel]]</paper-button>
                 <paper-button dialog-dismiss>Close</paper-button>
             </div>
         </paper-dialog>
@@ -68,7 +68,6 @@
                 this.modalTitle = "Add Key Number";
                 this.modalButtonLabel = "Add";
                 this._candidates = this._computeAllowedValues(this.schema);
-                console.log('this.schema: ' + JSON.stringify(this.schema.items.properties.key.enum));
 
                 if (!this.value) {
                     this.value = [];
@@ -78,7 +77,7 @@
                 this._isNewEntry = true;
                 this.set('_editingItem', entry);
 
-                this.$.editModal.open();
+                this.$.modal.open();
             },
 
             onEdit: function (e) {
@@ -88,7 +87,7 @@
                 this._oldValue = e.model.item.value;
                 this.set('_editingItem', e.model.item);
 
-                this.$.editModal.open();
+                this.$.modal.open();
             },
 
             onRemove: function (e) {
@@ -99,15 +98,13 @@
                 this.onChange();
             },
 
-            onEditModalClose: function (e) {
+            onModalClose: function (e) {
                 var entry = this._editingItem;
-                if (!this._candidates.includes(entry.key) || !entry.value) {
+                if (!this._inputValidation(entry)) {
                     return;
-                };
-                var areKeyNumbersChanged = this.areKeyNumbersChanged(entry);
+                };                
 
                 if (this._isNewEntry) {
-
                     if (!this.isEmpty(entry)) {
                         this.push('value', entry);
                         this.onChange();
@@ -115,26 +112,18 @@
                 } else if (this._oldValue != entry.value) {
                     this.onChange();
                 };
-                this.$.editModal.close();
+                this.$.modal.close();
             },
 
-            areKeyNumbersChanged: function (entry) {
-                var areKeyNumbersChanged;
-                if (this.isEmpty(entry)) {
-                    return areKeyNumbersChanged;
+            _inputValidation: function (entry) {
+                var areImputsValid;
+
+                if (this._isNewEntry && entry.value && this._candidates.includes(entry.key)) {
+                    areImputsValid = true;
+                }else if ((!this._isNewEntry && entry.value)){
+                    areImputsValid = true;
                 }
-                var alreadyExist = this.alreadyExist(entry.key);
-                return areKeyNumbersChanged
-            },
-
-            alreadyExist: function (key) {
-                var alreadyExist;
-                this.value.forEach(function (item) {
-                    if (key === item.key) {
-                        alreadyExist = true;
-                    };
-                });
-                return alreadyExist;
+                return areImputsValid;
             },
 
             isEmpty: function (obj) {
@@ -151,7 +140,7 @@
             },
 
             closeModal: function () {
-                this.$.editModal.close();
+                this.$.modal.close();
             },
 
             _computeAllowedValues: function (schema) {
