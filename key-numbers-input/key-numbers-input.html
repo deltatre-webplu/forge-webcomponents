@@ -27,8 +27,8 @@
 
         <paper-dialog id="modal" modal>
             <h2>{{modalTitle}}</h2>
-            <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]"></paper-typeahead-input>
-            <paper-input value="{{_editingItem.value}}" label="Value"></paper-input>
+            <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]" on-keydown="_checkForEnter"></paper-typeahead-input>
+            <paper-input value="{{_editingItem.value}}" label="Value" on-keydown="_checkForEnter"></paper-input>
 
             <div>
                 <paper-button on-tap="onModalClose">[[modalButtonLabel]]</paper-button>
@@ -141,7 +141,12 @@
                     return insertedValues.indexOf(v) < 0;
                 });
                 return result;
+            },
 
+            _checkForEnter: function (e) {                
+                if (e.keyCode === 13) {
+                    this.onModalClose(e);
+                }
             }
         });
         //# sourceURL=somename.js        
