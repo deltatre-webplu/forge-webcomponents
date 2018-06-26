@@ -15,9 +15,7 @@
             <iron-list items="[[value]]">
                 <template>
                     <div>
-                        <h5>{{item.key}}</h5>
-                        <span>Value: {{item.value}}</span>
-
+                        <span>{{item.key}}: {{item.value}}</span>
                         <paper-icon-button on-click="onEdit" icon="editor:mode-edit"></paper-icon-button>
                         <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
                     </div>
@@ -27,11 +25,11 @@
 
         <paper-dialog id="modal" modal>
             <h2>{{modalTitle}}</h2>
-            <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key*" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]" on-keydown="_checkForEnter" placeholder=""></paper-typeahead-input>
-            <span>Press space bar for suggestions</span>
+            <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key*" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]"
+                on-keydown="_checkForEnter" placeholder=""></paper-typeahead-input>                
+            <span hidden$="[[!_isNewEntry]]">Press space bar for suggestions</span>
             <paper-input value="{{_editingItem.value}}" label="Value*" on-keydown="_checkForEnter"></paper-input>
             <span>Example: 2.3</span>
-
             <div>
                 <paper-button on-tap="onModalClose">[[modalButtonLabel]]</paper-button>
                 <paper-button dialog-dismiss>Close</paper-button>
@@ -128,7 +126,7 @@
                     areImputsValid = true;
                 }
                 return areImputsValid;
-            },            
+            },
 
             _computeAllowedValues: function (schema) {
 
@@ -145,7 +143,7 @@
                 return result;
             },
 
-            _checkForEnter: function (e) {                
+            _checkForEnter: function (e) {
                 if (e.keyCode === 13) {
                     this.onModalClose(e);
                 };
