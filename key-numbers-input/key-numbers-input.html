@@ -157,7 +157,9 @@
             _isValidKey: function (key) {
                 var isValid;
                 var keysEnum = this.schema.items.properties.key.enum;
-                if (this._candidates.includes(key) || !keysEnum) {
+                if (this._candidates.includes(key)) {
+                    isValid = true; 
+                }else if (key && !keysEnum) {
                     isValid = true;
                 };
                 return isValid;
