@@ -31,7 +31,7 @@
                 <span hidden$="[[!_isNewEntry]]">Press space bar for suggestions</span>
             </template>
             <template is="dom-if" if="[[!schema.items.properties.key.enum]]">
-                <paper-input value="{{_editingItem.key}}" label="Key*" on-keydown="_checkForEnter" hidden$="[[!_isNewEntry]]"></paper-input>
+                <paper-input value="{{_editingItem.key}}" label="Key*" on-keydown="_checkForEnter"></paper-input>
             </template>
             <paper-input value="{{_editingItem.value}}" label="Value*" on-keydown="_checkForEnter"></paper-input>
             <span>Example: 2.3</span>
@@ -94,6 +94,7 @@
                 this.modalButtonLabel = "Edit";
                 this._isNewEntry = false;
                 this._oldValue = e.model.item.value;
+                this._oldKey = e.model.item.key;
                 this.set('_editingItem', e.model.item);
 
                 this.$.modal.open();
@@ -116,7 +117,7 @@
                 if (this._isNewEntry) {
                     this.push('value', entry);
                     this.onChange();
-                } else if (this._oldValue != entry.value) {
+                } else if (this._oldValue != entry.value || this._oldKey != entry.key) {
                     this.onChange();
                 };
                 this.$.modal.close();
