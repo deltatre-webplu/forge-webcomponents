@@ -76,7 +76,7 @@
             onAdd: function () {
                 this.modalTitle = "Add Key Number";
                 this.modalButtonLabel = "Add";
-                this._candidates = this._computeAllowedValues(this.schema);
+                this._candidates = this._computeAllowedValues(this.schema);            
 
                 if (!this.value) {
                     this.value = [];
@@ -168,7 +168,7 @@
 
             _isValidValue: function (value) {
                 var isValid;
-                if (!isNaN(parseInt(value))) {
+                if (/^[0-9.]*$/.test(value) && !isNaN(parseInt(value[0], 10))) {
                     isValid = true;
                 }
                 return isValid;
