@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="../_lib/webcomponentsjs/webcomponents-lite.js"></script>
+    <script>
+      /*
+      window.Polymer = window.Polymer || {};
+      window.Polymer.dom = 'shadow';
+      */
+    </script>
+
+    <link rel="import" href="../demo-libraries/libraries.html">
+    <link rel="import" href="../custom-styles/forge-core-style.html">
+    <link rel="import" href="key-numbers-input.html">
+</head>
+
+<body>
+
+    <h2>Key value example with associated enum to the key</h2>
+    <key-numbers-input
+        label='Dictionary Input'        
+        schema='{"type":"array", "items": {"type": "object", "properties": {"key": {"type": "string","enum": ["keyOne","keyTwo", "keyThree"]},"value": {"type": "integer"}}}}'
+    ></key-numbers-input>
+
+    <h2>Key value example without associated enum to the key</h2>
+    <key-numbers-input
+        label='Dictionary Input'        
+        schema='{"type":"array", "items": {"type": "object", "properties": {"key": {"type": "string"},"value": {"type": "integer"}}}}'
+    ></key-numbers-input>
+    
+
+</body>
+
+</html>
