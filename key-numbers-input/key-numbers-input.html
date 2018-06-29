@@ -119,8 +119,8 @@
                     this.onChange();
                 } else if (this._oldValue != entry.value || this._oldKey != entry.key) {
                     var index = this.value.indexOf(entry);
-                    this._oldKey != entry.key ? this.set('value.'+index+'.key', entry.key) : null;
-                    this._oldValue != entry.value ? this.set('value.'+index+'.value', entry.value) : null;
+                    if (this._oldKey != entry.key) {this.set('value.'+index+'.key', entry.key)};
+                    if (this._oldValue != entry.value) {this.set('value.'+index+'.value', entry.value)};
                     this.onChange();
                 };
                 this.$.modal.close();
