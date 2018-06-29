@@ -1,18 +1,11 @@
-/*
-This web component is created to work with an array of objects.
-The format of every array's item is the following {key: String,  value: Number} 
-so the web component let insert only digits in the value field with this format: 1.1 (no comma).
-If you need to edit this behaviour, you can find the validation methods in _isValidKey and _isValidValue.
-This web component provides two behaviours:
-- if is provided with an enum for the key property in the configuration json of the custom entity, 
-  when adding a new item, it will provide the list of possible keys. 
-  In the edit mode, will let only change the value property of the item.
-- if no enum is provided, 
-  it is possible to insert any non-empty value for the key property and also change it in the edit mode.
-
-  This web component was ideated during the development of new deltatre.com.
-It will be used to set the property Key Numbers of Captain custom entity.
-*/ 
+/* This web component is created to work with an array of objects. The format of every array's item is the following {key:
+String, value: Number} so the web component let insert only digits in the value field with this format: 1.1 (no comma). If
+you need to edit this behaviour, you can find the validation methods in _isValidKey and _isValidValue. This web component
+provides two behaviours: - if is provided with an enum for the key property in the configuration json of the custom entity,
+when adding a new item, it will provide the list of possible keys. In the edit mode, will let only change the value property
+of the item. - if no enum is provided, it is possible to insert any non-empty value for the key property and also change
+it in the edit mode. This web component was ideated during the development of new deltatre.com. It will be used to set the
+property Key Numbers of Captain custom entity. */
 
 <link rel="import" href="../paper-typeahead-input/paper-typeahead-input.html">
 
@@ -135,12 +128,12 @@ It will be used to set the property Key Numbers of Captain custom entity.
                     this.onChange();
                 } else if (this._oldValue != entry.value || this._oldKey != entry.key) {
                     var index = this.value.indexOf(entry);
-                    if (this._oldKey != entry.key) {this.set('value.'+index+'.key', entry.key)};
-                    if (this._oldValue != entry.value) {this.set('value.'+index+'.value', entry.value)};
+                    if (this._oldKey != entry.key) { this.set('value.' + index + '.key', entry.key) };
+                    if (this._oldValue != entry.value) { this.set('value.' + index + '.value', entry.value) };
                     this.onChange();
                 };
                 this.$.modal.close();
-            },            
+            },
 
             _inputValidation: function (entry) {
                 var areImputsValid;
@@ -158,10 +151,12 @@ It will be used to set the property Key Numbers of Captain custom entity.
                 var allValues = schema.items.properties.key.enum || [];
                 var insertedValues = [];
 
-                this.value.forEach(function (item) {
-                    insertedValues.push(item.key)
-                });
-
+                if (this.value) {
+                    this.value.forEach(function (item) {
+                        insertedValues.push(item.key)
+                    });
+                };
+                
                 var result = allValues.filter(function (v) {
                     return insertedValues.indexOf(v) < 0;
                 });
