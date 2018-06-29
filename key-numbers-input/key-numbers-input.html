@@ -15,7 +15,7 @@
             <iron-list items="[[value]]">
                 <template>
                     <div>
-                        <span>{{item.key}}: {{item.value}}</span>
+                        <span>[[item.key]]: [[item.value]]</span>
                         <paper-icon-button on-click="onEdit" icon="editor:mode-edit"></paper-icon-button>
                         <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
                     </div>
@@ -76,7 +76,7 @@
             onAdd: function () {
                 this.modalTitle = "Add Key Number";
                 this.modalButtonLabel = "Add";
-                this._candidates = this._computeAllowedValues(this.schema);            
+                this._candidates = this._computeAllowedValues(this.schema);
 
                 if (!this.value) {
                     this.value = [];
@@ -118,13 +118,16 @@
                     this.push('value', entry);
                     this.onChange();
                 } else if (this._oldValue != entry.value || this._oldKey != entry.key) {
+                    var index = this.value.indexOf(entry);
+                    this._oldKey != entry.key ? this.set('value.'+index+'.key', entry.key) : null;
+                    this._oldValue != entry.value ? this.set('value.'+index+'.value', entry.value) : null;
                     this.onChange();
                 };
                 this.$.modal.close();
-            },
+            },            
 
             _inputValidation: function (entry) {
-                var areImputsValid;                
+                var areImputsValid;
 
                 if (this._isNewEntry && this._isValidValue(entry.value) && this._isValidKey(entry.key)) {
                     areImputsValid = true;
@@ -159,8 +162,8 @@
                 var isValid;
                 var keysEnum = this.schema.items.properties.key.enum;
                 if (this._candidates.includes(key)) {
-                    isValid = true; 
-                }else if (key && !keysEnum) {
+                    isValid = true;
+                } else if (key && !keysEnum) {
                     isValid = true;
                 };
                 return isValid;
