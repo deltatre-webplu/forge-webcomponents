@@ -1,0 +1,194 @@
+/* This web component is created to work with an array of objects. The format of every array's item is the following {key:
+String, value: Number} so the web component let insert only digits in the value field with this format: 1.1 (no comma). If
+you need to edit this behaviour, you can find the validation methods in _isValidKey and _isValidValue. This web component
+provides two behaviours: - if is provided with an enum for the key property in the configuration json of the custom entity,
+when adding a new item, it will provide the list of possible keys. In the edit mode, will let only change the value property
+of the item. - if no enum is provided, it is possible to insert any non-empty value for the key property and also change
+it in the edit mode. This web component was ideated during the development of new deltatre.com. It will be used to set the
+property Key Numbers of Captain custom entity. */
+
+<link rel="import" href="../paper-typeahead-input/paper-typeahead-input.html">
+
+<dom-module id="forge-array-key-value-input">
+    <template>
+
+        <style is="custom-style">
+        </style>
+
+        <label>
+            [[label]]
+            <paper-icon-button on-click="onAdd" icon="add-circle"></paper-icon-button>
+        </label>
+
+        <div>
+            <iron-list items="[[value]]">
+                <template>
+                    <div>
+                        <span>[[item.key]]: [[item.value]]</span>
+                        <paper-icon-button on-click="onEdit" icon="editor:mode-edit"></paper-icon-button>
+                        <paper-icon-button on-click="onRemove" icon="remove-circle"></paper-icon-button>
+                    </div>
+                </template>
+            </iron-list>
+        </div>
+
+        <paper-dialog id="modal" modal>
+            <h2>{{modalTitle}}</h2>
+            <template is="dom-if" if="[[schema.items.properties.key.enum]]">
+                <paper-typeahead-input input-value="{{_editingItem.key}}" label="Key*" type="string" hidden$="[[!_isNewEntry]]" local-candidates="[[_candidates]]"
+                    on-keydown="_checkForEnter" placeholder=""></paper-typeahead-input>
+                <span hidden$="[[!_isNewEntry]]">Press space bar for suggestions</span>
+            </template>
+            <template is="dom-if" if="[[!schema.items.properties.key.enum]]">
+                <paper-input value="{{_editingItem.key}}" label="Key*" on-keydown="_checkForEnter"></paper-input>
+            </template>
+            <paper-input value="{{_editingItem.value}}" label="Value*" on-keydown="_checkForEnter"></paper-input>
+            <span>Example: 2.3</span>
+            <div>
+                <paper-button on-tap="onModalClose">[[modalButtonLabel]]</paper-button>
+                <paper-button dialog-dismiss>Close</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'forge-array-key-value-input',
+            behaviors: [ForgeWebComponents.Behaviors.ExtendedFieldArrayBehavior],
+
+            properties: {
+                modalTitle: {
+                    type: String
+                },
+                modalButtonLabel: {
+                    type: String
+                },
+                _candidates: {
+                    type: Array
+                }
+            },
+
+            listeners: {
+            },
+
+            onInput: function () {
+                this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+            },
+            onChange: function () {
+                this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+            },
+
+            ready: function () {
+                this.$.modal.noCancelOnEscKey = false;
+            },
+
+            onAdd: function () {
+                this.modalTitle = "Add Key Number";
+                this.modalButtonLabel = "Add";
+                this._candidates = this._computeAllowedValues(this.schema);
+
+                if (!this.value) {
+                    this.value = [];
+                };
+
+                var entry = {};
+                this._isNewEntry = true;
+                this.set('_editingItem', entry);
+
+                this.$.modal.open();
+            },
+
+            onEdit: function (e) {
+                this.modalTitle = "Edit " + e.model.item.key;
+                this.modalButtonLabel = "Edit";
+                this._isNewEntry = false;
+                this._oldValue = e.model.item.value;
+                this._oldKey = e.model.item.key;
+                this.set('_editingItem', e.model.item);
+
+                this.$.modal.open();
+            },
+
+            onRemove: function (e) {
+                var entry = e.model.item;
+                var index = this.value.indexOf(entry);
+                this.splice('value', index, 1);
+
+                this.onChange();
+            },
+
+            onModalClose: function (e) {
+                var entry = this._editingItem;
+                if (!this._inputValidation(entry)) {
+                    return;
+                };
+
+                if (this._isNewEntry) {
+                    this.push('value', entry);
+                    this.onChange();
+                } else if (this._oldValue != entry.value || this._oldKey != entry.key) {
+                    var index = this.value.indexOf(entry);
+                    if (this._oldKey != entry.key) { this.set('value.' + index + '.key', entry.key) };
+                    if (this._oldValue != entry.value) { this.set('value.' + index + '.value', entry.value) };
+                    this.onChange();
+                };
+                this.$.modal.close();
+            },
+
+            _inputValidation: function (entry) {
+                var areImputsValid;
+
+                if (this._isNewEntry && this._isValidValue(entry.value) && this._isValidKey(entry.key)) {
+                    areImputsValid = true;
+                } else if ((!this._isNewEntry && this._isValidValue(entry.value))) {
+                    areImputsValid = true;
+                }
+                return areImputsValid;
+            },
+
+            _computeAllowedValues: function (schema) {
+
+                var allValues = schema.items.properties.key.enum || [];
+                var insertedValues = [];
+
+                if (this.value) {
+                    this.value.forEach(function (item) {
+                        insertedValues.push(item.key)
+                    });
+                };
+                
+                var result = allValues.filter(function (v) {
+                    return insertedValues.indexOf(v) < 0;
+                });
+                return result;
+            },
+
+            _checkForEnter: function (e) {
+                if (e.keyCode === 13) {
+                    this.onModalClose(e);
+                };
+            },
+
+            _isValidKey: function (key) {
+                var isValid;
+                var keysEnum = this.schema.items.properties.key.enum;
+                if (this._candidates.includes(key)) {
+                    isValid = true;
+                } else if (key && !keysEnum) {
+                    isValid = true;
+                };
+                return isValid;
+            },
+
+            _isValidValue: function (value) {
+                var isValid;
+                if (/^[0-9.]*$/.test(value) && !isNaN(parseInt(value[0], 10))) {
+                    isValid = true;
+                }
+                return isValid;
+            }
+        });
+        //# sourceURL=somename.js        
+    </script>
+
+</dom-module>
