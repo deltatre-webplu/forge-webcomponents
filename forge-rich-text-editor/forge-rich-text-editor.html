@@ -1,0 +1,109 @@
+<link rel="import" href="../forge-shared/polymer.html">
+
+<dom-module id="forge-rich-text-editor">
+
+  <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <div class="editor"></div>
+
+  </template>
+
+  <script>
+    (function () {
+
+      const container = [
+        [{ 'header': [false, 2, 3, 4, 5] }],
+        ['code-block'],
+        ['blockquote'],
+        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+        ['bold', 'italic', 'clean'],
+        ['link']
+      ];
+
+      Polymer({
+        is: 'forge-rich-text-editor',
+        properties: {
+          placeholder: {
+            type: String,
+            value: "Write some text",
+            notify: true
+          },
+          value: {
+            type: String,
+            value: "",
+            notify: true,
+            observer: "valueChanged"
+          },
+          disabled: {
+            type: Boolean,
+            value: false,
+            notify: true,
+            observer: "disabledChanged"
+          }
+        },
+        quill: null,
+        ready: function () {
+
+          this.quill = new Quill(this.$$('.editor'), {
+            modules: {
+              toolbar: container
+            },
+            theme: 'snow',
+            placeholder: this.placeholder
+          });
+
+          if (this.value) {
+            this.quill.setContents(this.quill.clipboard.convert(this.value), 'api');
+          }
+
+          if (this.disabled) {
+            console.log('this.disabled', this.disabled);
+            this.quill.enable(false);
+          }
+
+          this.quill.on('text-change', function (delta, oldDelta, source) {
+            this.value = this.$$('.ql-editor').innerHTML;
+            this.fire('input', this.value);
+          }.bind(this));
+
+        },
+        valueChanged: function (newValue, oldValue) {
+
+          if (!this.quill) {
+            return;
+          }
+
+          var newContent = newValue || '';
+          var currentContent = this.$$('.ql-editor').innerHTML;
+
+          if (!_.isEqual(newValue, currentContent)) {
+            if (newContent) {
+              this.quill.setContents(this.quill.clipboard.convert(newContent), 'silent');
+            }
+            else {
+              this.quill.setText('', 'silent');
+            }            
+          }
+
+        },
+        disabledChanged: function(newValue, oldValue) {
+          
+          var valueChanged = (!!newValue != !!oldValue);
+
+          if (this.quill && valueChanged) {
+            this.quill.enable(!newValue);
+          }
+
+        }
+      });
+
+    })();
+  </script>
+
+</dom-module>

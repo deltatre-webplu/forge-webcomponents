@@ -1,0 +1,80 @@
+<link rel="import" href="../forge-shared/polymer.html">
+<link rel="import" href="../forge-shared/forge-shared.html">
+
+<dom-module id="forge-demo-with-rte">
+  <template>
+
+    <style>
+      .rich-text-label {
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 12px;
+        font-weight: 400;
+        letter-spacing: 0.011em;
+        line-height: 20px;
+        opacity: 0.6;
+      }
+    </style>
+
+    <label>Demo Component With Rich-Text Editor</label>
+
+    <paper-input value="{{value.simpleText}}" label="Simple Text" on-input="onInput" on-change="onChange" disabled="[[disabled]]"></paper-input>
+
+    <label class="rich-text-label">Rich Text</label>
+    <forge-rich-text-editor value="{{value.complexText}}" on-input="onInput" disabled="[[disabled]]"></forge-rich-text-editor>
+
+  </template>
+
+  <script>
+    (function () {
+
+      function SampleValueObject() {
+        this.simpleText = '';
+        this.complexText = '';
+      }
+
+      Polymer({
+        is: 'forge-demo-with-rte',
+        properties: {
+          value: {
+            type: Object,
+            observer: '_valueChanged'
+          },
+          label: {
+            type: String
+          },
+          fieldName: {
+            type: String
+          },
+          entity: {
+            type: Object
+          },
+          schema: {
+            type: Object
+          },
+          disabled: {
+            type: Boolean,
+            value: false
+          }
+        },
+        _valueChanged: function (newValue, oldValue) {
+          if (!newValue) this.value = new SampleValueObject();
+        },
+        triggerOnValueChanged: function () {
+          if (this.disabled) return;
+          this.fire('valueChanged', this.value);
+        },
+        onInput: function () {
+          this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 2000);
+        },
+        onChange: function () {
+          this.debounce('triggerOnValueChanged', this.triggerOnValueChanged, 0);
+        }
+      });
+    })();
+  </script>
+
+</dom-module>
