@@ -26,6 +26,7 @@
         .dashboard-container {
           display: block;
         }
+
         forge-nodes-status-card {
           max-width: 100%;
         }
@@ -46,14 +47,18 @@
           <forge-status-card class="padded flex-20" role="BackEnd"></forge-status-card>
           <forge-status-card class="padded flex-20" role="DistributionService"></forge-status-card>
           <forge-status-card class="padded flex-20" role="DistributionApi"></forge-status-card>
+          <forge-status-card class="padded flex-20" role="DependencyService"></forge-status-card>
           <forge-status-card class="padded flex-20" role="FrontEnd"></forge-status-card>
 
         </div>
 
         <div class="layout horizontal">
 
+          <forge-nodes-status-card class="padded flex"></forge-nodes-status-card>
+
           <forge-metrics-card class="padded flex" heading="DistributionApi" icon="icons:cloud-circle" more-info-url="#/performance">
-            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distReqSec" icon="icons:assessment" title="Distribution Requests/sec">
+            <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distReqSec" icon="icons:assessment"
+              title="Distribution Requests/sec">
             </forge-metrics-panel>
             <forge-metrics-panel url="/api/extensions/query/statistics?queryId=distExecTime" icon="image:timer" title="Distribution Execution Time (ms)"
               threshold-warning="500" threshold-danger="1000">
@@ -68,15 +73,14 @@
             </forge-metrics-panel>
             <forge-metrics-panel url="/api/extensions/query/statistics?queryId=dataReqSec" icon="icons:dns" title="Data queries/sec">
             </forge-metrics-panel>
-            <forge-exceeding-threshold-panel url="/api/extensions/query/statistics?queryId=itemsExceeding" icon="icons:alarm" title="Items exceeding threshold"
-              threshold-danger="1">
+            <forge-exceeding-threshold-panel url="/api/extensions/query/statistics?queryId=itemsExceeding" icon="icons:alarm"
+              title="Items exceeding threshold" threshold-danger="1">
             </forge-exceeding-threshold-panel>
           </forge-metrics-card>
 
         </div>
 
       </div>
-      <forge-nodes-status-card class="padded flex"></forge-nodes-status-card>
 
     </div>
 
