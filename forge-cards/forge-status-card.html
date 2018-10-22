@@ -96,8 +96,12 @@
           var newRole = ForgeWebComponents.Settings.SystemRoles[newValue];
 
           if (!newRole) {
-            this.role = oldValue;
             newRole = ForgeWebComponents.Settings.SystemRoles[oldValue];
+          }
+
+          if (!newRole) {
+            console.error("SystemRole not found: " + newValue);
+            return;
           }
 
           this._setIcon(newRole.icon);
