@@ -16,6 +16,6 @@
   },
   "homepage": "https://github.com/deltatre-webplu/forge-webcomponents#readme",
   "devDependencies": {
-    "http-server": "^0.10.0"
+    "http-server": "0.11.1"
   }
 }
